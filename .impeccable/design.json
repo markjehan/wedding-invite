@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-11T20:00:00+05:30",
+  "title": "Design System: The Ivory Garden",
+  "extensions": {
+    "motion": [
+      {
+        "name": "scroll-cue",
+        "value": "2.8s ease-in-out infinite",
+        "purpose": "A gentle native-scroll invitation."
+      },
+      {
+        "name": "entrance",
+        "value": "850ms cubic-bezier(.16,1,.3,1)",
+        "purpose": "Bounded enhancement on already visible content."
+      },
+      {
+        "name": "scratch-fade",
+        "value": "650ms",
+        "purpose": "Reveal the date after scratching or explicit activation."
+      },
+      {
+        "name": "venue-drawing",
+        "value": "6500ms",
+        "purpose": "Render engraving centerlines then resolve to artwork; reduced motion shows the result immediately."
+      }
+    ],
+    "shadows": [
+      {
+        "name": "paper",
+        "value": "0 16px 45px #58452c17",
+        "purpose": "Lift invitation, scratch card, and reply paper."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "mobile",
+        "value": "700px"
+      },
+      {
+        "name": "wide",
+        "value": "1600px"
+      },
+      {
+        "name": "short-desktop",
+        "value": "650px height with minimum 701px width"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Calendar, directions, and reply action.",
+      "html": "<button class=\"ds-button\">Prepare my RSVP</button>",
+      "css": ".ds-button{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:12px 23px;font:12px Manrope,sans-serif;border:1px solid var(--action,#796035);background:var(--action,#796035);color:var(--light,#fffcf5);transition:background .2s}.ds-button:hover{background:#604923}.ds-button:focus-visible{outline:2px solid var(--action,#796035);outline-offset:5px}"
+    },
+    {
+      "name": "Secondary button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Supporting calendar or copy action.",
+      "html": "<button class=\"ds-button ds-secondary\">Download iCal (.ics)</button>",
+      "css": ".ds-button{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:12px 23px;font:12px Manrope,sans-serif;border:1px solid var(--action,#796035);background:var(--action,#796035);color:var(--light,#fffcf5);transition:background .2s}.ds-button:hover{background:#604923}.ds-button:focus-visible{outline:2px solid var(--action,#796035);outline-offset:5px}.ds-secondary{background:transparent;color:var(--ink,#58452c)}.ds-secondary:hover{background:#ede1cb}"
+    },
+    {
+      "name": "Reply field",
+      "kind": "input",
+      "description": "Square, ruled stationery field with a visible focus outline.",
+      "html": "<label class=\"ds-label\">Your full name<input class=\"ds-input\" placeholder=\"Name and surname\"></label>",
+      "css": ".ds-label{font:12px Manrope,sans-serif;color:var(--ink,#58452c)}.ds-input{display:block;width:100%;min-height:44px;background:transparent;border:0;border-bottom:1px solid var(--line,#cab991);border-radius:0;padding:10px 0;font:16px Manrope,sans-serif;color:var(--ink,#58452c)}.ds-input:focus-visible{outline:2px solid var(--action,#796035);outline-offset:5px}"
+    },
+    {
+      "name": "Section navigation",
+      "kind": "nav",
+      "description": "Ordinary section links without page control.",
+      "html": "<nav class=\"ds-nav\"><a href=\"#date\">The date</a><a href=\"#venue\">Venue</a><a href=\"#rsvp-section\">RSVP</a></nav>",
+      "css": ".ds-nav{display:flex;gap:32px;background:#f7f2e8ed}.ds-nav a{display:flex;align-items:center;min-height:44px;font:12px Manrope,sans-serif;color:var(--ink,#58452c);text-decoration:none}.ds-nav a:hover{text-decoration:underline}.ds-nav a:focus-visible{outline:2px solid var(--action,#796035);outline-offset:5px}"
+    },
+    {
+      "name": "Reply letter",
+      "kind": "card",
+      "description": "Inset outlined paper carrying the RSVP form.",
+      "html": "<article class=\"ds-letter\"><h3>Kindly reply</h3><p>We would love to save you a seat.</p></article>",
+      "css": ".ds-letter{max-width:580px;padding:40px 45px;color:var(--ink,#58452c);background:var(--light,#fffcf5);box-shadow:0 16px 45px #58452c17;outline:1px solid var(--line,#cab991);outline-offset:-10px}.ds-letter h3{text-align:center;font:44px Calligraphy,cursive;color:var(--action,#796035)}.ds-letter p{font:15px/1.8 Manrope,sans-serif}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Ivory Garden",
+    "overview": "One continuous invitation pairs floral garden imagery with champagne linework and off-white stationery. Calligraphic names, framed photographs, and softly lifted letters create a ceremonial but readable demo. The user's latest request replaces page flips with native scrolling; no separate comp was approved for this new composition.",
+    "keyCharacteristics": [
+      "One champagne and off-white template.",
+      "Calligraphic names and framed photographic storytelling.",
+      "Native scrolling with optional scratch foil and architectural drawing."
+    ],
+    "dos": [
+      "Do preserve the confirmed names, venue, gold/ivory palette, and truthful demo labeling.",
+      "Do preserve the confirmed date, 4 December 2026, and continuous native scrolling.",
+      "Do retain three disclosed sample photographs and actual venue evidence.",
+      "Do confirm times, final agenda, real photographs, and RSVP destination before real distribution."
+    ],
+    "donts": [
+      "Don't restore opening doors, fixed book stages, or page-flip navigation.",
+      "Don't treat the historical ribbon comp as approval for the current composition.",
+      "Don't describe emulated browser checks as physical iOS/Android certification.",
+      "Don't treat raster mask wipes as literal line tracing."
+    ]
+  }
+}

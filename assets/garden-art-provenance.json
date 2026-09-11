@@ -1,0 +1,15 @@
+{
+  "generator": "Built-in image_gen",
+  "desktop": {
+    "file": "garden-gates.jpg",
+    "source": "garden-gates.png",
+    "prompt": "Use case: stylized-concept. Create a breathtaking luxury wedding invitation background asset, landscape 3:2, straight-on orthographic front view, no text whatsoever. An ornate pair of CLOSED ivory garden doors fills central 65 percent of frame, door arch rises almost to top, perfectly vertical central seam at x=50%. Exquisitely sculpted ivory plaster peonies, magnolia blooms, delicate leaves and trailing vines surround the doorway densely along left and right edges and upper arch, with fine champagne-gold gilding on selected petal edges. Doors themselves have elegant recessed tall arch panels, ivory silk-matte paint, extremely delicate gold borders, spacious blank panels suitable for overlaid names. Everything tonal off-white and champagne gold, no other colors. Realistic high-end three dimensional paper sculpture / porcelain relief with directional soft afternoon light from upper left creating real deep dimensional soft shadows. Foreground floral relief at bottom corners. Full frame designed artwork not a mockup of a card, no screen, no border around image, no people, no letters, no handles, no seal. Architectural poetic and exceptionally detailed crafted finish; not flat vector, not illustration strokes. This is the website's monumental opening gate background, must feel like expensive handcrafted wedding stationery coming alive."
+  },
+  "mobile": {
+    "file": "garden-gates-mobile.jpg",
+    "source": "garden-gates-mobile.png",
+    "reference": "garden-gates.png",
+    "prompt": "Create a portrait 2:3 version of this exact ivory and champagne gold sculpted floral wedding garden gate artwork for a mobile phone screen. Recompose naturally rather than stretching: two slender closed arched door panels centered, perfectly vertical seam at exact horizontal center, framed by lush realistic sculpted porcelain peonies and magnolia vines on both edges and along the arch at top. Rich physical depth and soft directional shadows exactly like reference. Doors occupy middle 70% of width, blank recessed panels for overlaid HTML names. No text, no seal, no handles, no people. Full frame architectural art, extraordinarily detailed ivory plaster paper sculpture and fine champagne gilding. Keep flowers clearly visible around the narrower doorway. Bottom grounded in ivory floor. This is a production background asset not a UI mockup."
+  },
+  "font": "Great Vibes, Google Fonts ofl/greatvibes/GreatVibes-Regular.ttf; SIL Open Font License"
+}

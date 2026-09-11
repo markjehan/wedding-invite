@@ -1,0 +1,112 @@
+/* Folded correspondence: quiet paper, dimensional edges, deliberate motion. */
+:root { --ivory: #f8f4eb; --champagne: #b49a61; }
+.opening-screen { perspective: 1600px; background: var(--ivory); isolation: isolate; }
+.cover-door { background: linear-gradient(110deg, #e5dbc6, #faf7ef 70%); box-shadow: none; width: 60%; }
+.cover-door--left { clip-path: polygon(0 0,100% 50%,0 100%); transform-origin: left center; }
+.cover-door--right { clip-path: polygon(100% 0,0 50%,100% 100%); transform-origin: right center; }
+.door-botanical { opacity: .2; }
+.envelope-fold { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(175deg,#fffcf4,#eee5d3); transition: transform 1.6s cubic-bezier(.65,0,.2,1),opacity 1.2s; }
+.envelope-fold--top { z-index: 2; clip-path: polygon(0 0,100% 0,50% 61%); transform-origin: center top; filter: drop-shadow(0 3px 2px #77603e33); }
+.envelope-fold--bottom { z-index: 1; clip-path: polygon(0 100%,50% 53%,100% 100%); transform-origin: center bottom; background: linear-gradient(15deg,#e7decd,#fbf7ee 65%); }
+.cover-copy { z-index: 3; }
+.cover-date { color: #77603e; }
+.cover-copy h1 { font-size: clamp(4rem,7.6vw,7.8rem); line-height: .95; color: #75613f; text-shadow: 0 1px 0 #fff; }
+.cover-copy h1 span { font-size: .4em; margin: .18em 0; }
+.cover-invitation { letter-spacing: .15em; font-size: .64rem; }
+.cover-guest,.skip-opening { z-index: 4; }
+.opening .envelope-fold--top { transform: rotateX(170deg); opacity: .35; }
+.opening .envelope-fold--bottom { transform: rotateX(-110deg) translateY(25%); }
+.opening .cover-door--left { transform: rotateY(-110deg); }
+.opening .cover-door--right { transform: rotateY(110deg); }
+.opened .envelope-fold { visibility: hidden; }
+.page-sheet, .drawer.page-sheet, .rsvp-case.page-sheet, .closing-leaf.page-sheet {
+  background-image: linear-gradient(#faf7eff0,#f8f4ebdf),url("assets/materials/paper-pearl.jpg");
+  background-size: cover; clip-path: none; border: 1px solid #b6a37b45;
+  background-blend-mode: normal;
+  transform: translate3d(0,var(--book-lift),0) scale(var(--under-scale)) rotateY(var(--book-angle));
+  transform-origin: left center;
+  box-shadow: 0 2px 5px #65533318,0 18px 55px #65533318;
+}
+.page-stage { perspective: 2000px; perspective-origin: 35% 50%; }
+.page-back { transform: rotateY(180deg) translateZ(2px); }
+.site-frame { background:#e8e0cf; }
+.site-frame::before { opacity:.15; }
+.drawer::before { box-shadow:inset 0 0 50px #b49a6107; }
+.rsvp-panel { background-blend-mode:normal; background-image:linear-gradient(#faf7eff5,#f8f4ebec),url("assets/materials/paper-pearl.jpg"); }
+.opening-screen,.cover-door { background-blend-mode:normal; }
+.page-stage::after { display: none; }
+.page-sheet.is-incoming .reveal { opacity: 1; transform: none; transition: none; }
+.page-sheet.is-incoming .kinetic-word { opacity: 1; transform: none; }
+.ribbon-nav { background-image: linear-gradient(#a48b53b8,#b7a170d9),url("assets/materials/ribbon-moire.jpg"); }
+.leaf-controls { position: fixed; bottom: 30px; right: 45px; z-index: 80; display: flex; align-items: center; gap: 12px; padding: 3px 5px; color: #645438; background: #faf7eff2; border: 1px solid #b49a6140; border-radius: 30px; box-shadow: 0 3px 15px #5e492b10; }
+.leaf-controls button { width:44px; height:44px; border:0; background:transparent; color:inherit; cursor:pointer; border-radius:50%; font-size:20px; transition:background .2s,transform .2s; }
+.leaf-controls button:hover:not(:disabled) { background:#e8deca; transform:translateX(2px); }
+.leaf-controls button:disabled { opacity:.25; cursor:default; }
+.leaf-controls span { font-size:10px; letter-spacing:.1em; min-width:155px; text-align:center; }
+.pre-open .leaf-controls,.opening .leaf-controls,.seal-breaking .leaf-controls { visibility:hidden; }
+.story-hero { margin: 3% 0 3% 3%; border-radius: 45% 45% 2px 2px; overflow:hidden; }
+.story-copy { padding-right: 3rem; }
+.story-quote { box-shadow: none; border-left: 1px solid var(--champagne); }
+.closing-leaf.page-sheet { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; padding-bottom:90px; }
+.closing-leaf.page-sheet > * { flex-shrink:0; }
+.closing-monogram { display:block; width:auto; height:auto; border:0; border-radius:0; margin:0; font-size:clamp(3rem,6vw,5rem); line-height:1; }
+.closing-monogram span { margin:0 .15em; }
+.closing-leaf strong { margin-top:0; }
+.closing-leaf small { margin:0 auto; }
+.story-hero { min-height:0; height:calc(100% - 40px); margin-top:20px; margin-bottom:20px; }
+.keepsake { width:min(330px,90%); margin:12px auto 0; }
+.keepsake-label { font-size:9px!important; text-transform:uppercase; letter-spacing:.2em; margin:0 0 12px!important; }
+.keepsake-card { height:146px; position:relative; border:1px solid #b49a6155; border-radius:70px 70px 8px 8px; overflow:hidden; background:#faf7ef; display:grid; place-items:center; }
+.keepsake-card p { font:22px/1.3 Italiana,Georgia,serif!important; margin:0!important; color:#6b5735; }
+.keepsake-card em { font-style:normal; }
+#keepsake-foil { position:absolute; inset:0; width:100%; height:100%; touch-action:none; cursor:crosshair; transition:opacity .8s ease; }
+.keepsake.is-revealed canvas { opacity:0; pointer-events:none; }
+#reveal-keepsake,.calendar-link { border:0; background:transparent; color:#71603f; min-height:44px; font:10px Manrope,sans-serif; letter-spacing:.06em; cursor:pointer; text-underline-offset:5px; }
+#reveal-keepsake:hover,.calendar-link:hover { text-decoration:underline; }
+.calendar-link { border-bottom:1px solid #b49a6170; margin:0 auto 10px; }
+.closing-leaf small { max-width:310px; line-height:1.6; }
+@media(max-width:700px) {
+  .cover-copy h1 { font-size:clamp(3.7rem,14vw,5.5rem); }
+  .cover-copy { gap:12px; }
+  .cover-invitation { max-width:210px; line-height:1.8; }
+  .leaf-controls { bottom:calc(64px + env(safe-area-inset-bottom)); right:12px; gap:3px; padding:0 3px; }
+  .leaf-controls span { min-width:118px; font-size:8px; letter-spacing:.03em; }
+  .leaf-controls button { width:44px; height:44px; }
+  .story-hero { margin:14px 14px 0; border-radius:45% 45% 0 0; }
+  .story-hero { height:auto; }
+  .story-copy { padding-right:1.5rem; }
+  .page-sheet { scroll-padding-bottom:70px; }
+  .closing-leaf.page-sheet { justify-content:center; gap:8px; padding:25px 18px 65px; }
+  .closing-monogram { font-size:3rem; }
+  .keepsake { margin-top:4px; width:min(290px,94%); }
+  .keepsake-card { height:125px; }
+  .closing-leaf small { font-size:8px; }
+  .closing-leaf strong { font-size:2rem; }
+  .ribbon-nav a { min-width:44px; }
+}
+@media(max-height:650px) {
+  .closing-leaf.page-sheet { justify-content:flex-start; overflow-y:auto; }
+  .closing-monogram { font-size:2.6rem; }
+  .keepsake-card { height:110px; }
+  .keepsake-label { margin-bottom:6px!important; }
+}
+@media(max-width:700px) and (max-height:650px) {
+  .closing-leaf.page-sheet { padding-top:60px; gap:7px; }
+  .closing-monogram { font-size:2rem; }
+  .closing-leaf strong { font-size:1.8rem; }
+  .closing-leaf > p { font-size:11px; }
+  .keepsake-card { height:96px; }
+  .keepsake-card p { font-size:18px!important; }
+  .calendar-link { margin-bottom:0; }
+}
+@media(max-height:500px) and (orientation:landscape) {
+  .cover-copy h1 { font-size:3rem; }
+  .cover-copy h1 span { display:inline; }
+  .cover-date,.cover-invitation,.seal-instruction { display:none; }
+  .cover-copy .seal-button { width:95px; height:95px; }
+  .leaf-controls { bottom:calc(56px + env(safe-area-inset-bottom)); }
+  .closing-leaf.page-sheet { padding-bottom:70px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .envelope-fold,.leaf-controls button,#keepsake-foil { transition:none; }
+}

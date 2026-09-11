@@ -1,0 +1,17 @@
+# Regenerable build output (run `python build_bundle.py` to rebuild)
+invitation-bundled.html
+
+# Tool-internal scratch, review captures, and superseded experiments
+.qa/
+.impeccable/review/
+.impeccable/archive/
+.tmp-*
+.tmp-venue-prototype/
+build_assets/
+
+# Unreferenced reference screenshot
+Codex Image*.png
+
+# OS/editor cruft
+.DS_Store
+Thumbs.db

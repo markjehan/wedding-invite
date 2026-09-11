@@ -1,0 +1,6 @@
+{
+  "useCase": "image-edit",
+  "generationMode": "built-in image generation",
+  "referenceImage": "assets/venue-avenra-engraving.png (prior opaque version derived from the supplied venue photograph)",
+  "prompt": "Create a production-ready transparent-background version of this exact champagne-gold architectural engraving. Preserve every line of the Avenra Gardens façade—the curved side wings, central stair, angular canopy, garden details, line weights, crosshatching, proportions, and muted champagne-gold ink color. Remove only the white/off-white rectangular background so all untouched areas become genuine transparent alpha, including spaces between drawn lines. Do not redraw, simplify, crop, recolor, add a border, add paper texture, add shadows, add typography, or change the architecture. Output a clean wide PNG with generous transparent margins and crisp antialiased gold linework suitable as an HTML overlay."
+}
