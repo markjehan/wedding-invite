@@ -18,3 +18,7 @@ Thumbs.db
 
 # Local dev server access log
 server.log
+
+# Deploy output and Wrangler scratch
+dist/
+.wrangler/
