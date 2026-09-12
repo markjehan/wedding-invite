@@ -6,7 +6,35 @@ body{background:var(--paper)}
 .welcome-content{padding:25px 12px}
 .welcome h1{font-size:clamp(78px,8vw,108px);line-height:.98;color:#785c32;text-shadow:none}
 
-.masthead{background:#faf6eef7;border-bottom-color:#cab99155}
+/* The header carries no bar of its own. It was a band of solid cream with a hairline under it,
+   sitting across the top of a garden, and it read as a strip laid over the design rather than part
+   of it. Now only the two things that have to stay reachable are drawn, each lifted off the page on
+   its own: ivory that lets the garden through, a hairline of champagne to hold its edge, and a
+   shadow soft enough to read as paper resting on paper rather than a button. The blur is what keeps
+   the crest legible when a magnolia happens to pass behind it. */
+.masthead{background:none;border-bottom:0}
+.monogram,.sound-toggle{
+  pointer-events:auto;
+  /* Lighter than the paper rather than tinted against it, so the lift comes from the disc being
+     nearer the light than the page is. Over the garden the blur does the work; over flat
+     stationery the paper and the disc are only a few percent apart, so the hairline and the
+     shadow are what actually hold the edge - at the first pass they were too faint and both
+     controls disappeared for most of the scroll. */
+  background:#fffdf8e0;
+  -webkit-backdrop-filter:blur(10px) saturate(1.08);
+  backdrop-filter:blur(10px) saturate(1.08);
+  border:1px solid #c3ae7f7d;
+  box-shadow:0 3px 11px #6b53302b,0 1px 2px #6b53301f,inset 0 1px 0 #fffffacc;
+  border-radius:999px;
+  transition:background .15s ease,box-shadow .15s ease,border-color .15s ease,color .15s ease;
+}
+.monogram{padding:6px 16px}
+.monogram:hover,.sound-toggle:hover{background:#fffefb;border-color:#b99f6aa8;box-shadow:0 6px 18px #6b533036,0 1px 2px #6b53301f,inset 0 1px 0 #fffffacc}
+.sound-toggle:hover{color:var(--action)}
+/* The ring now leaves the disc instead of pulsing inside it, so the beat reads as a halo around
+   the control rather than as something rattling within it. */
+.sound-toggle::after{width:44px;height:44px;border-color:var(--gold)}
+@keyframes sound-pulse{0%{opacity:.32;scale:.86}70%,100%{opacity:0;scale:1.5}}
 .section{isolation:isolate;max-width:none;padding:110px max(9%,24px)}
 .section::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:url('assets/magnolia-suite/paper.webp') center/100% 100% no-repeat;opacity:.76}
 .section:not(.invitation)::after{width:100px;left:calc(50% - 50px);background:var(--line)}
@@ -111,7 +139,7 @@ blockquote{padding:30px 12px 0;font-size:32px;color:var(--action)}
 .invitation::before{-webkit-mask-image:linear-gradient(to bottom,transparent,#000 240px);mask-image:linear-gradient(to bottom,transparent,#000 240px)}
 
 /* ---------- Scroll choreography ---------- */
-.scroll-progress{position:absolute;left:0;bottom:-1px;width:100%;height:2px;transform-origin:left center;scale:0 1;pointer-events:none;background:linear-gradient(90deg,#dcc9a0,var(--gold))}
+.scroll-progress{position:absolute;left:0;top:0;width:100%;height:2px;transform-origin:left center;scale:0 1;pointer-events:none;background:linear-gradient(90deg,#dcc9a0,var(--gold));box-shadow:0 1px 3px #6b533024}
 /* Every duration here is a whole number of beats of the score (0.6s at 100bpm): opacity resolves in
    one beat, movement in a beat and a half, and no cascade of staggered children runs longer than a
    single beat. Reveals therefore land on the pulse of whatever is playing underneath them without
