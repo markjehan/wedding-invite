@@ -1,0 +1,14 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Naveen and Dulanjani//Wedding//EN
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:naveen-dulanjani-20261204@invitation.local
+DTSTAMP:20260912T000000Z
+DTSTART;VALUE=DATE:20261204
+DTEND;VALUE=DATE:20261205
+SUMMARY:Naveen & Dulanjani Wedding
+LOCATION:Avenra Gardens\, Negombo\, Sri Lanka
+DESCRIPTION:Ceremony time to be confirmed.
+END:VEVENT
+END:VCALENDAR

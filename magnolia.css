@@ -1,0 +1,230 @@
+/* One magnolia stationery suite, from the opening portal to the reply. */
+:root{--paper:#f7f2e8;--light:#fffaf2;--line:#c8b58f;--gold:#ae8d55;--ink:#57452f;--action:#785c32;--shadow:0 18px 50px #67513618}
+body{background:var(--paper)}
+.welcome::before{background:linear-gradient(90deg,transparent,#fffaf02b 30%,#fffaf02b 70%,transparent)}
+.welcome-frame{display:none}
+.welcome-content{padding:25px 12px}
+.welcome h1{font-size:clamp(78px,8vw,108px);line-height:.98;color:#785c32;text-shadow:none}
+.hero-date{letter-spacing:.08em}
+.masthead{background:#faf6eef7;border-bottom-color:#cab99155}
+.section{isolation:isolate;max-width:none;padding:110px max(9%,24px)}
+.section::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:url('assets/magnolia-suite/paper.webp') center/100% 100% no-repeat;opacity:.76}
+.section:not(.invitation)::after{width:100px;left:calc(50% - 50px);background:var(--line)}
+.section>h2{max-width:780px}
+.section>p:not(.disclosure){max-width:580px}
+.invitation{padding-top:90px}
+.photo-invitation{max-width:1050px;margin-inline:auto;padding-bottom:30px}
+.couple-background{border-radius:48% 48% 0 0}
+.photo-invitation::after{background:linear-gradient(to bottom,transparent 50%,#f7f2e8 98%)}
+.invitation-letter{position:relative;background:linear-gradient(#fffaf2cf,#fffaf2cf),url('assets/magnolia-suite/paper.webp') center/100% 100%;padding:52px 60px;outline-offset:-14px}
+.memory-gallery{gap:26px;max-width:900px;margin-top:50px}
+.memory-gallery figure{padding:8px;background:#fffaf2;outline-color:#bba579;box-shadow:0 12px 30px #67513615}
+.memory-gallery figure:nth-child(1){transform:rotate(-3deg)}
+.memory-gallery figure:nth-child(3){transform:rotate(3deg)}
+blockquote{padding:30px 12px 0;font-size:32px;color:var(--action)}
+.scratch-card{height:280px;max-width:440px;background:var(--light) url('assets/magnolia-suite/paper.webp') center/100% 100%;border-radius:4px}
+.date-reveal{margin:10px;height:calc(100% - 20px)}
+.scratch-label span{font-family:Calligraphy,cursive;font-size:60px}
+.scratch-label p{font-size:13px}
+.calendar-actions{margin-top:30px}
+.button{border-radius:2px;font-size:13px;min-height:52px}
+.countdown{max-width:560px;padding-block:20px;border-block:1px solid #c8b58f88}
+.countdown b{font-size:56px}
+.countdown>div+div{border-left:0}
+.countdown span{font-size:12px}
+.timeline{max-width:720px;margin-top:55px}
+.timeline li{padding-bottom:42px}
+.timeline h3{font-size:31px}
+.timeline p{font-size:14px}
+.timeline-mark{background:var(--paper);border:1px solid var(--gold);width:11px;height:11px;left:202px}
+.architecture{max-width:1000px;margin-top:45px}
+.venue address{font-size:25px}
+.reply-card{background:linear-gradient(#fffaf2d9,#fffaf2d9),url('assets/magnolia-suite/paper.webp') center/100% 100%;max-width:600px;padding:48px 58px;outline-offset:-14px}
+.reply-card h3{font-size:49px}
+.reply-card label,.reply-card legend{font-size:13px}
+.closing{position:relative;isolation:isolate;padding:90px 24px 65px;background:url('assets/magnolia-suite/garden.webp') center 68%/cover}
+.closing::before{content:'';position:absolute;inset:0;background:#fffaf2b8;z-index:-1}
+.closing>p:not(.closing-names){font-size:13px}
+@media(min-width:1000px){.date-section,.agenda,.venue,.response{padding-inline:18%}.section::before{background-size:100% auto;background-repeat:repeat-y}.response::before{opacity:.85}}
+@media(max-width:700px){
+ .welcome{background-position:center;min-height:100svh;padding:140px 26px 100px}
+ .welcome-content{padding:0}
+ .welcome h1{font-size:clamp(65px,18vw,88px)}
+ .welcome-wording{font-size:18px;margin-bottom:25px}
+ .hero-date{font-size:22px}
+ .section{padding:78px 26px}
+ .section::before{opacity:.48;background-size:100% 100%}
+ .section>h2{font-size:44px}
+ .photo-invitation{margin:0 -8px;padding:295px 10px 25px}
+ .invitation-letter{padding:38px 26px;background:linear-gradient(#fffaf2e6,#fffaf2e6),url('assets/magnolia-suite/paper.webp') center/100% 100%}
+ .invitation-letter h2{font-size:40px}
+ .invitation-letter .couple-names{font-size:32px}
+ .memory-gallery{gap:13px;margin-top:38px}
+ .memory-gallery figure{padding:4px;outline-offset:2px}
+ .memory-gallery img{height:160px}.memory-gallery figure:nth-child(2) img{height:210px}
+ blockquote{font-size:26px;padding:8px 0 0}
+ .scratch-card{height:260px;margin-top:32px}
+ .countdown b{font-size:39px}.countdown span{font-size:11px}
+ .timeline{margin-top:38px;padding-left:7px}
+ .timeline li{padding-bottom:32px;padding-left:28px}
+ .timeline-mark{left:-1px}
+ .timeline h3{font-size:27px}.timeline p{font-size:14px}
+ .architecture{margin-top:32px}
+ .reply-card{padding:38px 30px;background:linear-gradient(#fffaf2e8,#fffaf2e8),url('assets/magnolia-suite/paper.webp') center/100% 100%}
+ .reply-card h3{font-size:44px}
+ .closing{padding-block:112px 50px}
+ .closing::before{background-image:linear-gradient(#fffaf2bd,#fffaf2bd),url('assets/magnolia-suite/portrait.webp');-webkit-mask-image:linear-gradient(to bottom,transparent,#000 170px);mask-image:linear-gradient(to bottom,transparent,#000 170px)}
+ .closing-names{font-size:38px}
+}
+@media(prefers-reduced-motion:reduce){.memory-gallery figure{transform:none}}
+
+/* ---------- Typography: Pinyon Script carries the names, Julius Sans One the figures ---------- */
+@font-face{font-family:Script;src:url('assets/fonts/pinyon-script.ttf') format('truetype');font-display:swap}
+@font-face{font-family:Figures;src:url('assets/fonts/julius-sans-one.ttf') format('truetype');font-display:swap}
+/* The script is reserved for the two names; everything else keeps the established faces. */
+.welcome h1,.invitation-letter .couple-names{font-family:Script,cursive}
+.welcome h1{font-size:clamp(72px,7.6vw,104px);line-height:1.02}
+.welcome h1 span{font-family:Italiana,serif;font-size:.26em;line-height:1.15;color:var(--gold)}
+.hero-date,.date-reveal b,.date-reveal time>span,.countdown b{font-family:Figures,serif}
+.hero-date{font-size:27px;letter-spacing:.1em}
+.countdown b{font-size:60px}
+
+/* ---------- The crest, at one size in the masthead and another above each section ---------- */
+.flourish{width:122px;height:82px;margin-bottom:26px;overflow:visible;stroke-width:1}
+.welcome .flourish{margin:38px auto 30px}
+.invitation-letter .flourish{margin-bottom:20px}
+.crest-mark{width:52px;height:35px;stroke-width:1.3;color:var(--action);display:block}
+.monogram{display:flex;align-items:center}
+/* Dash properties inherit through the <use> shadow tree, so the crest draws itself in. */
+.motion-ready .flourish{stroke-dasharray:200;stroke-dashoffset:200;transition:stroke-dashoffset 1.8s cubic-bezier(.16,1,.3,1) calc(var(--d,0s) + .15s)}
+.motion-ready .flourish.shown,.motion-ready .shown .flourish,.motion-ready .welcome .flourish{stroke-dashoffset:0}
+
+/* ---------- The arrival dissolves into the stationery instead of cutting ---------- */
+/* The arrival needs air: the names, the crest and the date each get their own breathing room. */
+.welcome{padding-bottom:120px}
+.welcome-wording{margin-bottom:40px;letter-spacing:.04em}
+.welcome h1{line-height:1.14}
+.welcome h1 span{margin:.1em 0}
+.hero-place{margin-top:20px}
+.scroll-cue{margin-top:58px}
+.welcome::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:min(34vh,235px);z-index:-1;pointer-events:none;background:linear-gradient(to bottom,#f7f2e800,#f8f3ea9e 46%,var(--paper))}
+.invitation::before{-webkit-mask-image:linear-gradient(to bottom,transparent,#000 240px);mask-image:linear-gradient(to bottom,transparent,#000 240px)}
+
+/* ---------- Scroll choreography ---------- */
+.scroll-progress{position:absolute;left:0;bottom:-1px;width:100%;height:2px;transform-origin:left center;scale:0 1;pointer-events:none;background:linear-gradient(90deg,#dcc9a0,var(--gold))}
+/* Every duration here is a whole number of beats of the score (0.6s at 100bpm): opacity resolves in
+   one beat, movement in a beat and a half, and no cascade of staggered children runs longer than a
+   single beat. Reveals therefore land on the pulse of whatever is playing underneath them without
+   needing to be driven from script. Nothing is still arriving once you have scrolled past it —
+   anything slower reads as broken rather than graceful. */
+.motion-ready [data-reveal]{opacity:0;transition:opacity .6s cubic-bezier(.16,1,.3,1) var(--d,0s),translate .9s cubic-bezier(.16,1,.3,1) var(--d,0s),scale .9s cubic-bezier(.16,1,.3,1) var(--d,0s),transform .9s cubic-bezier(.16,1,.3,1) var(--d,0s),filter .6s ease-out var(--d,0s)}
+/* --dir is +1 when an element will return from below and -1 when it will return from above, so a
+   reveal always travels with the scroll instead of fighting it on the way back up. */
+.motion-ready [data-reveal=up]{translate:0 calc(22px * var(--dir,1));filter:blur(3px)}
+.motion-ready [data-reveal=scale]{scale:.962}
+/* Cards tilt up out of the page — the one place a real 3D transform earns its keep. */
+.motion-ready [data-reveal=lift]{transform:perspective(1100px) rotateX(calc(11deg * var(--dir,1))) translateY(calc(34px * var(--dir,1)));transform-origin:50% calc(50% + 50% * var(--dir,1))}
+.motion-ready [data-reveal].shown{opacity:1;translate:none;scale:none;transform:none;filter:none}
+
+/* ---------- The programme lights up the act you are reading ---------- */
+.timeline h3{transition:color .6s ease}
+.timeline li>time{transition:opacity .6s ease,color .6s ease}
+.timeline li>div{padding:12px 18px;margin:-12px -18px;border-radius:3px;transition:opacity .6s ease,background .6s ease,translate .6s cubic-bezier(.16,1,.3,1)}
+.motion-ready .timeline li:not(.is-active)>div,.motion-ready .timeline li:not(.is-active)>time{opacity:.62}
+.timeline li.is-active>div{background:#fffaf2a8;translate:7px 0}
+.timeline li.is-active h3{color:var(--action)}
+.timeline li.is-active>time{color:var(--gold)}
+.timeline-mark{transition:scale .6s cubic-bezier(.16,1,.3,1),background .6s ease,box-shadow .6s ease}
+.timeline li.is-active .timeline-mark{scale:1.5;background:var(--action);border-color:var(--action);box-shadow:0 0 0 6px #ac8b511f}
+.timeline li::after{content:'';position:absolute;left:207px;top:14px;bottom:0;width:1px;background:var(--gold);transform-origin:top center;scale:1 0;transition:scale .9s cubic-bezier(.4,0,.2,1)}
+.timeline li:last-child::after{display:none}
+.timeline li.is-active::after,.timeline li.is-passed::after{scale:1 1}
+
+/* ---------- The letter: pressed stationery, names as the centrepiece ---------- */
+.invitation-letter{max-width:628px;padding:70px 62px 86px;box-shadow:0 30px 80px #5b45241f,0 1px 0 #fffdf9 inset}
+.invitation-letter::before{content:'';position:absolute;inset:22px;border:1px solid #c8b58f59;pointer-events:none}
+.letter-label{text-transform:uppercase;letter-spacing:.28em;font-size:10px;color:var(--muted)}
+/* The card carries one script voice — the names. The sentiment line steps back into Italiana. */
+.invitation-letter h2{font:400 clamp(27px,3.5vw,35px)/1.4 Italiana,serif;letter-spacing:.06em;color:#6b563a;margin:22px 0 10px}
+.invitation-letter>p:not(.letter-label):not(.couple-names):not(.signature):not(.letter-place){font-size:13px;color:#6b563a}
+.invitation-letter .couple-names{font:400 clamp(48px,6.6vw,68px)/1.24 Script,cursive;margin:38px 0 34px;color:var(--action)}
+.couple-names span{display:block;font-family:Italiana,serif;font-size:.3em;line-height:1;margin:.2em 0 .16em;color:var(--gold)}
+.letter-place{position:relative;font:14px/1.6 Italiana,serif;letter-spacing:.12em;text-transform:uppercase;color:var(--action);padding:22px 0;margin:26px auto 20px;max-width:340px}
+.letter-place span{margin-inline:6px;color:var(--gold)}
+.letter-place::before,.letter-place::after{content:'';position:absolute;left:50%;translate:-50% 0;width:180px;height:1px;background:linear-gradient(90deg,transparent,var(--line) 22%,var(--gold) 50%,var(--line) 78%,transparent)}
+.letter-place::before{top:0}
+.letter-place::after{bottom:0}
+.invitation-letter .signature{font:24px/1.55 Italiana,serif;color:var(--action)}
+.letter-seal{width:78px;height:78px;margin:30px auto -66px;rotate:-8deg;filter:drop-shadow(0 8px 14px #4b371c33)}
+blockquote{color:var(--gold)}
+.memory-gallery figure{transition:translate .6s cubic-bezier(.16,1,.3,1),box-shadow .6s ease}
+.memory-gallery figure:hover{translate:0 -9px;box-shadow:0 24px 46px #6751361f}
+
+/* ---------- The foil card: an arched, die-cut keepsake rather than a gold slab ---------- */
+.scratch-card{height:360px;max-width:420px;border-radius:50% 50% 6px 6px/34% 34% 6px 6px;box-shadow:0 24px 58px #5b452421}
+/* The revealed face carries the same engraving as the foil, so the card reads as one object
+   before and after scratching rather than a decorated lid over a blank card. */
+.date-reveal{position:relative;margin:12px;height:calc(100% - 24px);border-color:#d8c6a2;border-radius:50% 50% 3px 3px/33% 33% 3px 3px;padding:9% 9% 7%;background:radial-gradient(ellipse at 50% 38%,#fffdf8,#fdf9f0 62%,#f7f1e3)}
+.date-reveal::before{content:'';position:absolute;inset:7px;border:1px solid #cbb68e6b;border-radius:50% 50% 2px 2px/32% 32% 2px 2px;pointer-events:none}
+.reveal-crest{width:62px;height:42px;color:var(--gold);stroke-width:1.4;margin-bottom:10px;opacity:.9}
+.date-reveal>span{color:var(--gold);letter-spacing:.36em;font-size:10px}
+.date-reveal time{font-family:Figures,serif}
+.date-reveal b{font-size:78px;line-height:.98;color:var(--action)}
+.date-reveal time>span{font-size:17px;letter-spacing:.14em;text-transform:uppercase;margin-top:6px;color:var(--action)}
+.date-reveal p{font-size:9px;letter-spacing:.17em;text-transform:uppercase;color:var(--muted);margin-top:12px}
+.send-actions{display:grid;gap:10px;margin:16px 0 12px}
+#prepared>.button.secondary{width:100%}
+.scratch-sheen{position:absolute;inset:0;opacity:0;pointer-events:none;background:linear-gradient(105deg,transparent 38%,#fff6dc8c 47%,#fffefa9e 50%,#fff6dc8c 53%,transparent 62%);background-size:280% 100%;transition:opacity .3s}
+.motion-ready .scratch-sheen{opacity:1;animation:foil-sheen 4.8s cubic-bezier(.55,0,.3,1) infinite}
+@keyframes foil-sheen{0%,22%{background-position:130% 0}62%,100%{background-position:-40% 0}}
+.scratch-label{justify-content:flex-end;padding-bottom:28px}
+.scratch-label p{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:#53401f;margin-top:0;text-shadow:0 1px 0 #fff3d4a8}
+.scratch-card.scratching .scratch-sheen,.scratch-card.revealed .scratch-sheen{opacity:0}
+.motion-ready .scratch-card.revealed .date-reveal{animation:date-bloom 1.8s cubic-bezier(.16,1,.3,1)}
+@keyframes date-bloom{0%{scale:.94;box-shadow:0 0 0 0 #d9bc7a00 inset}35%{box-shadow:0 0 70px 10px #e6c88d5c inset}100%{scale:1;box-shadow:0 0 0 0 #d9bc7a00 inset}}
+
+/* ---------- The closing: the garden returns gradually, not on a hard edge ---------- */
+/* The imagery moves onto the pseudo-element so it can be masked; masking .closing itself would
+   fade the rings and the names with it. */
+.closing{background:var(--paper);padding-top:132px}
+.closing::before{background-image:linear-gradient(#fffaf2bd,#fffaf2bd),url('assets/magnolia-suite/garden.webp');background-size:cover,cover;background-position:center,center 68%;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 240px);mask-image:linear-gradient(to bottom,transparent,#000 240px)}
+
+/* ---------- The closing: two linked bands, names quiet beneath ---------- */
+.closing-rings{width:104px;height:62px;color:var(--gold);stroke-width:1.1;display:block;margin:0 auto 24px}
+.motion-ready .closing-rings{stroke-dasharray:150;stroke-dashoffset:150;transition:stroke-dashoffset 1.8s cubic-bezier(.16,1,.3,1) .15s}
+.motion-ready .closing-rings.shown{stroke-dashoffset:0}
+.closing-names{font-size:19px;letter-spacing:.2em;text-transform:uppercase;font-family:Italiana,serif;color:var(--action)}
+
+/* ---------- Ambient drift ---------- */
+.petal-drift{position:fixed;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;opacity:0;transition:opacity 1.8s ease}
+.petal-drift.lit{opacity:1}
+
+@media(max-width:700px){
+ /* The script's swashes run past the advance width, so phones need their own setting. */
+ .welcome h1{font-size:clamp(42px,15.5vw,72px)}
+ .hero-date{font-size:23px}
+ .invitation-letter{padding:44px 26px 62px}
+ .invitation-letter .couple-names{font-size:clamp(38px,11vw,50px);margin:22px 0 20px}
+ .letter-place{font-size:12px;padding:17px 0;margin:20px auto 16px}
+ .letter-place::before,.letter-place::after{width:140px}
+ .invitation-letter .signature{font-size:21px}
+ .letter-seal{width:64px;height:64px;margin:24px auto -52px}
+ .scratch-card{height:346px}
+ .date-reveal b{font-size:68px}
+ .date-reveal time>span{font-size:15px}
+ .reveal-crest{width:54px;height:36px;margin-bottom:7px}
+ .countdown b{font-size:44px}
+}
+
+@media(max-width:700px){
+ .flourish{width:104px;height:70px;margin-bottom:20px}
+ .welcome .flourish{margin:30px auto 24px}
+ .crest-mark{width:62px;height:42px}
+ .welcome{padding-bottom:95px}
+ .welcome::after{height:min(26vh,170px)}
+ .invitation::before{-webkit-mask-image:linear-gradient(to bottom,transparent,#000 150px);mask-image:linear-gradient(to bottom,transparent,#000 150px)}
+ .invitation-letter::before{inset:13px}
+ .timeline li::after{left:4px}
+ .timeline li>div{padding:9px 12px;margin:-9px -12px}
+ .timeline li.is-active>div{translate:4px 0}
+}

@@ -13,10 +13,12 @@ for script in ['avenra-strokes.js', 'venue-drawing.js']:
     html = html.replace(f'<script src="{script}" defer></script>', '<script>' + content + '</script>')
 html = re.sub(r'<link rel="preload"[^>]+>', '', html)
 html = html.replace('<link rel="stylesheet" href="invitation.css">', '<style>' + css + '</style>')
+html = html.replace('<link rel="stylesheet" href="magnolia.css">', '<style>' + (root / 'magnolia.css').read_text(encoding='utf-8') + '</style>')
 html = html.replace('<script src="invitation.js" defer></script>', '<script>' + js + '</script>')
-paths = set(re.findall(r'assets/[\w./-]+\.(?:png|jpg|webp|ttf)', html))
+FONT_MIME = {'.ttf': 'font/ttf', '.otf': 'font/otf', '.mp3': 'audio/mpeg'}
+paths = set(re.findall(r'assets/[\w./-]+\.(?:png|jpg|webp|ttf|otf|mp3)', html))
 for path in sorted(paths, key=len, reverse=True):
-    mime = mimetypes.guess_type(path)[0] or 'application/octet-stream'
+    mime = FONT_MIME.get(Path(path).suffix) or mimetypes.guess_type(path)[0] or 'application/octet-stream'
     value = base64.b64encode((root / path).read_bytes()).decode('ascii')
     html = html.replace(path, f'data:{mime};base64,{value}')
 output = root / 'invitation-bundled.html'
