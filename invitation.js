@@ -160,6 +160,8 @@
   const intro=$('#door-intro'),openButton=$('#open-doors');
   const outside=[...document.body.children].filter(el=>el!==intro&&!['SCRIPT','STYLE','NOSCRIPT'].includes(el.tagName));
   let introTimer,opening=false,returnHash=location.hash;
+  // Called on the paths that skip the entrance, and at the end of the entrance itself. The document
+  // underneath has been painted and locked since the first frame; this is what unlocks it.
   function finishIntro(){clearTimeout(introTimer);intro.hidden=true;opening=false;intro.classList.remove('opening','pressed');document.body.classList.remove('intro-locked','intro-opening');outside.forEach(el=>el.inert=false);window.raisePetals?.();const target=document.getElementById(returnHash.slice(1))||$('#welcome');target.scrollIntoView({behavior:'instant',block:'start'});const heading=target.querySelector('h1,h2')||$('#welcome-title');heading.setAttribute('tabindex','-1');heading.focus({preventScroll:true});}
   // Decode the entrance art up front. The swing waits on this, so it can never start part-way
   // through a decode — that was the stall between pressing the seal and the doors moving.
@@ -197,6 +199,7 @@
       }));
     });
   }
+  // Replay puts the entrance back; on first load the markup already has it, so nothing here moves.
   function showIntro(){clearTimeout(introTimer);Music.halt();document.documentElement.style.setProperty('--sync','0s');opening=false;intro.classList.remove('opening','pressed');document.body.classList.remove('intro-opening');window.scrollTo({top:0,behavior:'instant'});intro.hidden=false;outside.forEach(el=>el.inert=true);document.body.classList.add('intro-locked');openButton.focus({preventScroll:true});}
   // Pressing the seal opens it; anywhere on the doors works too, and Escape skips straight through.
   openButton.addEventListener('click',()=>openIntro());
@@ -308,16 +311,6 @@
     document.fonts?.ready.then(()=>{if(!revealed&&!moved)paintFoil(true)});
     let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(paintFoil,180)});
   }else reveal();
-  const navLinks=[...document.querySelectorAll('.masthead nav a')];
-  if('IntersectionObserver' in window){
-    const navObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{
-      if(entry.isIntersecting)navLinks.forEach(link=>{
-        if(link.hash==='#'+entry.target.id)link.setAttribute('aria-current','location');
-        else link.removeAttribute('aria-current');
-      });
-    }),{rootMargin:'-15% 0px -65% 0px'});
-    document.querySelectorAll('main>section').forEach(section=>navObserver.observe(section));
-  }
   let venueStarted=false;
   function startVenue(){if(venueStarted)return;venueStarted=true;window.playVenueDrawing?.();}
   if('IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){startVenue();observer.disconnect();}},{threshold:.2});observer.observe($('#architecture'));}else startVenue();

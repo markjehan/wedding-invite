@@ -21,9 +21,9 @@
   <link rel="stylesheet" href="magnolia.css">
 
 </head>
-<body>
+<body class="intro-locked">
 
-  <div class="door-intro" id="door-intro" role="dialog" aria-modal="true" aria-label="Wedding invitation entrance" hidden>
+  <div class="door-intro" id="door-intro" role="dialog" aria-modal="true" aria-label="Wedding invitation entrance">
     <div class="door-camera" aria-hidden="true">
       <div class="door-room"></div>
       <div class="door-leaf leaf-left"><span class="seal-half"></span></div>
@@ -80,13 +80,6 @@
   
   <header class="masthead">
     <a class="monogram" href="#welcome" aria-label="Back to welcome"><svg class="crest-mark" aria-hidden="true"><use href="#crest"/></svg></a>
-    <nav aria-label="Invitation navigation">
-      <a href="#invitation">Invitation</a>
-      <a href="#date">The date</a>
-      <a href="#agenda">Programme</a>
-      <a href="#venue">Venue</a>
-      <a href="#rsvp-section">RSVP</a>
-    </nav>
     <!-- The score starts with the doors, so the control is offered from the first screen onward.
          aria-pressed carries the state; the label changes with it for screen readers. -->
     <button class="sound-toggle" id="sound-toggle" type="button" aria-pressed="false" hidden>
@@ -102,8 +95,6 @@
         <p class="welcome-wording">Welcome to the wedding of</p>
         <h1 id="welcome-title">Naveen<span>&</span>Dulanjani</h1>
         <svg class="flourish" aria-hidden="true"><use href="#crest"/></svg>
-        <p class="hero-date">04 <span>·</span> 12 <span>·</span> 2026</p>
-        <p class="hero-place">Avenra Gardens, Negombo</p>
         <a class="scroll-cue" href="#invitation">Our invitation to you<span aria-hidden="true"></span></a>
       </div>
     </section>
@@ -118,7 +109,6 @@
           <p>We invite you to share in our joy<br>as we begin a beautiful new chapter.</p>
           <p class="couple-names">Naveen <span>&</span> Dulanjani</p>
           <p>Request the pleasure of your company<br>at the celebration of our marriage.</p>
-          <p class="letter-place">Avenra Gardens <span aria-hidden="true">·</span> Negombo</p>
           <p class="signature">Your presence would mean the world to us.</p>
           <img class="letter-seal" src="assets/materials/brass-seal-512.png" alt="" width="512" height="512" loading="lazy">
         </article>
@@ -286,7 +276,8 @@
   </footer>
   
   <noscript>
-    <style>#scratch,.scratch-label,#reveal-date,.drawing-actions,#rsvp button{display:none}</style>
+    <style>#scratch,.scratch-label,#reveal-date,.drawing-actions,#rsvp button{display:none}
+           #door-intro{display:none}body.intro-locked{overflow:auto}</style>
     <p class="noscript-note">Interactive features need JavaScript. The date, invitation and directions are still available. RSVP delivery is not yet connected.</p>
   </noscript>
 

@@ -35,10 +35,19 @@ for suffix, kind in {
 
 class ShareHandler(http.server.SimpleHTTPRequestHandler):
     def end_headers(self):
-        # The invitation carries real names, a date and a venue. A share link is for
-        # the people it was sent to, not for search engines.
+        # The invitation carries real names and a date. A share link is for the people
+        # it was sent to, not for search engines.
         self.send_header('X-Robots-Tag', 'noindex, nofollow')
-        self.send_header('Cache-Control', 'public, max-age=300')
+        # The markup and the code are still being changed while the link is live, so they
+        # must never be held in a viewer's browser - someone asked to look again should
+        # see the current version, not the one they happened to load first. The assets are
+        # the opposite case: they are large, they rarely change, and re-fetching ten
+        # megabytes on every visit is what would actually make the link feel slow.
+        path = self.path.split('?')[0]
+        if path.startswith('/assets/'):
+            self.send_header('Cache-Control', 'public, max-age=86400')
+        else:
+            self.send_header('Cache-Control', 'no-store, must-revalidate')
         super().end_headers()
 
     def log_message(self, fmt, *args):  # quieter than the default one-line-per-asset

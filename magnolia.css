@@ -5,7 +5,7 @@ body{background:var(--paper)}
 .welcome-frame{display:none}
 .welcome-content{padding:25px 12px}
 .welcome h1{font-size:clamp(78px,8vw,108px);line-height:.98;color:#785c32;text-shadow:none}
-.hero-date{letter-spacing:.08em}
+
 .masthead{background:#faf6eef7;border-bottom-color:#cab99155}
 .section{isolation:isolate;max-width:none;padding:110px max(9%,24px)}
 .section::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:url('assets/magnolia-suite/paper.webp') center/100% 100% no-repeat;opacity:.76}
@@ -51,7 +51,7 @@ blockquote{padding:30px 12px 0;font-size:32px;color:var(--action)}
  .welcome-content{padding:0}
  .welcome h1{font-size:clamp(65px,18vw,88px)}
  .welcome-wording{font-size:18px;margin-bottom:25px}
- .hero-date{font-size:22px}
+
  .section{padding:78px 26px}
  .section::before{opacity:.48;background-size:100% 100%}
  .section>h2{font-size:44px}
@@ -85,13 +85,13 @@ blockquote{padding:30px 12px 0;font-size:32px;color:var(--action)}
 .welcome h1,.invitation-letter .couple-names{font-family:Script,cursive}
 .welcome h1{font-size:clamp(72px,7.6vw,104px);line-height:1.02}
 .welcome h1 span{font-family:Italiana,serif;font-size:.26em;line-height:1.15;color:var(--gold)}
-.hero-date,.date-reveal b,.date-reveal time>span,.countdown b{font-family:Figures,serif}
-.hero-date{font-size:27px;letter-spacing:.1em}
+.date-reveal b,.date-reveal time>span,.countdown b{font-family:Figures,serif}
+
 .countdown b{font-size:60px}
 
 /* ---------- The crest, at one size in the masthead and another above each section ---------- */
 .flourish{width:122px;height:82px;margin-bottom:26px;overflow:visible;stroke-width:1}
-.welcome .flourish{margin:38px auto 30px}
+.welcome .flourish{width:178px;height:120px;stroke-width:.85;margin:34px auto 0}
 .invitation-letter .flourish{margin-bottom:20px}
 .crest-mark{width:52px;height:35px;stroke-width:1.3;color:var(--action);display:block}
 .monogram{display:flex;align-items:center}
@@ -105,8 +105,8 @@ blockquote{padding:30px 12px 0;font-size:32px;color:var(--action)}
 .welcome-wording{margin-bottom:40px;letter-spacing:.04em}
 .welcome h1{line-height:1.14}
 .welcome h1 span{margin:.1em 0}
-.hero-place{margin-top:20px}
-.scroll-cue{margin-top:58px}
+
+.scroll-cue{margin-top:62px}
 .welcome::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:min(34vh,235px);z-index:-1;pointer-events:none;background:linear-gradient(to bottom,#f7f2e800,#f8f3ea9e 46%,var(--paper))}
 .invitation::before{-webkit-mask-image:linear-gradient(to bottom,transparent,#000 240px);mask-image:linear-gradient(to bottom,transparent,#000 240px)}
 
@@ -202,7 +202,7 @@ blockquote{color:var(--gold)}
 @media(max-width:700px){
  /* The script's swashes run past the advance width, so phones need their own setting. */
  .welcome h1{font-size:clamp(42px,15.5vw,72px)}
- .hero-date{font-size:23px}
+
  .invitation-letter{padding:44px 26px 62px}
  .invitation-letter .couple-names{font-size:clamp(38px,11vw,50px);margin:22px 0 20px}
  .letter-place{font-size:12px;padding:17px 0;margin:20px auto 16px}
@@ -218,7 +218,7 @@ blockquote{color:var(--gold)}
 
 @media(max-width:700px){
  .flourish{width:104px;height:70px;margin-bottom:20px}
- .welcome .flourish{margin:30px auto 24px}
+ .welcome .flourish{width:146px;height:99px;margin:26px auto 0}
  .crest-mark{width:62px;height:42px}
  .welcome{padding-bottom:95px}
  .welcome::after{height:min(26vh,170px)}
