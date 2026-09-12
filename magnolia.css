@@ -8,12 +8,12 @@ body{background:var(--paper)}
 
 /* The header carries no bar of its own. It was a band of solid cream with a hairline under it,
    sitting across the top of a garden, and it read as a strip laid over the design rather than part
-   of it. Now only the two things that have to stay reachable are drawn, each lifted off the page on
-   its own: ivory that lets the garden through, a hairline of champagne to hold its edge, and a
-   shadow soft enough to read as paper resting on paper rather than a button. The blur is what keeps
-   the crest legible when a magnolia happens to pass behind it. */
+   of it. What is left is the one control that has to stay reachable, lifted off the page: ivory
+   that lets the garden through, a hairline of champagne to hold its edge, and a shadow soft enough
+   to read as paper resting on paper rather than a button. The blur is what keeps the icon legible
+   when a magnolia happens to pass behind it. */
 .masthead{background:none;border-bottom:0}
-.monogram,.sound-toggle{
+.sound-toggle{
   pointer-events:auto;
   /* Lighter than the paper rather than tinted against it, so the lift comes from the disc being
      nearer the light than the page is. Over the garden the blur does the work; over flat
@@ -28,8 +28,7 @@ body{background:var(--paper)}
   border-radius:999px;
   transition:background .15s ease,box-shadow .15s ease,border-color .15s ease,color .15s ease;
 }
-.monogram{padding:6px 16px}
-.monogram:hover,.sound-toggle:hover{background:#fffefb;border-color:#b99f6aa8;box-shadow:0 6px 18px #6b533036,0 1px 2px #6b53301f,inset 0 1px 0 #fffffacc}
+.sound-toggle:hover{background:#fffefb;border-color:#b99f6aa8;box-shadow:0 6px 18px #6b533036,0 1px 2px #6b53301f,inset 0 1px 0 #fffffacc}
 .sound-toggle:hover{color:var(--action)}
 /* The ring now leaves the disc instead of pulsing inside it, so the beat reads as a halo around
    the control rather than as something rattling within it. */
@@ -121,8 +120,6 @@ blockquote{padding:30px 12px 0;font-size:32px;color:var(--action)}
 .flourish{width:122px;height:82px;margin-bottom:26px;overflow:visible;stroke-width:1}
 .welcome .flourish{width:178px;height:120px;stroke-width:.85;margin:34px auto 0}
 .invitation-letter .flourish{margin-bottom:20px}
-.crest-mark{width:52px;height:35px;stroke-width:1.3;color:var(--action);display:block}
-.monogram{display:flex;align-items:center}
 /* Dash properties inherit through the <use> shadow tree, so the crest draws itself in. */
 .motion-ready .flourish{stroke-dasharray:200;stroke-dashoffset:200;transition:stroke-dashoffset 1.8s cubic-bezier(.16,1,.3,1) calc(var(--d,0s) + .15s)}
 .motion-ready .flourish.shown,.motion-ready .shown .flourish,.motion-ready .welcome .flourish{stroke-dashoffset:0}
@@ -247,7 +244,7 @@ blockquote{color:var(--gold)}
 @media(max-width:700px){
  .flourish{width:104px;height:70px;margin-bottom:20px}
  .welcome .flourish{width:146px;height:99px;margin:26px auto 0}
- .crest-mark{width:62px;height:42px}
+
  .welcome{padding-bottom:95px}
  .welcome::after{height:min(26vh,170px)}
  .invitation::before{-webkit-mask-image:linear-gradient(to bottom,transparent,#000 150px);mask-image:linear-gradient(to bottom,transparent,#000 150px)}
