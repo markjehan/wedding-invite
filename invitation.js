@@ -2,6 +2,12 @@
   'use strict';
   const $ = s => document.querySelector(s);
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  // Motion is opt-in twice over: the guest has not asked for less of it, and the engine has the
+  // properties the choreography is written in. It is settled here, before the entrance runs,
+  // because the arrival's opening states hang off this class and one of the paths below hides
+  // the doors synchronously - a class added after that point would restart the figure mid-step.
+  const canMove = !reduced.matches && CSS.supports('translate','0 1px');
+  if(canMove)document.documentElement.classList.add('motion-ready');
   // ---------- The score ----------
   // One recording carries the whole invitation, and every duration in it is cut from the same grid.
   // The file is trimmed to its own first downbeat, so t=0 is beat one. At 100bpm a beat is 0.6s and
@@ -156,13 +162,58 @@
   window.musicPosition=()=>Music.position();
   window.untilNextBeat=untilNextBeat;
 
+  // How far into the entrance the welcome begins to speak. The camera is still moving at this
+  // point, so the first line surfaces through the dissolve rather than waiting behind it.
+  const ARRIVE_LEAD=TEMPO.beat*6;
+  // The figure plays once. Whichever path gets the guest here sets it going -- the doors hand it
+  // their own remaining time as a lead, everything else starts it from the top -- and the guard
+  // keeps the second caller from re-cueing a figure that is already part-way through.
+  function beginArrival(lead){
+    if(document.body.classList.contains('arrived'))return;
+    document.documentElement.style.setProperty('--arrive',Math.max(0,lead)+'s');
+    // The mark opens alone at the middle of the screen and then travels down to its place beneath
+    // the names, so the figure needs to know how far that is. It is measured rather than guessed
+    // because the distance is most of the height of two lines of script, which is a different
+    // number on every viewport. This has to run before `arrived` lands: the lifted, enlarged state
+    // lives only inside the keyframes, so right now the mark is still sitting untransformed where
+    // it belongs and its box can be read honestly.
+    const crest=$('.welcome-crest'),content=$('.welcome-content'),screenful=$('.welcome');
+    if(crest&&content&&screenful){
+      const stage=screenful.getBoundingClientRect(),mark=crest.getBoundingClientRect();
+      // Two terms. The first centres the mark on the screen it opens alone on. The second lifts it
+      // a little further, because a single object placed at the exact middle of a tall screen reads
+      // as slightly low; the optical centre sits above the geometric one.
+      const lift=(stage.top+stage.height/2)-(mark.top+mark.height/2)-innerHeight*.035;
+      content.style.setProperty('--crest-lift',lift.toFixed(1)+'px');
+    }
+    document.body.classList.add('arrived');
+  }
+  // The closing signs off with the same mark the arrival opens on, and it draws itself down there
+  // too. It is cloned from the hero rather than written out a second time, so the two can never
+  // disagree about what the mark is. Every id inside has to be made unique on the copy: both marks
+  // would otherwise share one set of ink fronts, and the hero's would have finished its sweep long
+  // before the closing came into view, leaving the footer's letters already written.
+  (() => {
+    const hero = $('.welcome-crest'), closing = $('.closing');
+    if (!hero || !closing) return;
+    let html = hero.outerHTML;
+    hero.querySelectorAll('[id]').forEach(node => {
+      html = html.split('id="' + node.id + '"').join('id="' + node.id + '-close"')
+                 .split('#' + node.id + ')').join('#' + node.id + '-close)');
+    });
+    const holder = document.createElement('div');
+    holder.innerHTML = html;
+    const mark = holder.firstElementChild;
+    mark.classList.replace('welcome-crest', 'closing-crest');
+    closing.prepend(mark);
+  })();
   // The door ritual precedes the continuous document; it never replaces native scrolling.
   const intro=$('#door-intro'),openButton=$('#open-doors');
   const outside=[...document.body.children].filter(el=>el!==intro&&!['SCRIPT','STYLE','NOSCRIPT'].includes(el.tagName));
   let introTimer,opening=false,returnHash=location.hash;
   // Called on the paths that skip the entrance, and at the end of the entrance itself. The document
   // underneath has been painted and locked since the first frame; this is what unlocks it.
-  function finishIntro(){clearTimeout(introTimer);intro.hidden=true;opening=false;intro.classList.remove('opening','pressed');document.body.classList.remove('intro-locked','intro-opening');outside.forEach(el=>el.inert=false);window.raisePetals?.();const target=document.getElementById(returnHash.slice(1))||$('#welcome');target.scrollIntoView({behavior:'instant',block:'start'});const heading=target.querySelector('h1,h2')||$('#welcome-title');heading.setAttribute('tabindex','-1');heading.focus({preventScroll:true});}
+  function finishIntro(){clearTimeout(introTimer);beginArrival(0);intro.hidden=true;opening=false;intro.classList.remove('opening','pressed');document.body.classList.remove('intro-locked','intro-opening');outside.forEach(el=>el.inert=false);window.raisePetals?.();const target=document.getElementById(returnHash.slice(1))||$('#welcome');target.scrollIntoView({behavior:'instant',block:'start'});const heading=target.querySelector('h1,h2')||$('#welcome-title');heading.setAttribute('tabindex','-1');heading.focus({preventScroll:true});}
   // Decode the entrance art up front. The swing waits on this, so it can never start part-way
   // through a decode — that was the stall between pressing the seal and the doors moving.
   const entranceArt=Promise.all(['assets/magnolia-suite/doors.webp','assets/magnolia-suite/portrait.webp','assets/magnolia-suite/garden.webp']
@@ -193,6 +244,7 @@
         // most of it. Silence reports nothing, and the sequence simply runs from its own zero.
         const shift=Math.min(Math.max(Music.position()||0,0),TEMPO.beat);
         document.documentElement.style.setProperty('--sync',shift+'s');
+        beginArrival(ARRIVE_LEAD-shift);
         intro.classList.add('opening');document.body.classList.add('intro-opening');
         // Two bars: three beats of swing, then five walking through, less whatever --sync skipped.
         introTimer=setTimeout(finishIntro,(TEMPO.bar*2-shift)*1000);
@@ -200,7 +252,7 @@
     });
   }
   // Replay puts the entrance back; on first load the markup already has it, so nothing here moves.
-  function showIntro(){clearTimeout(introTimer);Music.halt();document.documentElement.style.setProperty('--sync','0s');opening=false;intro.classList.remove('opening','pressed');document.body.classList.remove('intro-opening');window.scrollTo({top:0,behavior:'instant'});intro.hidden=false;outside.forEach(el=>el.inert=true);document.body.classList.add('intro-locked');openButton.focus({preventScroll:true});}
+  function showIntro(){clearTimeout(introTimer);Music.halt();document.body.classList.remove('arrived');document.documentElement.style.setProperty('--sync','0s');document.documentElement.style.setProperty('--arrive','0s');opening=false;intro.classList.remove('opening','pressed');document.body.classList.remove('intro-opening');window.scrollTo({top:0,behavior:'instant'});intro.hidden=false;outside.forEach(el=>el.inert=true);document.body.classList.add('intro-locked');openButton.focus({preventScroll:true});}
   // Pressing the seal opens it; anywhere on the doors works too, and Escape skips straight through.
   openButton.addEventListener('click',()=>openIntro());
   intro.addEventListener('click',e=>{if(e.target!==openButton)openIntro()});
@@ -234,7 +286,7 @@
   });
   const card = $('#scratch-card'), canvas = $('#scratch'), ctx = canvas.getContext('2d');
   let revealed = false, drawing = false, last = null, moved = 0;
-  function reveal() { if (revealed) return; revealed = true; drawing = false; card.classList.add('revealed'); $('#reveal-date').textContent = 'Revealed: 4 December 2026'; $('#reveal-date').disabled = true; $('#scratch-status').textContent = 'Friday, 4 December 2026. Ceremony time to be announced.'; }
+  function reveal() { if (revealed) return; revealed = true; drawing = false; card.classList.add('revealed'); canvas.setAttribute('aria-disabled','true'); canvas.tabIndex = -1; $('#scratch-status').textContent = 'Friday, 4 December 2026. Find the details below.'; }
   let foilRetry = 0;
   function paintFoil(force) {
     if (!ctx || revealed) return;
@@ -267,33 +319,55 @@
       ctx.roundRect(inset, inset, iw, h - inset*2, [dome, dome, 3, 3]); ctx.stroke();
     };
     arch(15,'#7d5f2b5e'); arch(22,'#7d5f2b30');
-    // The same crest that marks every section, struck into the leaf: drawn from the symbol's own
-    // geometry rather than a bitmap, so it stays a hairline engraving at any card size.
-    const scale = h*.52/108, originX = w/2 - 80*scale, originY = h*.2;
+    // The same mark that heads every section, struck into the leaf. It is walked out of the #crest
+    // symbol in the document rather than written out a second time here: the medallion, the section
+    // flourishes and this foil are then one drawing by construction, and redrawing the mark can no
+    // longer leave the scratch card behind carrying last month's version of it.
+    const crest = document.getElementById('crest');
+    const [bx, by, bw, bh] = (crest.getAttribute('viewBox') || '44 38 112 120').split(/\s+/).map(Number);
+    const scale = Math.min(h * .5 / bh, w * .64 / bw);
+    const originX = w / 2 - (bx + bw / 2) * scale, originY = h * .44 - (by + bh / 2) * scale;
+    // Only the three transform forms the symbol actually uses. Returns the uniform scale it applied
+    // so the stroke can stay a hairline of the same weight however deeply it is nested.
+    const applyTransform = (t) => {
+      let k = 1;
+      if (!t) return k;
+      for (const [, fn, args] of t.matchAll(/(translate|rotate|scale)\(([^)]*)\)/g)) {
+        const n = args.split(/[\s,]+/).filter(Boolean).map(Number);
+        if (fn === 'translate') ctx.translate(n[0], n[1] || 0);
+        else if (fn === 'rotate') ctx.rotate(n[0] * Math.PI / 180);
+        else { ctx.scale(n[0], n.length > 1 ? n[1] : n[0]); k *= n[0]; }
+      }
+      return k;
+    };
+    const walk = (node, tone, hair) => {
+      for (const el of node.children) {
+        ctx.save();
+        const k = applyTransform(el.getAttribute('transform'));
+        const tag = el.tagName.toLowerCase();
+        if (tag === 'g') walk(el, tone, hair / k);
+        else if (tag === 'path') {
+          const path = new Path2D(el.getAttribute('d'));
+          const fill = el.getAttribute('fill');
+          if (fill && fill !== 'none') { ctx.fillStyle = tone; ctx.fill(path); }
+          else { ctx.strokeStyle = tone; ctx.lineWidth = hair * (+el.getAttribute('stroke-width') || 1); ctx.stroke(path); }
+        } else if (tag === 'text') {
+          ctx.fillStyle = tone;
+          ctx.font = '400 ' + el.getAttribute('font-size') + 'px ' + el.getAttribute('font-family');
+          ctx.textAlign = el.getAttribute('text-anchor') === 'middle' ? 'center' : 'left';
+          ctx.textBaseline = 'alphabetic';
+          ctx.fillText(el.textContent.trim(), +el.getAttribute('x'), +el.getAttribute('y'));
+        }
+        ctx.restore();
+      }
+    };
     const strike = (dx, dy, tone) => {
-      ctx.save(); ctx.translate(originX+dx, originY+dy); ctx.scale(scale, scale);
-      ctx.strokeStyle = tone; ctx.fillStyle = tone; ctx.lineWidth = 1.15/scale;
-      const petal = new Path2D('M80 42C74 37 72 28 80 20C88 28 86 37 80 42Z');
-      [-52,-26,0,26,52].forEach(deg => { ctx.save(); ctx.translate(80,42); ctx.rotate(deg*Math.PI/180); ctx.translate(-80,-42); ctx.stroke(petal); ctx.restore(); });
-      ctx.beginPath(); ctx.arc(80,40,2,0,Math.PI*2); ctx.stroke();
-      ctx.stroke(new Path2D('M76 47C52 52 36 68 44 94'));
-      ctx.stroke(new Path2D('M84 47C108 52 124 68 116 94'));
-      const leaf = new Path2D('M0 0C-3 -2.5-4 -7 0 -10C4 -7 3 -2.5 0 0Z');
-      [[57,54,-60],[46,65,-85],[42,80,-110],[103,54,60],[114,65,85],[118,80,110]].forEach(([lx,ly,deg]) => {
-        ctx.save(); ctx.translate(lx,ly); ctx.rotate(deg*Math.PI/180); ctx.stroke(leaf); ctx.restore(); });
-      // Centre the initials on their measured ink; the script's trailing swash is far wider than
-      // its advance, so advance-based centring pushes the pair visibly off the wreath's axis and
-      // drops the ampersand inside the swash. The gap is sized to hold it clear.
-      ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left';
-      const nameFont = '400 24px Script, cursive', gapUnits = 12;
-      ctx.font = nameFont;
-      const inkN = ctx.measureText('N').actualBoundingBoxRight, inkD = ctx.measureText('D').actualBoundingBoxRight;
-      const startX = 80 - (inkN + gapUnits + inkD)/2;
-      ctx.fillText('N', startX, 94);
-      ctx.font = '400 12px Italiana, serif';
-      ctx.fillText('&', startX + inkN + gapUnits/2 - ctx.measureText('&').width/2, 86);
-      ctx.font = nameFont;
-      ctx.fillText('D', startX + inkN + gapUnits, 94);
+      ctx.save();
+      ctx.translate(originX + dx, originY + dy);
+      ctx.scale(scale, scale);
+      // The symbol strokes with vector-effect:non-scaling-stroke, so the canvas has to divide the
+      // weight back out of the transform to match what the SVG sites actually paint.
+      walk(crest, tone, 1 / scale);
       ctx.restore();
     };
     strike(1.2, 1.2, '#fff8e4b8'); strike(0, 0, '#7d5f2b8f');
@@ -304,7 +378,11 @@
   canvas.addEventListener('pointerdown', e=>{if(revealed||!ctx)return;drawing=true;last=point(e);canvas.setPointerCapture(e.pointerId);ctx.beginPath();ctx.arc(last.x,last.y,21,0,Math.PI*2);ctx.fill();card.classList.add('scratching');});
   canvas.addEventListener('pointermove',scratch);
   function finishScratch(){if(!drawing)return;drawing=false;if(moved>100){const pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;let empty=0,count=0;for(let i=3;i<pixels.length;i+=64){count++;if(pixels[i]<80)empty++;}if(empty/count>.38)reveal();}}
-  canvas.addEventListener('pointerup',finishScratch);canvas.addEventListener('pointercancel',finishScratch);$('#reveal-date').addEventListener('click',reveal);
+  canvas.addEventListener('pointerup',finishScratch);canvas.addEventListener('pointercancel',finishScratch);
+  // The foil itself provides the keyboard alternative to scratching, without a separate button.
+  canvas.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();reveal();}});
+  // Assistive technology can activate a button without a physical pointer click.
+  canvas.addEventListener('click',e=>{if(e.detail===0)reveal();});
   if(ctx){
     paintFoil();
     // The stamped monogram needs the script face; restrike once it lands, unless scratching began.
@@ -316,8 +394,7 @@
   if('IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){startVenue();observer.disconnect();}},{threshold:.2});observer.observe($('#architecture'));}else startVenue();
   $('#redraw').addEventListener('click',()=>window.playVenueDrawing?.());
   // Motion decorates visible content; it never gates reading or intercepts native scrolling.
-  if('IntersectionObserver' in window && !reduced.matches && CSS.supports('translate','0 1px')){
-    document.documentElement.classList.add('motion-ready');
+  if('IntersectionObserver' in window && canMove){
     // One sixteenth of a beat between siblings. Every staggered group used to pick its own interval,
     // which meant no two cascades agreed with each other or with anything audible; a single
     // subdivision makes each of them read as one figure played against the music underneath.
@@ -330,7 +407,6 @@
       ['.invitation blockquote','up',0],
       ['.date-section>.flourish,.date-section>h2,.date-section>h2+p','up',STEP],
       ['.scratch-card','lift',0],
-      ['#reveal-date','fade',0],
       ['.calendar-actions>*','up',STEP],
       ['.date-section>.disclosure','fade',0],
       ['.countdown-title','up',0],
@@ -375,6 +451,36 @@
       if(step)el.style.setProperty('--d',Math.min(i,4)*step+'ms');
       revealer.observe(el);rearmer.observe(el);
     }));
+    // The cue falls once every two bars, and this is what puts that fall on a downbeat the guest can
+    // actually hear. Seeking is the only way to hold it there: animation-delay would align the loop
+    // at the moment it starts and then let it drift, because the cue counts from its own beginning
+    // while the score counts from the press. Re-seeking on the same cycle also absorbs the drift
+    // between the audio clock and the compositor's. Silence leaves the cue running free -- nothing
+    // here depends on the music playing.
+    const cueLine=$('.scroll-cue span'),CUE_CYCLE=TEMPO.bar*2*1000;
+    function syncCue(){
+      if(!cueLine||document.hidden)return;
+      const at=Music.position();
+      if(at===null)return;
+      cueLine.getAnimations({subtree:true}).forEach(a=>{
+        if(a.animationName==='cue-fall'||a.animationName==='cue-track'){
+          try{a.currentTime=(at*1000)%CUE_CYCLE}catch{}
+        }
+      });
+    }
+    syncCue();setInterval(syncCue,CUE_CYCLE);
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncCue()});
+
+    // The pen's travel has to be the path's real length. A guessed dasharray shorter than the
+    // outline turns a script name into a row of beads, and the outline of nine joined letters is not
+    // a number anyone can estimate -- so it is measured here, per name, and handed to the keyframes.
+    document.querySelectorAll('.welcome h1 .name-trace').forEach(path => {
+      const len = path.getTotalLength();
+      if(!len) return;
+      path.style.setProperty('--len', len.toFixed(1));
+      path.classList.add('traceable');
+    });
+
     const progress=document.createElement('span');progress.className='scroll-progress';$('.masthead').append(progress);
     const acts=[...document.querySelectorAll('.timeline li')],pan=$('.couple-background'),panFrame=$('.photo-invitation');
     let queued=false;

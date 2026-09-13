@@ -22,3 +22,6 @@ server.log
 # Deploy output and Wrangler scratch
 dist/
 .wrangler/
+
+# Design canvas working files (re-seed with /design)
+.design/

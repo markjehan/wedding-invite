@@ -111,27 +111,24 @@ blockquote{padding:30px 12px 0;font-size:32px;color:var(--action)}
 /* The script is reserved for the two names; everything else keeps the established faces. */
 .welcome h1,.invitation-letter .couple-names{font-family:Script,cursive}
 .welcome h1{font-size:clamp(72px,7.6vw,104px);line-height:1.02}
-.welcome h1 span{font-family:Italiana,serif;font-size:.26em;line-height:1.15;color:var(--gold)}
+.welcome h1 .amp{font-family:Italiana,serif;font-size:.26em;line-height:1.15;color:var(--gold)}
 .date-reveal b,.date-reveal time>span,.countdown b{font-family:Figures,serif}
 
 .countdown b{font-size:60px}
 
 /* ---------- The crest, at one size in the masthead and another above each section ---------- */
-.flourish{width:122px;height:82px;margin-bottom:26px;overflow:visible;stroke-width:1}
-.welcome .flourish{width:178px;height:120px;stroke-width:.85;margin:34px auto 0}
+.flourish{width:92px;height:auto;aspect-ratio:112/120;margin-bottom:24px;overflow:visible}
 .invitation-letter .flourish{margin-bottom:20px}
 /* Dash properties inherit through the <use> shadow tree, so the crest draws itself in. */
-.motion-ready .flourish{stroke-dasharray:200;stroke-dashoffset:200;transition:stroke-dashoffset 1.8s cubic-bezier(.16,1,.3,1) calc(var(--d,0s) + .15s)}
-.motion-ready .flourish.shown,.motion-ready .shown .flourish,.motion-ready .welcome .flourish{stroke-dashoffset:0}
 
 /* ---------- The arrival dissolves into the stationery instead of cutting ---------- */
 /* The arrival needs air: the names, the crest and the date each get their own breathing room. */
 .welcome{padding-bottom:120px}
 .welcome-wording{margin-bottom:40px;letter-spacing:.04em}
 .welcome h1{line-height:1.14}
-.welcome h1 span{margin:.1em 0}
+.welcome h1 .amp{margin:.1em 0}
 
-.scroll-cue{margin-top:62px}
+.scroll-cue{margin-top:44px}
 .welcome::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:min(34vh,235px);z-index:-1;pointer-events:none;background:linear-gradient(to bottom,#f7f2e800,#f8f3ea9e 46%,var(--paper))}
 .invitation::before{-webkit-mask-image:linear-gradient(to bottom,transparent,#000 240px);mask-image:linear-gradient(to bottom,transparent,#000 240px)}
 
@@ -187,11 +184,12 @@ blockquote{color:var(--gold)}
 
 /* ---------- The foil card: an arched, die-cut keepsake rather than a gold slab ---------- */
 .scratch-card{height:360px;max-width:420px;border-radius:50% 50% 6px 6px/34% 34% 6px 6px;box-shadow:0 24px 58px #5b452421}
+.scratch-card:focus-within{outline:2px solid var(--action);outline-offset:5px}
 /* The revealed face carries the same engraving as the foil, so the card reads as one object
    before and after scratching rather than a decorated lid over a blank card. */
 .date-reveal{position:relative;margin:12px;height:calc(100% - 24px);border-color:#d8c6a2;border-radius:50% 50% 3px 3px/33% 33% 3px 3px;padding:9% 9% 7%;background:radial-gradient(ellipse at 50% 38%,#fffdf8,#fdf9f0 62%,#f7f1e3)}
 .date-reveal::before{content:'';position:absolute;inset:7px;border:1px solid #cbb68e6b;border-radius:50% 50% 2px 2px/32% 32% 2px 2px;pointer-events:none}
-.reveal-crest{width:62px;height:42px;color:var(--gold);stroke-width:1.4;margin-bottom:10px;opacity:.9}
+.reveal-crest{width:58px;height:auto;aspect-ratio:112/120;color:var(--gold);margin-bottom:6px;opacity:.9}
 .date-reveal>span{color:var(--gold);letter-spacing:.36em;font-size:10px}
 .date-reveal time{font-family:Figures,serif}
 .date-reveal b{font-size:78px;line-height:.98;color:var(--action)}
@@ -215,9 +213,15 @@ blockquote{color:var(--gold)}
 .closing::before{background-image:linear-gradient(#fffaf2bd,#fffaf2bd),url('assets/magnolia-suite/garden.webp');background-size:cover,cover;background-position:center,center 68%;-webkit-mask-image:linear-gradient(to bottom,transparent,#000 240px);mask-image:linear-gradient(to bottom,transparent,#000 240px)}
 
 /* ---------- The closing: two linked bands, names quiet beneath ---------- */
-.closing-rings{width:104px;height:62px;color:var(--gold);stroke-width:1.1;display:block;margin:0 auto 24px}
-.motion-ready .closing-rings{stroke-dasharray:150;stroke-dashoffset:150;transition:stroke-dashoffset 1.8s cubic-bezier(.16,1,.3,1) .15s}
-.motion-ready .closing-rings.shown{stroke-dashoffset:0}
+/* The closing carries the couple's own mark rather than a pair of rings, and it draws itself there
+   exactly as it does on the first screen -- against the scroll that reaches it instead of the
+   clock, which is all --fig changes. It is a clone of the hero node, so its weights, colours and
+   geometry come along with it and only its size and its trigger are set here. */
+.closing-crest{
+  --fig:0s;
+  display:block;width:min(158px,42vw);height:auto;aspect-ratio:1;margin:0 auto 26px;overflow:visible;
+  color:var(--gold);fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;
+}
 .closing-names{font-size:19px;letter-spacing:.2em;text-transform:uppercase;font-family:Italiana,serif;color:var(--action)}
 
 /* ---------- Ambient drift ---------- */
@@ -237,13 +241,12 @@ blockquote{color:var(--gold)}
  .scratch-card{height:346px}
  .date-reveal b{font-size:68px}
  .date-reveal time>span{font-size:15px}
- .reveal-crest{width:54px;height:36px;margin-bottom:7px}
+ .reveal-crest{width:50px;margin-bottom:4px}
  .countdown b{font-size:44px}
 }
 
 @media(max-width:700px){
- .flourish{width:104px;height:70px;margin-bottom:20px}
- .welcome .flourish{width:146px;height:99px;margin:26px auto 0}
+ .flourish{width:78px;margin-bottom:18px}
 
  .welcome{padding-bottom:95px}
  .welcome::after{height:min(26vh,170px)}
@@ -252,4 +255,239 @@ blockquote{color:var(--gold)}
  .timeline li::after{left:4px}
  .timeline li>div{padding:9px 12px;margin:-9px -12px}
  .timeline li.is-active>div{translate:4px 0}
+}
+
+/* ---------- The arrival: the medallion draws itself, then the names are written ----------
+   One figure in three movements, cut from the same grid as everything else: the score is 100bpm,
+   so a beat is 0.6s and a bar 2.4s, and every delay below is a whole number of half-beats. The
+   figure runs 6s - two and a half bars - and it is cued to start 3.6s into the door sequence, so
+   the first line is already surfacing while the camera is still moving through the arch. Six
+   seconds later the invitation has finished introducing itself at exactly four bars from the
+   press, which is where the recording's own phrase ends.
+
+   `--arrive` carries that lead. The doors set it to what is left of their own run; every path that
+   skips the entrance sets it to zero and the figure simply plays from the top. Nothing here is
+   driven from script beyond that one number and the class that starts it.
+
+   Everything that begins hidden is scoped to .motion-ready, which is only ever added when the
+   guest has not asked for less motion and the engine has the properties this is written in. A
+   browser that never gets the class is shown the finished arrival rather than an empty screen. */
+/* --arrive is the arrival's lead, handed over by the door sequence. --fig is the base offset every
+   step of the figure hangs off, so one set of rules can drive the hero (which plays against that
+   lead) and the closing (which plays against the scroll that reaches it, from zero). */
+:root{--arrive:0s;--fig:var(--arrive)}
+
+.welcome-crest{
+  --fig:var(--arrive);
+  /* The base rule gives every svg a 22px box; the medallion needs its own, and an explicit
+     auto height so the square aspect can take effect at all. */
+  display:block;width:min(214px,29vw,23svh);height:auto;aspect-ratio:1;margin:0 auto clamp(12px,2.6svh,22px);overflow:visible;
+  color:var(--gold);fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;
+}
+/* Four weights, and they are what separates a plate from an icon. The frame is twice the inner
+   rule; the laurel sits between them; the veins are the finest line on the page. Give these one
+   shared value again and the mark collapses back into clipart however well it is drawn. */
+/* Measured at the size it actually ships, not at the size it is drawn. The viewBox is 200 units
+   wide and the mark renders at 214px on a laptop and 176px on a phone, so a 0.6-unit rule lands
+   under two thirds of a device pixel and antialiases away to nothing on the phone. These are the
+   weights that keep the 2:1 frame-to-rule ratio legible at the smaller of the two. */
+.wc-ring{stroke-width:1.6}
+.wc-rule{stroke-width:.8}
+/* The sepals live inside scaled groups, so each is drawn finer by its own scale. */
+.wc-leaf{stroke-width:1.05}
+.wc-petal{stroke-width:1.15}
+.wc-vein{stroke-width:.62}
+.wc-tip{fill:currentColor;stroke:none}
+/* The only filled mass in the mark, and a shade deeper than the linework, so the initials read as
+   the subject and the frame reads as the setting. Not scoped to .welcome-crest: the closing's mark
+   is a clone of that node under a different class, and scoping these left its initials falling back
+   to the browser's default face. */
+.wc-letter{font-family:Script,cursive;fill:#6d5228;stroke:none}
+.wc-swash{fill:#6d5228;stroke:none}
+.wc-amp{font-family:Italiana,serif;fill:var(--gold)}
+.wc-leaf,.wc-petal,.wc-flare,.wc-tip{transform-box:fill-box;transform-origin:50% 100%}
+.wc-flare,.wc-tip{transform-origin:50% 50%}
+.wc-flare{stroke-width:2.4;opacity:0}
+/* The nib is the one part that is decoration rather than drawing, and the one part that can fail
+   to know where it belongs: without a motion path it would sit at the corner of the viewBox. It
+   is therefore invisible by default and only lit inside the @supports that can place it. */
+.wc-nib{fill:#a97f36;stroke:none;opacity:0;transform-box:fill-box;transform-origin:50% 50%;
+  /* Cream on cream is invisible here: on this paper the readable light is a warm amber point
+     with a pale halo, not a white one. */
+  filter:drop-shadow(0 0 2.5px #fff6dc) drop-shadow(0 0 6px #e8cd93)}
+
+.motion-ready .welcome-wording,
+.motion-ready .welcome h1 .amp,
+.motion-ready .scroll-cue{opacity:0}
+.motion-ready .wc-ring{stroke-dasharray:428;stroke-dashoffset:428}
+.motion-ready .wc-rule{stroke-dasharray:340;stroke-dashoffset:340}
+.motion-ready .wc-vein{stroke-dasharray:18;stroke-dashoffset:18}
+.motion-ready .wc-tip{scale:0}
+.motion-ready .wc-leaf{scale:0}
+.motion-ready .wc-petal{scale:.15;opacity:0}
+/* The ink front rests at the END of its travel, not the start. Without this the mask rect sits
+   entirely left of the glyphs whenever .motion-ready is absent -- which is exactly the reduced
+   motion case -- and the initials render invisible inside an otherwise complete medallion. */
+.wc-ink{translate:var(--ink-to) 0}
+.motion-ready .wc-ink{translate:var(--ink-from) 0}
+/* The names are inscribed, not wiped. A soft-edged mask crossing the letters in a straight band
+   never looked like writing -- it looked like a reveal -- and the bloom of light that rode it was a
+   sliding blob, which is worse: a gimmick sitting on top of the lettering rather than belonging to
+   it. Both are gone.
+
+   What replaces them is the device the mark already uses on its own frame. Each name is the font's
+   outline as a path, traced by a hairline of champagne that runs the letterforms in writing order,
+   and the ink fills in behind the pen once it is most of the way along. The stroke is
+   non-scaling, so the nib stays one pixel wide at every viewport, and the trace length is measured
+   from the path itself at load -- guessing a dasharray is what turns a script into beads.
+
+   Positioning is by baseline, not by box: --top is where this name's ink begins relative to the
+   baseline the live text sat on, so the outlines land exactly where the words used to. */
+.welcome h1 .given{display:block;position:relative;height:1.14em}
+.welcome h1 .name{position:absolute;left:50%;translate:-50% 0;top:var(--top);height:var(--h);width:auto;overflow:visible}
+.name-fill{fill:#6d5228}
+.name-trace{fill:none;stroke:var(--gold);stroke-width:1;vector-effect:non-scaling-stroke;opacity:0}
+/* The dash is what hides the pen line until its letter begins, and it only works with a dasharray
+   to offset. Without one, stroke-dashoffset does nothing at all, so the full outline of both names
+   sat on screen from page load -- right across the medallion while it was meant to be drawing
+   alone. Resting at a full offset also means a trace that never gets its animation stays hidden
+   rather than showing: the fill alone still carries the name. */
+.motion-ready .name-trace.traceable{opacity:.95;stroke-dasharray:var(--len);stroke-dashoffset:var(--len)}
+
+.motion-ready .arrived .welcome-crest .wc-ring,
+.motion-ready .closing-crest.shown .wc-ring{animation:wc-draw 3.6s cubic-bezier(.45,.05,.2,1) var(--fig) both}
+.motion-ready .arrived .welcome-crest .wc-rule,
+.motion-ready .closing-crest.shown .wc-rule{animation:wc-draw 2.7s cubic-bezier(.4,0,.25,1) calc(var(--fig) + 1.2s) both}
+.motion-ready .arrived .welcome-crest .wc-tip,
+.motion-ready .closing-crest.shown .wc-tip{animation:wc-unfold .6s cubic-bezier(.2,.85,.3,1) calc(var(--fig) + 3.6s) both}
+.motion-ready .arrived .welcome-crest .wc-ink,
+.motion-ready .closing-crest.shown .wc-ink{animation:wc-ink 1.2s cubic-bezier(.5,.02,.4,1) calc(var(--fig) + 2.4s + var(--d,0s)) both}
+/* The ampersand and the D follow the N a beat apart; the swash closes the lockup under them. */
+#wc-ink-amp .wc-ink,#wc-ink-amp-close .wc-ink{--d:.6s}
+#wc-ink-d .wc-ink,#wc-ink-d-close .wc-ink{--d:1.2s}
+#wc-ink-swash .wc-ink,#wc-ink-swash-close .wc-ink{--d:2.1s}
+/* The sepals open a breath before the petals they hold. */
+.motion-ready .arrived .welcome-crest .wc-leaf,
+.motion-ready .closing-crest.shown .wc-leaf{animation:wc-unfold .9s cubic-bezier(.2,.85,.3,1) calc(var(--fig) + 4.2s + var(--d,0s)) both}
+.motion-ready .arrived .welcome-crest .wc-petal,
+.motion-ready .closing-crest.shown .wc-petal{animation:wc-open 1.2s cubic-bezier(.22,1,.3,1) calc(var(--fig) + 4.5s + var(--d,0s)) both}
+.motion-ready .arrived .welcome-crest .wc-vein,
+.motion-ready .closing-crest.shown .wc-vein{animation:wc-draw .9s cubic-bezier(.4,0,.25,1) calc(var(--fig) + 5.4s + var(--d,0s)) both}
+.motion-ready .arrived .welcome-crest .wc-flare,
+.motion-ready .closing-crest.shown .wc-flare{animation:wc-flare 1.2s cubic-bezier(.2,.6,.3,1) calc(var(--fig) + 6s) both}
+.motion-ready .arrived .welcome-crest{animation:wc-settle 1.8s cubic-bezier(.16,1,.3,1) calc(var(--fig) + 6.6s) both}
+.motion-ready .arrived .welcome-wording{animation:wc-rise 1.2s cubic-bezier(.16,1,.3,1) calc(var(--fig) + 7.5s) both}
+/* A bar each, three beats apart, and the light travels with the hand that writes them. */
+/* A bar each, three beats apart. The pen finishes a name at 78% of its travel and lifts over the
+   remaining 22%; the ink is already coming up behind it by then. */
+/* linear, deliberately. An eased trace accelerates and brakes inside every letter, which makes the
+   word pulse along letter by letter instead of flowing -- the single thing that made this read as
+   appearing rather than being written. A nib moves at one speed, and each letter's travel is longer
+   than the step between letters, so the next is under way before the last is finished and the line
+   never stops. */
+.motion-ready .arrived .welcome h1 .name-trace.traceable{animation:name-trace .75s linear calc(var(--fig) + 8.4s + var(--d,0s) + var(--i) * var(--step)) both}
+/* The ink follows the nib rather than arriving all at once: each letter starts filling as the pen
+   is a little over halfway through drawing it. */
+.motion-ready .arrived .welcome h1 .name-fill{animation:name-ink .5s ease-out calc(var(--fig) + 8.82s + var(--d,0s) + var(--i) * var(--step)) both}
+/* The pen lifts off the whole name at once, and only once the ink is under it. Fading each stroke
+   on its own schedule left the first letters with nothing holding them between the pen leaving and
+   the fill arriving -- they blinked out and came back. */
+.motion-ready .arrived .welcome h1 .name-strokes{animation:name-lift .6s ease calc(var(--fig) + 10.8s + var(--d,0s)) both}
+.motion-ready .arrived .welcome h1 .given:last-child{--d:1.8s}
+.motion-ready .arrived .welcome h1 .amp{animation:wc-rise .9s ease-out calc(var(--fig) + 10.2s) both}
+.motion-ready .arrived .scroll-cue{animation:wc-rise .9s cubic-bezier(.16,1,.3,1) calc(var(--fig) + 12.3s) both}
+
+@keyframes wc-rise{from{opacity:0;translate:0 14px;filter:blur(4px)}to{opacity:1;translate:none;filter:none}}
+@keyframes wc-draw{to{stroke-dashoffset:0}}
+@keyframes wc-unfold{from{scale:0}to{scale:1}}
+@keyframes wc-open{from{scale:.15;opacity:0}to{scale:1;opacity:1}}
+@keyframes wc-ink{to{translate:var(--ink-to) 0}}
+@keyframes wc-flare{0%{opacity:0;scale:1}28%{opacity:.55}100%{opacity:0;scale:1.17}}
+/* One letter's worth of pen. The stroke holds a moment after the letter closes and then lifts, so
+   the word is never a row of outlines waiting together for the ink -- each one is handed over as
+   the next begins. */
+/* No opacity ramp: the stroke is there from the first frame and the dash alone reveals it. Fading
+   each letter up as it began was a second "appearing" on top of the drawing. */
+@keyframes name-trace{
+  from{stroke-dashoffset:var(--len)}
+  to{stroke-dashoffset:0}
+}
+@keyframes name-lift{from{opacity:1}to{opacity:0}}
+@keyframes name-ink{from{opacity:0}to{opacity:1}}
+/* --crest-lift is measured, not guessed: it is the distance from the mark's resting centre to the
+   centre of the whole arrival, so the mark opens optically centred on the screen whatever the names
+   below it happen to measure at this viewport. The fallback only matters if the script never ran. */
+@keyframes wc-settle{from{translate:0 var(--crest-lift,-96px);scale:1.5}to{translate:none;scale:1}}
+
+/* A point of light riding the ring as it closes. Same duration, delay and easing as the stroke it
+   sits on, so the two cannot drift apart. */
+@supports (offset-path:path("M0 0")){
+  .motion-ready .arrived .welcome-crest .wc-nib,
+  .motion-ready .closing-crest.shown .wc-nib{
+    offset-path:path("M120.4 28.87A74 74 0 1 1 79.6 28.87");offset-rotate:0deg;
+    animation:wc-nib 1.5s cubic-bezier(.45,.05,.2,1) calc(var(--fig) + .6s) both;
+  }
+  @keyframes wc-nib{0%{offset-distance:0%;opacity:0}12%{opacity:1}82%{opacity:1}100%{offset-distance:100%;opacity:0}}
+}
+
+/* ---------- The cue: a light that falls down the line, so the line says which way to go ----------
+   It used to breathe in place, which reads as decoration. A mark that travels downward once a bar
+   and then rests is an instruction. The track is a full gradient in its own right, so with motion
+   turned off the cue is still a drawn line rather than an empty gap.
+
+   The mark is ink, not light. A white highlight is the obvious choice and the wrong one here: on
+   cream paper under a bright garden it vanishes. A soft bar of the same gold the line is drawn in
+   reads at a glance and still counts as a whisper. It is sized and moved in percentages of itself,
+   so one pair of keyframes serves the line at any height, and the track clips it at both ends. */
+.scroll-cue{gap:14px;margin-top:clamp(24px,4.6svh,46px)}
+.scroll-cue span{
+  position:relative;width:2px;height:62px;border-radius:1px;transform-origin:center;
+  background:linear-gradient(to bottom,#bda06600,#bda066 18%,#bda066 76%,#bda06600);
+  animation:none;
+}
+/* The falling mark is ink with a lamp behind it. The ink is what reads on cream paper -- a white
+   highlight disappears here, which the drawing nib taught first -- and the pale halo around it is
+   what makes it read as lit rather than merely dark. The halo needs the track not to clip it, so
+   the glow lives on a second layer that overflows while the mark itself stays inside. */
+.scroll-cue span::after{
+  content:'';position:absolute;left:50%;top:0;width:4px;height:60%;border-radius:2px;
+  background:linear-gradient(to bottom,#6b4f2400,#5d431c 52%,#6b4f240d);
+  box-shadow:0 0 12px 5px #fff3d2,0 0 22px 9px #f2ddaf99;
+  opacity:0;translate:-50% -100%;
+}
+.motion-ready .scroll-cue span{animation:cue-track 4.8s cubic-bezier(.42,0,.45,1) infinite}
+.motion-ready .scroll-cue span::after{animation:cue-fall 4.8s cubic-bezier(.42,0,.45,1) infinite}
+@keyframes cue-track{0%,100%{opacity:.72}34%{opacity:1}}
+@keyframes cue-fall{0%{opacity:0;translate:-50% -70%}9%{opacity:1}48%{opacity:1}60%,100%{opacity:0;translate:-50% 150%}}
+
+/* The arrival is a whole screen of composition, so its rhythm answers to the height of the screen
+   as well as its width: on a short laptop window the cue is otherwise the one thing pushed under
+   the fold, and the cue is the one thing that has to be visible. */
+.welcome{padding-block:clamp(78px,11svh,118px)}
+.welcome-wording{margin-bottom:clamp(20px,3.4svh,38px)}
+.welcome h1{font-size:clamp(58px,min(7.6vw,12.2svh),100px)}
+
+@media(max-width:700px){
+ .welcome{padding-block:clamp(86px,13svh,132px) clamp(58px,9svh,92px)}
+ .welcome h1{font-size:clamp(40px,min(15.5vw,10.6svh),72px)}
+ .welcome-crest{width:min(176px,47vw,24svh);margin:0 auto clamp(10px,2svh,16px)}
+ .welcome-wording{margin-bottom:clamp(14px,2.6svh,24px)}
+ .scroll-cue span{height:52px}
+}
+
+/* ---------- The closing is the end of the page, not a panel stuck on it ----------
+   The stationery has to run out before the garden begins. The reply card's paper texture used to
+   stop dead at the section's edge, and because it is a few percent lighter than the paper beneath
+   it that edge read as a rule drawn across the full width. Both sides now fade over roughly a
+   third of a screen, and the small centred rule that closes every other section is dropped here --
+   nothing follows this one, so there is nothing to divide it from. */
+.response::before{-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 320px),transparent);mask-image:linear-gradient(to bottom,#000 calc(100% - 320px),transparent)}
+.response::after{display:none}
+.closing{padding-top:150px}
+.closing::before{-webkit-mask-image:linear-gradient(to bottom,transparent,#000 340px);mask-image:linear-gradient(to bottom,transparent,#000 340px)}
+@media(max-width:700px){
+ .response::before{-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 200px),transparent);mask-image:linear-gradient(to bottom,#000 calc(100% - 200px),transparent)}
+ .closing{padding-top:124px}
+ .closing::before{-webkit-mask-image:linear-gradient(to bottom,transparent,#000 220px);mask-image:linear-gradient(to bottom,transparent,#000 220px)}
+ .closing-crest{width:min(132px,38vw);margin-bottom:20px}
 }

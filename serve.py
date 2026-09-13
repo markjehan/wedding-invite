@@ -11,6 +11,7 @@ from __future__ import annotations
 import argparse
 import functools
 import http.server
+import os
 import socket
 from pathlib import Path
 
@@ -37,7 +38,10 @@ def local_ip() -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Serve the wedding invitation locally.")
-    parser.add_argument("--port", type=int, default=4173)
+    # 4173 stays the default for anyone running this by hand. PORT lets a harness that already has
+    # something on 4173 hand this one a free port instead of failing to start; an explicit --port
+    # still wins over both.
+    parser.add_argument("--port", type=int, default=int(os.environ.get("PORT") or 4173))
     parser.add_argument("--lan", action="store_true", help="Allow phones on the same Wi-Fi to connect.")
     options = parser.parse_args()
 

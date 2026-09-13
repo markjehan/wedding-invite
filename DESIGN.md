@@ -67,6 +67,10 @@ The entrance is the piece that matters most. The recording opens with two bars o
 before the full arrangement enters, and the door sequence is two bars long: three beats of swing,
 five walking through. The guest arrives in the garden on the downbeat the arrangement lands on.
 
+The arrival picks the phrase up from there. It runs two and a half bars and is cued six beats into
+the door sequence, so the two overlap: the first line is already surfacing while the camera is
+still moving, and the invitation finishes introducing itself at exactly four bars from the press.
+
 Sound starts on the seal press and only on the seal press. A control in the masthead stops it, and
 that choice is remembered. It plays quietly on purpose: the supplied recording is a -14.6 LUFS
 commercial master, and the invitation holds it to -29.1 LUFS — present enough to hear in a quiet
@@ -113,6 +117,274 @@ The 12 September phone recording exposed a separate geometry bug: the doors vani
 The sequence is now two strictly sequential stages rather than one blended 4.8s move, which is also how it was asked for: shut, then the swing, then the opened scene coming towards you. Stage one runs 0–1.8s with the camera pinned at `scale(1)` while only the leaves turn; the last 10% of the hinge fades the two remaining 81° slivers and takes them out of rendering with `visibility:hidden`. Stage two runs 1.8–4.8s on a delayed `walk-through`, so the camera advances 1× to 4.8× with no leaf layer left in the scene — nothing has to be rasterised at seventeen times its natural size mid-move. Keep the two stages disjoint; overlapping them reads as one muddled gesture and puts the leaves back under the camera's scale.
 
 Two smaller guards support the same thing. `.door-room` is `visibility:hidden` until 6% of the hinge, so during the closed hold the only thing behind the leaves is the camera's own closed-door art in exact registration: anything that goes wrong with a leaf while the doors are shut reads as a closed door rather than as the invitation already open. And `.door-leaf` declares `transform:rotateY(0deg)` in its base rule so a leaf never takes its first transform matrix on the same class change that starts the hinge. Neither of these cured the vanishing leaves — the rotation direction did — but both narrow what a future mistake can look like.
+
+## The arrival
+
+The first screen assembles itself rather than appearing, and the mark leads. It opens **alone**, at
+half again its final size, optically centred on an otherwise empty screen: a heavy ring traced
+clockwise from the break at its crown with a point of light riding the tip, a hairline inner rule
+round behind it, the initials laid down N then & then D, the underswash closing them, and last a
+magnolia opening in the break both rules left for it. The finished medallion flares once, then
+**travels down** into its resting place, and only then do the words arrive around it — *Welcome to
+the wedding of*, the two names written beneath it, and the cue. Nothing is gated on any of it: the
+page scrolls from the first frame, and a guest who scrolls away leaves it playing behind them.
+
+The whole figure runs thirteen point two seconds and is cued 3.6s into the door sequence, so the
+mark begins drawing as the entrance dissolves and the arrival finishes at sixteen point eight
+seconds from the seal press — seven bars exactly.
+
+It is written against the **bar**, not merely the beat, and four moments are pinned to downbeats a
+listener can actually hear: the frame closes on bar three, the bloom and the swash finish together
+on bar four, the mark lands in its resting place on bar five, the first name is finished on bar six,
+and the cue arrives on bar seven. The two names take **a bar each**, three beats apart — the slowest
+moves in the figure, because they are the thing the screen is for.
+Everything between them is a multiple of a half-beat — the staggers inside a single move included —
+and every move overlaps its neighbours, so the figure reads as one long phrase rather than a queue
+of separate gestures. Retime it by moving those four anchors first and letting the rest hang off
+them; shortening a single move without moving its anchor is what makes it read as hurried.
+
+The order in the document is the order at rest — wording, names, mark, cue — not the order it plays.
+The mark's opening position is declared **only inside the `wc-settle` keyframes**, never as a base
+rule, and that is load-bearing: the script measures how far the mark has to travel, and it can only
+read an honest box while the mark is still sitting untransformed where it belongs. `--crest-lift` is
+that measurement, taken in `beginArrival` immediately before `arrived` lands. It is measured rather
+than guessed because the distance is most of the height of two lines of script, which is a different
+number at every viewport; a small extra lift goes on top, because a lone object at the exact middle
+of a tall screen reads as slightly low.
+
+The medallion is written out as inline SVG rather than reusing the `#crest` symbol the other six
+sections share. That is the whole reason it exists separately: `<use>` renders into a shadow tree
+that only inherits properties, so no stylesheet can address a single petal, and a figure that
+assembles in eleven steps needs every stroke individually addressable. The initials keep the
+measured-ink placement described under Typography, so the ampersand still sits in the clear gap
+rather than inside the N's swash.
+
+## The mark
+
+It is drawn as an engraved plate, and what makes it one is hierarchy rather than ornament. Four
+stroke weights: the frame at 1.6, the inner rule at 0.8, the petals at 1.15, the midribs at 0.62 —
+and the initials, which are the only *filled* mass anywhere in the mark and a shade deeper than the
+linework. Give all of those one shared hairline again, as the first pass did, and the mark collapses
+back into clipart however well each part is drawn, because nothing is the subject.
+
+Two rules with a single break between them is the plate device; a second circle at the same weight
+would only read as a thicker first one. The break exists so an ornament can sit *in* it rather than
+beside it, which is why the bloom is sized to fill the gap exactly and not to float above it.
+
+Beneath the initials is an **underswash** — a filled tapered shape, not a stroked line, because a
+copperplate flourish is thick at its belly and a hairline at both ends; a uniform stroke reads as an
+underline. It also gives the lower half of the plate something to hold, which the initials alone
+left empty. It is a shallow bowl whose two terminals lift back above the belly, and it is narrower
+than the initials above it: a first cut that ran their full width, with a straight lens section,
+read as a smile drawn under the letters rather than a flourish attached to them.
+
+Two more refinements carry more than their size suggests. The inner rule **ends in a small bead** at
+either side of its break — a rule that simply stops looks cut, one that ends in a bead looks
+finished. And the bloom's two outer tepals are **recurved**, bending away at the tip the way a
+magnolia's actually open, while the three facing front stay cupped; five identical petals radiating
+from one point is the thing that reads as an icon no matter how well each one is drawn.
+
+Three things were tried and removed, and they are worth recording so they are not tried again:
+
+- **A laurel running the flanks.** Leaves at even spacing along an arc, parallel to the inner rule,
+  read as a chain — a narrow channel of identical links, not a branch.
+- **A second spray across the base.** With a crown bloom and flank laurel already present, a third
+  ornament left nothing precious. One ornament is what makes the magnolia the jewel.
+- **A symmetric five-petal fan** at -52/-26/0/26/52. That is the silhouette of every lotus icon ever
+  drawn. The bloom now has five petals of five different lengths and widths at angles that are
+  deliberately not a mirror of one another, cupped rather than pointed — the control points pull in
+  toward the axis near the tip and out at the waist — with a midrib on the three that face front and
+  two sepals tucked beneath.
+
+**The ink fronts rest at the END of their travel**, not the start — `.wc-ink{translate:var(--ink-to)}`
+in plain CSS, overridden to `--ink-from` only under `.motion-ready`. Get this backwards and the mask
+rects sit entirely left of the glyphs whenever the class is absent, which is exactly the
+reduced-motion case, and the initials and swash render invisible inside an otherwise complete
+medallion. It is silent, and it does not show up in any state the animation itself passes through.
+
+### One mark, two forms
+
+The mark ships in exactly two forms, and everything on the page is one of them:
+
+- **The medallion** — frame, inner rule, terminal beads, bloom, initials, swash. Inline SVG, hero
+  only, 176–214px. It is the form that draws itself.
+- **The compact mark** — the same bloom, initials and swash with the frame and inner rule taken off
+  and the bloom brought down and up a quarter. This is the `#crest` symbol, used at all six `<use>`
+  sites and struck into the wax seal, 48–92px.
+
+The two rules are dropped rather than shrunk for the small form on purpose: 0.8 units in a 200-unit
+box lands under half a device pixel below about 130px, so keeping them would mean showing a broken
+frame rather than none.
+
+Three things hold the two forms together, and all three are easy to undo by accident:
+
+1. **The symbol is generated from the hero**, not written a second time. Its bloom, letters and
+   swash are the hero's own paths at the hero's own coordinates.
+2. **The scratch-card foil walks that symbol out of the DOM** and strikes it onto the canvas —
+   `walk()` in `paintFoil` reads `d`, the transforms and the weights off the live nodes. Before
+   this, the foil carried its own Path2D copy of the crest, and that copy was a whole design
+   generation out of date. Never reintroduce a second copy; if the foil needs to change, change the
+   symbol.
+3. **Weights and faces ride as presentation attributes** with `vector-effect:non-scaling-stroke`.
+   `<use>` renders into a shadow tree that only inherits properties, so no stylesheet can reach a
+   petal inside it — the same constraint that forced the hero to be written out inline. The
+   non-scaling stroke is what makes the 58px mark on the foil read as the same drawing as the 214px
+   one in the hero rather than a fainter cousin of it.
+
+The closing carries the mark too, and **draws it** exactly as the first screen does. It is a runtime
+**clone of the hero node**, not a third copy of the geometry — which means every id inside it has to
+be made unique on the way in (`wc-ink-n` → `wc-ink-n-close`). Share them and both marks share one set
+of ink fronts, so the hero's sweep finishes three screens above the closing and the footer's letters
+are already written before anyone reaches them.
+
+One set of rules drives both. Each step of the figure names both triggers and reads its base offset
+from `--fig`: the hero gets `var(--arrive)` and plays against the door sequence, the closing gets
+`0s` and plays against the scroll that reaches it. Two separate blocks would be two things to keep
+in step, which is the failure this whole section exists to prevent.
+
+Anything the clone needs must be styled on the mark's own classes, never on `.welcome-crest`. The
+letter faces were scoped that way at first and the closing's initials fell back to the browser
+default — a silent failure that only shows three screens down.
+
+Weights are measured at the size the mark ships, not the size it is drawn. The viewBox is 200 units
+across and it renders at 214px on a laptop and 176px on a phone, so a 0.6-unit rule lands under two
+thirds of a device pixel and antialiases away to nothing on the phone. Check any weight change at
+the phone size before trusting it at the drawing size.
+
+Two techniques are worth keeping straight. The strokes — ring, rule, midribs — draw with
+`stroke-dashoffset` against a hand-measured `stroke-dasharray`; if either path is edited, check
+`getTotalLength()` and keep the dasharray just above it, because a dasharray shorter than its path
+turns the stroke into beads. The letters and the names are *not* drawn that way: glyph outlines have
+no length you can read from script, so each is revealed by a soft-edged ink front sweeping left to
+right — an SVG mask inside the medallion, a CSS mask on the two names. The front's travel is set
+from each letter's measured `getBBox()`, so it starts the instant it has ink to lay down and ends
+the instant that letter is whole.
+
+The whole figure hangs off one custom property and one class. `--arrive` is the lead: the doors hand
+over whatever is left of their own run, every path that skips the entrance sets it to zero, and each
+step's delay is `calc(var(--arrive) + <its own offset>)`. `body.arrived` starts it, and the replay
+button takes it off again. No step is driven from script.
+
+Everything that begins hidden is scoped to `html.motion-ready`, which is now settled at the top of
+the script rather than inside the scroll block — one of the paths that skips the doors hides them
+synchronously, and a class added after that point would restart the figure part-way through. A
+browser that never receives the class, including anyone who has asked for reduced motion, is shown
+the finished arrival rather than an empty screen.
+
+The scroll cue underneath it says which way to go. It used to breathe in place, which reads as
+decoration; a soft gold mark now falls down the line once every two bars and then rests for the
+better part of a bar, which reads as an instruction rather than a pulse. The track is 2px and the
+falling mark 4px with a pale halo behind it — ink with a lamp behind it, because on cream paper the
+ink is what reads and the halo is what makes it read as *lit*.
+
+That fall is **put on the downbeat**, and seeking is the only way to hold it there. A negative
+`animation-delay` lines a loop up at the instant it starts and then lets it drift, because the cue
+counts from its own beginning while the score counts from the press. `syncCue` instead sets
+`currentTime` on the cue's two animations from the recording's own position, and repeats once a
+cycle so the drift between the audio clock and the compositor's never accumulates — measured at
+11ms, and 22ms five seconds later, both under or near a single frame. Silence leaves the cue running
+free; nothing here depends on the music playing. The mark is ink rather than light on purpose — a white highlight is the obvious choice
+and disappears completely against cream paper under a bright garden.
+
+The arrival is a full screen of composition, so its vertical rhythm answers to the height of the
+viewport as well as its width: the medallion, the paddings, the two names and the cue's margin are
+all `svh`-aware. Without that the cue is the first thing pushed under the fold on a short laptop
+window, and the cue is the one thing that has to be visible.
+
+### Inscribing the names
+
+The names are the font's **own outlines**, not live text — extracted from `pinyon-script.ttf` at its
+real advances. The face carries no kerning for these pairs, so the outlines land exactly where the
+live text used to, to a tenth of a pixel (verified against the browser's own measurement: 215.2px
+advance, 69.8px ink height, both matching).
+
+Each name is **written letter by letter**: a hairline of champagne runs the letterform, the next
+letter starts before the last has finished, and the ink fills in behind the nib. It is the device
+the mark already uses on its own frame, which is the point — the names and the medallion are now
+made of the same gesture.
+
+Three details do the actual work, and losing any one of them puts it straight back to *appearing*
+rather than *being written*:
+
+1. **The fill is split one path per letter**, and each letter starts inking as the nib is a little
+   past halfway through drawing it. A single fill for the whole word means the outlines draw and
+   then the ink lands everywhere at once — which is precisely what made the first version read as
+   coming to life rather than being written.
+2. **The trace easing is `linear`.** An eased trace accelerates and brakes inside every letter, so
+   the word pulses along letter by letter. A nib moves at one speed.
+3. **A letter's travel is longer than the step between letters** (0.75s against 0.33s and 0.21s), so
+   the next letter is under way before the last has finished and the line never stops. And the
+   stroke carries **no opacity ramp** — it is there from its first frame and the dash alone reveals
+   it, because fading each letter up as it began was a second "appearing" laid on top of the
+   drawing.
+
+Three things this replaced, and why:
+
+- **A mask wipe.** A soft-edged band crossing the letters in a straight line never looked like
+  writing; it looked like a reveal.
+- **A bloom of light riding that band.** A sliding blob sitting on top of the lettering rather than
+  belonging to it — a gimmick, and the thing that made the whole entrance read as childish.
+- **All the box-padding machinery** the mask needed to stop clipping descenders. The viewBox holds
+  the whole glyph, so the `j` problem cannot recur by construction.
+
+Three traps are worth knowing before touching this:
+
+- **`stroke-dasharray` restarts at every subpath.** A single path holding a word's twenty-odd
+  contours cannot be traced at all — the whole outline appears the instant the offset clears the
+  longest contour, which is exactly what the first attempt did. The contours are therefore split
+  into one path each, with `--i` grouping them back into letters for the stagger. The fill stays a
+  single path, because per-contour fills would ink the counters solid.
+- **The pen line needs a dasharray, not just a dashoffset.** `stroke-dashoffset` does nothing on
+  a stroke that has no `stroke-dasharray` to offset. Leave the dasharray off and the full outline of
+  both names sits on screen from page load — right across the medallion while it is meant to be
+  drawing alone. It is set from the measured `--len`, and the resting offset is a full `--len` too,
+  so a trace that never receives its animation stays hidden and the fill alone carries the name.
+  This one slipped past frame-by-frame testing because the helper that froze frames set the
+  dasharray by hand: check the computed style on a real run, not on a frozen one.
+- **The pen must not lift before the ink is under it.** Fading each stroke on its own schedule left
+  the first letters of a name with nothing holding them between the pen leaving and the fill
+  arriving — they blinked out and came back. The strokes are grouped so the pen lifts off the whole
+  name at once, after the fill. Walked frame by frame across the hand-off, no letter drops below
+  **86%** once it has begun — with the fill following the nib there is barely a hand-off left to
+  botch, which is the other reason per-letter fills are worth the extra paths.
+
+The trace length is measured from each path at load. Guessing a dasharray is what turns a script
+into a row of beads, and the outline of nine joined letters is not a number anyone can estimate.
+
+## The seal## The seal
+
+The wax seal is the same mark, struck. The source art is a photographed brass seal — a scalloped wax
+rim, two engraved rules, a ring of beads, and a stock flower in the middle that had nothing to do
+with this wedding. `brass-seal-monogram-512.png` keeps everything outside the beads exactly as
+photographed and rebuilds only the flat field inside them.
+
+The flower comes out by replacing that field with a **normalised-convolution** blur of itself —
+`blur(image × mask) / blur(mask)`. The normalisation is the point: a plain blur drags the bright
+beaded ring inward and leaves a halo exactly where the flower used to be. What survives is the
+field's own lighting gradient, which is what keeps the rebuilt area reading as the same lit piece of
+metal. Then the mark is rendered as a height map and lit from the upper left, the direction the
+original relief is already lit from, with an occlusion term so it reads as pressed into the wax
+rather than printed on it.
+
+Two things about the strike are worth keeping. The frame and the inner rule are **dropped** — the
+seal already owns two engraved rules and a ring of beads, and a third circle inside them reads as
+noise; what is struck is the bloom, the initials and the swash. And the emboss blur has to stay
+narrower than the thinnest stroke in the mark (σ≈1.35 at 512px), or the script hairlines flatten to
+nothing before they are ever lit — the first strike was invisible for exactly that reason.
+
+The builder is `.design`-adjacent scratch work rather than a committed script; the recipe above is
+the durable part. The original `brass-seal-512.png` is kept unmodified beside it.
+
+## The closing seam
+
+The closing is the end of the page, not a panel stuck onto it. The reply card's paper texture used
+to stop dead at its section's edge, and because that texture is a few percent lighter than the paper
+under it, the edge read as a rule drawn across the full width — the one hard line in an invitation
+that has none anywhere else.
+
+Both sides now fade over roughly a third of a screen: the section's texture is masked out at its
+foot, the garden is masked in over 340px, and the small centred rule that closes every other section
+is dropped here, because nothing follows this one and there is nothing to divide it from.
 
 ## Layout
 
