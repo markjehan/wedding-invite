@@ -24,4 +24,7 @@
  };
  button.addEventListener('click',()=>{const show=!stage.classList.contains('show-photo');stage.classList.toggle('show-photo',show);button.setAttribute('aria-pressed',String(show));button.textContent=show?'Return to the sketch':'See the real venue'});
  document.addEventListener('visibilitychange',()=>{if(document.hidden&&playing){cancelAnimationFrame(frame);clearTimeout(lead);playing=false;stage.classList.remove('is-drawing');stage.classList.add('is-drawn')}});
+ // invitation.js now runs before this file, so on a slow connection the venue can already have
+ // scrolled into view, and asked for the drawing, while this file was still arriving.
+ if(window.venueRequested){window.venueRequested=false;window.playVenueDrawing();}
 })();

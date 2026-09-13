@@ -351,7 +351,40 @@ Three traps are worth knowing before touching this:
 The trace length is measured from each path at load. Guessing a dasharray is what turns a script
 into a row of beads, and the outline of nine joined letters is not a number anyone can estimate.
 
-## The seal## The seal
+### Keeping the writing smooth
+
+The names are **fifteen letters, each a pair of small SVGs** — one for the ink, one for the pen —
+boxed to that letter's own ink, rather than one SVG per name. The split exists for frame rate, and
+it is load-bearing.
+
+A pen stroke is drawn by moving `stroke-dashoffset`, which is a paint property: no browser can hand
+it to the compositor, so on every frame it changes, the browser repaints the whole SVG it lives in.
+With each name in one SVG, a single frame of writing re-rasterised forty-one glyph paths — every
+letter's fill and every contour's stroke — on every frame of the animation. Boxed per letter, a frame
+repaints only the one to three letters the nib is on. The ink fades are `opacity` on whole SVG
+elements, which the compositor runs without repainting anything.
+
+Three smaller things go with it:
+
+- **No `vector-effect: non-scaling-stroke` on the pen.** It holds a hairline at one width for free,
+  but it rebuilds the stroke in screen space on every paint, which on curves this dense is
+  expensive. The script sets `--pen` to one CSS pixel in the font's own units — 2048 over the
+  current em size — and updates it when the viewport changes the type size. It renders at 1.00px.
+- **`stroke-opacity`, not `opacity`, on the pen paths**, because opacity on an SVG child can push that
+  path into a buffer of its own that is composited back on every repaint.
+- **The petals build each gradient once.** They used to create a fresh gradient for every petal on
+  every frame, underneath everything else the arrival is doing, for a colour that never changes.
+
+The split changed nothing you can see. Stepping the animation clock gives the same results before and
+after, the pen still renders at exactly one pixel, and both names are centred to the pixel at the
+same size as the single-SVG version. Merging the letters back into one SVG to tidy the markup is the
+change that brings the per-frame cost back.
+
+Frame rate cannot be judged in an embedded preview whose window is behind another: the browser
+throttles it to about one frame a second whether anything is animating or not. Judge smoothness in a
+real, focused browser window.
+
+## The seal
 
 The wax seal is the same mark, struck. The source art is a photographed brass seal — a scalloped wax
 rim, two engraved rules, a ring of beads, and a stock flower in the middle that had nothing to do
@@ -385,6 +418,49 @@ that has none anywhere else.
 Both sides now fade over roughly a third of a screen: the section's texture is masked out at its
 foot, the garden is masked in over 340px, and the small centred rule that closes every other section
 is dropped here, because nothing follows this one and there is nothing to divide it from.
+
+## Phones and Safari
+
+The invitation is checked on phones in two engines: WebKit, which is Safari and also every browser on
+an iPhone, at the iPhone 16 Pro's 402×874 viewport at 3x; and Chrome at Android sizes. It is walked
+the way a guest walks it — seal, arrival, then a screenful at a time to the footer — plus landscape,
+an iPhone SE and a 360px Android. Everything loads in both engines and nothing overflows sideways.
+What differed, and what is done about it:
+
+- **Safari styles the inside of a `<use>` copy; Chrome does not.** The small crests are `<use>`
+  copies of `#crest`, and their parts carry the medallion's class names. The medallion's "not drawn
+  yet" states were written bare (`.motion-ready .wc-petal`), so on an iPhone they reached every small
+  crest as well and the magnolia was missing from all of them. Those states are now scoped to
+  `:is(.welcome-crest,.closing-crest)`. Any new resting state for the medallion needs the same scope,
+  and only WebKit shows the bug: in Chrome the page looks correct either way.
+- **An iPhone on silent mutes Web Audio, but not an `<audio>` element.** The score plays through Web
+  Audio for its seamless loop, so it was the path that went quiet. Before playing, the page declares
+  its sound as `playback` through Safari's Audio Session API where that exists.
+- **A touch unlocks sound when the finger lifts, not when it lands.** Safari refuses the wake on
+  `pointerdown`, so the context is asked again on `touchend` and `click`. The same check brings the
+  music back after iOS parks it as interrupted, when the phone locks or a call comes in.
+- **Weight.** The two gallery photographs and the venue photograph were PNGs of 1.7–2.1MB each. They
+  are WebP now at full resolution, quality 90, about 42dB PSNR against the originals. The venue line
+  drawing and the seal are lossless WebP and pixel-identical wherever they are visible. A full walk
+  in WebKit went from 9.3MB to 3.5MB, and the offline bundle from 18.1MB to 10.2MB. The PNG originals
+  stay in `assets/`; the favicon is still the PNG.
+- **Only first-screen fonts are preloaded** (Pinyon Script for the initials, Italiana for the welcome
+  line), and `invitation.js` is listed before the venue's 400KB of stroke data. Deferred scripts run
+  in the order they are written, so the seal used to stay dead until that data had downloaded. The
+  venue can now reach the screen before its scripts have run, so the request to draw is left on the
+  window for `venue-drawing.js` to pick up.
+- **The calendar button follows the served `wedding.ics` on an iPhone or iPad** rather than generating
+  a download, because Safari opens a served calendar file straight into Add to Calendar.
+- **Smaller guards.** `text-size-adjust` stops phones inflating text when turned sideways;
+  `color-scheme: only light` keeps Android's forced dark mode off the stationery; the music control
+  and the frame line stay clear of the Dynamic Island in landscape; the gallery's hover lift applies
+  only where there is a real pointer, because a tap otherwise leaves a photograph stuck lifted.
+- **A browser that cannot run the script still gets the invitation.** The doors stay locked until the
+  script opens them, so a small inline script at the foot of the page removes them if `invitation.js`
+  has not reported in by the time the page has loaded.
+
+Headless WebKit on Windows has no Web Audio, and no emulator has a ring switch, so the audio changes,
+and the calendar hand-off, can only be confirmed on a real iPhone.
 
 ## Layout
 

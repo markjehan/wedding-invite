@@ -51,7 +51,7 @@ body.intro-locked{overflow:hidden}
 .door-leaf::before{content:'';position:absolute;inset:0;opacity:0;will-change:opacity;background:linear-gradient(90deg,#5c40199e,#5c401912)}
 .leaf-right::before{background:linear-gradient(270deg,#5c40199e,#5c401912)}
 /* The seal is the only affordance: its halves ride the leaves and part as the doors swing. */
-.door-leaf .seal-half{position:absolute;top:44%;height:23%;aspect-ratio:1/2;background:url('assets/materials/brass-seal-monogram-512.png') no-repeat;background-size:200% 100%;filter:drop-shadow(0 4px 7px #3a2a1245)}
+.door-leaf .seal-half{position:absolute;top:44%;height:23%;aspect-ratio:1/2;background:url('assets/materials/brass-seal-monogram-512.webp') no-repeat;background-size:200% 100%;filter:drop-shadow(0 4px 7px #3a2a1245)}
 .leaf-left .seal-half{right:0;background-position:left center}
 .leaf-right .seal-half{left:0;background-position:right center}
 .seal-press{position:absolute;top:61%;left:50%;translate:-50% -50%;z-index:5;width:clamp(68px,13svh,112px);aspect-ratio:1;min-height:0;padding:0;border-radius:50%;background:none}
@@ -120,3 +120,27 @@ h1[tabindex="-1"]:focus,h2[tabindex="-1"]:focus{outline:none}
 @media(max-width:700px){.door-camera{min-width:100vw;min-height:150vw}.masthead{height:64px;padding-inline:22px}.disclosure{font-size:11px}.timeline time{font-size:12px}.timeline p{font-size:14px}}
 @media(max-width:360px){.masthead{padding-inline:18px}}
 @media(prefers-reduced-motion:reduce){:root{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ---------- Phones ---------- */
+/* Safari and Chrome on a phone enlarge any text block they judge too small, and do it again whenever
+   the phone is turned sideways. Every size here is already chosen for a phone, so that inflation
+   only ever pushes the script lines and the programme out of shape. */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+/* The invitation is ivory stationery and has no dark version. Samsung Internet and Android's
+   forced-dark setting would otherwise invert it: brown paper, murky gold. */
+:root{color-scheme:only light}
+/* viewport-fit=cover runs the page edge to edge, which on a phone turned sideways puts the Dynamic
+   Island or the notch over the right or left margin. The music control and the frame line are held
+   clear of it. In portrait both insets are zero and nothing moves. */
+.masthead{padding-right:max(6%,calc(env(safe-area-inset-right) + 12px))}
+body::after{left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right))}
+@media(max-width:700px){
+ .masthead{padding-right:max(22px,calc(env(safe-area-inset-right) + 12px))}
+ body::after{left:max(6px,env(safe-area-inset-left));right:max(6px,env(safe-area-inset-right))}
+}
+@media(max-width:360px){.masthead{padding-right:max(18px,calc(env(safe-area-inset-right) + 12px))}}
+/* Older iOS only honours the prefixed form, and without it a turning leaf shows its mirrored back. */
+.door-leaf{-webkit-backface-visibility:hidden}
+/* The seal is the way in. Where the translate property is missing (Chrome before 104, iOS before
+   14.5) it is placed with transform instead, or it would sit off-centre on an old phone. */
+@supports not (translate:0 0){.seal-press{transform:translate(-50%,-50%)}.seal-word{transform:translateX(-50%)}}

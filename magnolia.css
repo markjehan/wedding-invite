@@ -180,7 +180,9 @@ blockquote{padding:30px 12px 0;font-size:32px;color:var(--action)}
 .letter-seal{width:78px;height:78px;margin:30px auto -66px;rotate:-8deg;filter:drop-shadow(0 8px 14px #4b371c33)}
 blockquote{color:var(--gold)}
 .memory-gallery figure{transition:translate .6s cubic-bezier(.16,1,.3,1),box-shadow .6s ease}
-.memory-gallery figure:hover{translate:0 -9px;box-shadow:0 24px 46px #6751361f}
+/* Only where there is a real pointer. A phone treats a tap as a hover that sticks until the next tap
+   somewhere else, which left a photograph lifted out of the row after the guest merely touched it. */
+@media(hover:hover){.memory-gallery figure:hover{translate:0 -9px;box-shadow:0 24px 46px #6751361f}}
 
 /* ---------- The foil card: an arched, die-cut keepsake rather than a gold slab ---------- */
 .scratch-card{height:360px;max-width:420px;border-radius:50% 50% 6px 6px/34% 34% 6px 6px;box-shadow:0 24px 58px #5b452421}
@@ -319,40 +321,59 @@ blockquote{color:var(--gold)}
 .motion-ready .welcome-wording,
 .motion-ready .welcome h1 .amp,
 .motion-ready .scroll-cue{opacity:0}
-.motion-ready .wc-ring{stroke-dasharray:428;stroke-dashoffset:428}
-.motion-ready .wc-rule{stroke-dasharray:340;stroke-dashoffset:340}
-.motion-ready .wc-vein{stroke-dasharray:18;stroke-dashoffset:18}
-.motion-ready .wc-tip{scale:0}
-.motion-ready .wc-leaf{scale:0}
-.motion-ready .wc-petal{scale:.15;opacity:0}
+/* Every "not drawn yet" state below is scoped to the two medallions that actually draw themselves.
+   Written bare, as .motion-ready .wc-petal, they also reached the small crests, which are <use>
+   copies of the #crest symbol and carry the same class names on their parts. Chrome does not match
+   document selectors inside a <use> copy; Safari does. On an iPhone every section's crest lost its
+   magnolia -- the petals, sepals and veins sat at their hidden starting state, waiting for an
+   animation only the medallions are ever given. */
+.motion-ready :is(.welcome-crest,.closing-crest) .wc-ring{stroke-dasharray:428;stroke-dashoffset:428}
+.motion-ready :is(.welcome-crest,.closing-crest) .wc-rule{stroke-dasharray:340;stroke-dashoffset:340}
+.motion-ready :is(.welcome-crest,.closing-crest) .wc-vein{stroke-dasharray:18;stroke-dashoffset:18}
+.motion-ready :is(.welcome-crest,.closing-crest) .wc-tip{scale:0}
+.motion-ready :is(.welcome-crest,.closing-crest) .wc-leaf{scale:0}
+.motion-ready :is(.welcome-crest,.closing-crest) .wc-petal{scale:.15;opacity:0}
 /* The ink front rests at the END of its travel, not the start. Without this the mask rect sits
    entirely left of the glyphs whenever .motion-ready is absent -- which is exactly the reduced
    motion case -- and the initials render invisible inside an otherwise complete medallion. */
 .wc-ink{translate:var(--ink-to) 0}
 .motion-ready .wc-ink{translate:var(--ink-from) 0}
-/* The names are inscribed, not wiped. A soft-edged mask crossing the letters in a straight band
-   never looked like writing -- it looked like a reveal -- and the bloom of light that rode it was a
-   sliding blob, which is worse: a gimmick sitting on top of the lettering rather than belonging to
-   it. Both are gone.
+/* The names are inscribed, not wiped. A soft-edged mask crossing the letters in a straight band never
+   looked like writing, and the bloom of light that rode it was a sliding blob sitting on top of the
+   lettering. Both are gone. Each name is the font's outline, traced by a champagne hairline in
+   writing order, with the ink coming up behind the nib.
 
-   What replaces them is the device the mark already uses on its own frame. Each name is the font's
-   outline as a path, traced by a hairline of champagne that runs the letterforms in writing order,
-   and the ink fills in behind the pen once it is most of the way along. The stroke is
-   non-scaling, so the nib stays one pixel wide at every viewport, and the trace length is measured
-   from the path itself at load -- guessing a dasharray is what turns a script into beads.
+   Every letter is its own pair of small SVGs, one for the ink and one for the pen, each boxed to that
+   letter's own ink, and that is a performance decision. A pen stroke is drawn by moving
+   stroke-dashoffset, which is a paint property: no browser can hand it to the compositor, so every
+   frame it changes the browser repaints whatever SVG it lives in. With each name in one SVG that
+   meant re-rasterising forty-one glyph paths on every frame the pen moved, which is what made the
+   writing stutter. Boxed per letter, a frame repaints only the letters the nib is actually on, and
+   the ink fades are opacity on whole SVG elements, which the compositor runs without repainting.
 
-   Positioning is by baseline, not by box: --top is where this name's ink begins relative to the
-   baseline the live text sat on, so the outlines land exactly where the words used to. */
+   The pen no longer uses vector-effect:non-scaling-stroke. It holds a hairline at one width, but it
+   makes the browser rebuild the stroke in screen space on every paint, which on curves this dense is
+   expensive. The script sets --pen to one CSS pixel in the font's own units instead, and updates it
+   when the type size changes with the viewport.
+
+   Positioning is by baseline, not by box: --top is where each name's box sits relative to the
+   baseline the live text used, and every letter is offset from it in the font's own units, so the
+   outlines land exactly where the words used to. */
 .welcome h1 .given{display:block;position:relative;height:1.14em}
-.welcome h1 .name{position:absolute;left:50%;translate:-50% 0;top:var(--top);height:var(--h);width:auto;overflow:visible}
-.name-fill{fill:#6d5228}
-.name-trace{fill:none;stroke:var(--gold);stroke-width:1;vector-effect:non-scaling-stroke;opacity:0}
-/* The dash is what hides the pen line until its letter begins, and it only works with a dasharray
-   to offset. Without one, stroke-dashoffset does nothing at all, so the full outline of both names
-   sat on screen from page load -- right across the medallion while it was meant to be drawing
-   alone. Resting at a full offset also means a trace that never gets its animation stays hidden
-   rather than showing: the fill alone still carries the name. */
-.motion-ready .name-trace.traceable{opacity:.95;stroke-dasharray:var(--len);stroke-dashoffset:var(--len)}
+/* height:auto beats the base svg rule's fixed 22px; each letter's aspect comes from its viewBox. */
+.welcome h1 .letter{position:absolute;height:auto;overflow:visible}
+/* stroke:none on the ink: the base svg rule would otherwise hand every letter an inherited hairline,
+   which is invisible at this scale and still has to be painted. */
+.letter.ink path{fill:#6d5228;stroke:none}
+.letter.pen path{fill:none;stroke:var(--gold);stroke-width:var(--pen,24);stroke-linecap:round;stroke-linejoin:round}
+/* The dash is what hides a pen line until its letter begins, and it only works with a dasharray to
+   offset: without one stroke-dashoffset does nothing, and the full outline of both names sat on
+   screen from page load, right across the medallion while it was meant to be drawing alone. Resting
+   at a full offset means a trace that never gets its animation stays hidden and the ink alone
+   carries the name. stroke-opacity rather than opacity: opacity on an SVG child can make the browser
+   paint that path into a buffer of its own and composite it back, on every frame it repaints. */
+.name-trace{opacity:0}
+.motion-ready .name-trace.traceable{opacity:1;stroke-opacity:.95;stroke-dasharray:var(--len);stroke-dashoffset:var(--len)}
 
 .motion-ready .arrived .welcome-crest .wc-ring,
 .motion-ready .closing-crest.shown .wc-ring{animation:wc-draw 3.6s cubic-bezier(.45,.05,.2,1) var(--fig) both}
@@ -388,11 +409,11 @@ blockquote{color:var(--gold)}
 .motion-ready .arrived .welcome h1 .name-trace.traceable{animation:name-trace .75s linear calc(var(--fig) + 8.4s + var(--d,0s) + var(--i) * var(--step)) both}
 /* The ink follows the nib rather than arriving all at once: each letter starts filling as the pen
    is a little over halfway through drawing it. */
-.motion-ready .arrived .welcome h1 .name-fill{animation:name-ink .5s ease-out calc(var(--fig) + 8.82s + var(--d,0s) + var(--i) * var(--step)) both}
+.motion-ready .arrived .welcome h1 .letter.ink{animation:name-ink .5s ease-out calc(var(--fig) + 8.82s + var(--d,0s) + var(--i) * var(--step)) both}
 /* The pen lifts off the whole name at once, and only once the ink is under it. Fading each stroke
    on its own schedule left the first letters with nothing holding them between the pen leaving and
    the fill arriving -- they blinked out and came back. */
-.motion-ready .arrived .welcome h1 .name-strokes{animation:name-lift .6s ease calc(var(--fig) + 10.8s + var(--d,0s)) both}
+.motion-ready .arrived .welcome h1 .letter.pen{animation:name-lift .6s ease calc(var(--fig) + 10.8s + var(--d,0s)) both}
 .motion-ready .arrived .welcome h1 .given:last-child{--d:1.8s}
 .motion-ready .arrived .welcome h1 .amp{animation:wc-rise .9s ease-out calc(var(--fig) + 10.2s) both}
 .motion-ready .arrived .scroll-cue{animation:wc-rise .9s cubic-bezier(.16,1,.3,1) calc(var(--fig) + 12.3s) both}

@@ -94,6 +94,7 @@
     // on this rather than on the press, or it runs a third of a beat ahead of the sound.
     function play(){
       halt();
+      claimSpeaker();
       if(!ctx)return playElement();
       // Resuming has to happen here, synchronously, while the gesture that allowed it is still on
       // the stack. Starting the source itself can safely wait for the decode.
@@ -142,6 +143,23 @@
       if(armed&&!muted&&!playing)play();
     }
     ['pointerdown','keydown'].forEach(t=>addEventListener(t,onFirstGesture,{passive:true}));
+    // Safari only lets a touch unlock sound when the finger lifts, not when it lands, so on an iPhone
+    // the pointerdown wake above is refused and the context has to be asked again on touchend or
+    // click. iOS also parks a sounding context as "interrupted" whenever the phone locks, a call comes
+    // in or another app takes the speaker, and never brings it back by itself. One check answers
+    // both: whenever the guest lifts a finger or comes back to the page, a context that ought to be
+    // sounding is asked to run.
+    function wake(){
+      if(!ctx||!armed||muted||ctx.state==='running'||!ctx.resume)return;
+      const resumed=ctx.resume();if(resumed&&resumed.catch)resumed.catch(()=>{});
+    }
+    ['touchend','click'].forEach(t=>addEventListener(t,wake,{passive:true}));
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden)wake()});
+    // An iPhone with its ring switch set to silent mutes Web Audio completely, while an <audio>
+    // element on the same phone still plays -- so the path this invitation prefers was the one that
+    // went quiet. Declaring the page's sound as playback, the category a music player uses, is how
+    // Safari lets it reach the speaker anyway. Browsers without the Audio Session API skip this.
+    function claimSpeaker(){try{if(navigator.audioSession&&navigator.audioSession.type!=='playback')navigator.audioSession.type='playback'}catch{}}
     reflect();
     return{
       begin,halt,arm,
@@ -262,6 +280,8 @@
   // Neither route passes through the seal, so neither has a gesture to start the score on; arming
   // it hands that job to the guest's first touch instead of losing the music altogether.
   if(reduced.matches || returnHash){Music.arm();finishIntro()} else showIntro();
+  // Tells the safety net at the foot of index.html that the doors are in working order.
+  window.invitationBooted=true;
   reduced.addEventListener('change',()=>{if(reduced.matches&&!intro.hidden)finishIntro()});
   // Only the date is confirmed. Calendar entries remain all-day until timing is supplied.
   const weddingDay = new Date('2026-12-04T00:00:00+05:30').getTime();
@@ -277,7 +297,14 @@
     if (!delta) $('#countdown-note').textContent = Date.now() < weddingDay + 86400000 ? 'Today is our wedding day!' : 'Thank you for celebrating this beautiful chapter with us.';
   }
   countdown(); setInterval(countdown, 1000);
+  // On an iPhone or iPad the plain link does better than the generated file. Safari opens a calendar
+  // file it is served straight into Add to Calendar, while a script-made download only lands in
+  // Files for the guest to go and find. The link already points at wedding.ics, so there it is simply
+  // allowed to go, without the download attribute that would turn it back into a file.
+  const appleTouch=/iPhone|iPad|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+  if(appleTouch)$('#ical').removeAttribute('download');
   $('#ical').addEventListener('click', (event) => {
+    if (appleTouch) return;
     event.preventDefault();
     const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
     const text = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Naveen and Dulanjani//Wedding//EN','CALSCALE:GREGORIAN','BEGIN:VEVENT','UID:naveen-dulanjani-20261204@invitation.local','DTSTAMP:' + stamp,'DTSTART;VALUE=DATE:20261204','DTEND;VALUE=DATE:20261205','SUMMARY:Naveen & Dulanjani Wedding','LOCATION:Avenra Gardens\\, Negombo\\, Sri Lanka','DESCRIPTION:Ceremony time to be confirmed.','END:VEVENT','END:VCALENDAR',''].join('\r\n');
@@ -390,7 +417,9 @@
     let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(paintFoil,180)});
   }else reveal();
   let venueStarted=false;
-  function startVenue(){if(venueStarted)return;venueStarted=true;window.playVenueDrawing?.();}
+  // The drawing's scripts load after this one, so on a slow connection the venue can reach the screen
+  // before they have run. The request is then left for venue-drawing.js to pick up when it arrives.
+  function startVenue(){if(venueStarted)return;venueStarted=true;if(window.playVenueDrawing)window.playVenueDrawing();else window.venueRequested=true;}
   if('IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){startVenue();observer.disconnect();}},{threshold:.2});observer.observe($('#architecture'));}else startVenue();
   $('#redraw').addEventListener('click',()=>window.playVenueDrawing?.());
   // Motion decorates visible content; it never gates reading or intercepts native scrolling.
@@ -480,6 +509,14 @@
       path.style.setProperty('--len', len.toFixed(1));
       path.classList.add('traceable');
     });
+    // The pen is one CSS pixel wide, written in the font's own units: 2048 units to the em, divided by
+    // however many pixels the em is right now. It used to be vector-effect:non-scaling-stroke, which
+    // holds the width with no script at all but rebuilds the stroke in screen space on every paint,
+    // and that was the most expensive single thing in drawing the names. The type size moves with
+    // the viewport, so the width follows it.
+    const heading=$('#welcome-title');
+    const setPen=()=>{if(heading)heading.style.setProperty('--pen',(2048/parseFloat(getComputedStyle(heading).fontSize)).toFixed(2))};
+    setPen();addEventListener('resize',setPen);
 
     const progress=document.createElement('span');progress.className='scroll-progress';$('.masthead').append(progress);
     const acts=[...document.querySelectorAll('.timeline li')],pan=$('.couple-background'),panFrame=$('.photo-invitation');
@@ -513,6 +550,10 @@
       // The sway completes once every eight bars, and the fall swells gently once a bar, so the
       // drift belongs to the same pulse as everything else rather than running on its own clock.
       const SWAY=TEMPO.bar*8*1000/(Math.PI*2);
+      // One gradient per petal, made the first time it is drawn and kept. It is defined in the petal's
+      // own coordinates, so it stays right through every translate and rotate; building it fresh for
+      // every petal on every frame was twenty allocations a frame for a colour that never changes.
+      const sheenFor=r=>{const g=sctx.createLinearGradient(0,-r,0,r);g.addColorStop(0,'#fffdf6');g.addColorStop(1,'#dcc79a');return g;};
       const measure=()=>{const dpr=Math.min(devicePixelRatio||1,2);wide=innerWidth;tall=innerHeight;sky.width=wide*dpr;sky.height=tall*dpr;sctx.setTransform(dpr,0,0,dpr,0,0);};
       const seed=settled=>({x:Math.random()*wide,y:settled?Math.random()*tall:-24,r:3+Math.random()*6,turn:Math.random()*Math.PI*2,spin:(Math.random()-.5)*.014,fall:.14+Math.random()*.34,sway:16+Math.random()*42,phase:Math.random()*Math.PI*2,tint:.16+Math.random()*.3});
       function drift(now){
@@ -526,8 +567,7 @@
           if(p.y-p.r>tall)petals[i]=seed(false);
           const x=p.x+Math.sin(now/SWAY+p.phase)*p.sway;
           sctx.save();sctx.translate(x,p.y);sctx.rotate(p.turn);sctx.globalAlpha=p.tint;
-          const sheen=sctx.createLinearGradient(0,-p.r,0,p.r);sheen.addColorStop(0,'#fffdf6');sheen.addColorStop(1,'#dcc79a');
-          sctx.fillStyle=sheen;sctx.beginPath();sctx.moveTo(0,-p.r);
+          sctx.fillStyle=p.sheen||(p.sheen=sheenFor(p.r));sctx.beginPath();sctx.moveTo(0,-p.r);
           sctx.quadraticCurveTo(p.r*.92,-p.r*.18,0,p.r);sctx.quadraticCurveTo(-p.r*.92,-p.r*.18,0,-p.r);
           sctx.fill();sctx.restore();
         });
