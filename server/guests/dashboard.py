@@ -267,8 +267,8 @@ def import_sheet(request):
         upload = request.FILES.get('sheet')
         if upload is None:
             context['error'] = 'Choose an Excel file first.'
-        elif upload.size > 5 * 1024 * 1024:
-            context['error'] = 'That file is larger than 5 MB, far more than a guest list needs. Is it the right one?'
+        elif upload.size > 4 * 1024 * 1024:  # Vercel turns away anything over 4.5 MB
+            context['error'] = 'That file is larger than 4 MB, far more than a guest list needs. Is it the right one?'
         else:
             try:
                 rows, used = spreadsheet.read(upload)

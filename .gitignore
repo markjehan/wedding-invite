@@ -32,3 +32,7 @@ dist/
 
 # Design canvas working files (re-seed with /design)
 .design/
+
+# Vercel's local settings and pulled secrets (DATABASE_URL, DJANGO_SECRET_KEY)
+.vercel/
+.env*

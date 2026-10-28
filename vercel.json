@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "regions": ["sin1"],
+  "functions": {
+    "server/config/wsgi.py": {
+      "maxDuration": 30,
+      "excludeFiles": "{.impeccable/**,dist/**,server/guests/tests*.py,**/__pycache__/**}"
+    }
+  }
+}

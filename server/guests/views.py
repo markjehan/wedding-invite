@@ -107,5 +107,9 @@ def site_file(request, name):
     # Artwork, fonts and music are large and rarely change; the page's own code changes while the
     # invitation is still being made, so a guest asked to look again sees the current version.
     response['Cache-Control'] = 'public, max-age=86400' if name.startswith('assets/') else 'no-cache'
+    # Vercel's own cache (other servers ignore this header) keeps every file until the next deploy,
+    # which starts with an empty one, so the 90 MB of artwork and music is not sent through Python
+    # for every guest.
+    response['Vercel-CDN-Cache-Control'] = 'max-age=31536000'
     response['X-Robots-Tag'] = 'noindex, nofollow'
     return response

@@ -3,12 +3,19 @@ admin pages where the couple keep the guest list.
 
 It runs as it is on the laptop. On the real server, INVITE_ENV=production turns debugging off and
 DJANGO_SECRET_KEY and DJANGO_ALLOWED_HOSTS must come from the environment.
+
+On Vercel (which sets VERCEL=1) it is always in production, and the guest list lives in the Postgres
+database named by DATABASE_URL, which adding Neon to the project sets. Vercel keeps no file the app
+writes, so the SQLite file would lose every reply there.
 """
 import os
 import secrets
 from datetime import datetime, time
 from pathlib import Path
+from urllib.parse import parse_qsl, unquote, urlsplit
 from zoneinfo import ZoneInfo
+
+from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 # The invitation itself (index.html and everything it links to). Only those files are ever served;
@@ -16,13 +23,21 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SITE_DIR = Path(os.environ.get('INVITE_SITE_DIR') or BASE_DIR.parent)
 # The guest list. It holds names and phone numbers, so it never goes into git or into an image.
 DATA_DIR = Path(os.environ.get('INVITE_DATA_DIR') or BASE_DIR / 'data')
-DATA_DIR.mkdir(exist_ok=True)
+ON_VERCEL = bool(os.environ.get('VERCEL'))
+if not ON_VERCEL:  # Vercel's disk is read-only
+    DATA_DIR.mkdir(exist_ok=True)
 
-PRODUCTION = os.environ.get('INVITE_ENV') == 'production'
+PRODUCTION = os.environ.get('INVITE_ENV') == 'production' or ON_VERCEL
 DEBUG = not PRODUCTION
 if PRODUCTION:
     SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
-    ALLOWED_HOSTS = os.environ['DJANGO_ALLOWED_HOSTS'].split(',')
+    ALLOWED_HOSTS = [host for host in os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',') if host]
+    # Vercel names each deployment itself: its own address, its branch's, and the project's main one
+    # (your domain, once it is added).
+    ALLOWED_HOSTS += [os.environ[name] for name in ('VERCEL_URL', 'VERCEL_BRANCH_URL', 'VERCEL_PROJECT_PRODUCTION_URL')
+                      if os.environ.get(name)]
+    if not ALLOWED_HOSTS:
+        raise ImproperlyConfigured('Set DJANGO_ALLOWED_HOSTS to the address the site is served at.')
 else:
     key_file = DATA_DIR / 'dev-secret-key'
     if not key_file.exists():
@@ -76,12 +91,32 @@ TEMPLATES = [{
     ]},
 }]
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': DATA_DIR / 'invite.sqlite3',
+if os.environ.get('DATABASE_URL'):
+    # postgresql://user:password@host/name?sslmode=require, as Neon gives it. Every request opens and
+    # closes its own connection: Vercel's instances come and go, and Neon's pooler shares them out.
+    _db = urlsplit(os.environ['DATABASE_URL'])
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': _db.path.lstrip('/'),
+            'USER': unquote(_db.username or ''),
+            'PASSWORD': unquote(_db.password or ''),
+            'HOST': _db.hostname,
+            'PORT': _db.port or '',
+            'OPTIONS': dict(parse_qsl(_db.query)),
+            'CONN_MAX_AGE': 0,
+            'DISABLE_SERVER_SIDE_CURSORS': True,
+        }
     }
-}
+elif ON_VERCEL:
+    raise ImproperlyConfigured('No DATABASE_URL: add the Neon database to the Vercel project (Storage tab).')
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': DATA_DIR / 'invite.sqlite3',
+        }
+    }
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATIC_URL = '/static/'
