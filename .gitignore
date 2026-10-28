@@ -16,8 +16,15 @@ Codex Image*.png
 .DS_Store
 Thumbs.db
 
-# Local dev server access log
+# Local dev server access logs
 server.log
+server/run.log
+
+# The server's Python environment, and its guest list (names and phone numbers: never in git)
+server/.venv/
+server/data/
+server/staticfiles/
+__pycache__/
 
 # Deploy output and Wrangler scratch
 dist/

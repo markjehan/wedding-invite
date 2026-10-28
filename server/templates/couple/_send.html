@@ -1,0 +1,20 @@
+{# The next thing to do for one guest. WhatsApp opens in a new tab; this page stays where it is. #}
+{% if guest.stage == 'unsent' or guest.stage == 'sent' or guest.stage == 'opened' %}
+  {% if guest.phone %}
+    <form class="send-form" method="post" action="{% url 'couple:send' guest.pk %}" target="_blank">
+      {% csrf_token %}
+      {% if guest.stage == 'unsent' %}
+        <button class="button is-whatsapp" data-done="Sent">
+          <svg class="icon"><use href="#i-send"/></svg><span>Send</span>
+        </button>
+      {% else %}
+        <input type="hidden" name="kind" value="reminder">
+        <button class="button is-quiet" data-done="Reminded">
+          <svg class="icon"><use href="#i-bell"/></svg><span>Remind</span>
+        </button>
+      {% endif %}
+    </form>
+  {% else %}
+    <a class="button is-quiet add-number" href="{% url 'couple:guest' guest.pk %}#id_phone"><svg class="icon"><use href="#i-phone"/></svg><span>Add their number</span></a>
+  {% endif %}
+{% endif %}

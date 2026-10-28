@@ -1,0 +1,47 @@
+/* Signing in, and setting up the authenticator app: one sheet of the invitation's paper, in the same
+   faces and colours as the guest list behind it (couple.css). */
+@font-face{font-family:Manrope;src:url('/assets/fonts/manrope-regular.ttf') format('truetype');font-weight:400;font-display:swap}
+@font-face{font-family:Manrope;src:url('/assets/fonts/manrope-semibold.ttf') format('truetype');font-weight:600 700;font-display:swap}
+@font-face{font-family:Italiana;src:url('/assets/fonts/italiana-regular.ttf') format('truetype');font-display:swap}
+
+:root{--paper:#f7f2e8;--sheet:#fffcf5;--tint:#fbf6ec;--ink:#58452c;--ink-soft:#735e43;--action:#796035;--action-deep:#5f4a28;
+  --gold:#ac8b51;--line:#cab991;--rule:#e6dbc4;--ease-out:cubic-bezier(.23,1,.32,1);color-scheme:light}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:28px 16px;background:var(--paper);color:var(--ink);
+  font:400 15px/1.6 Manrope,system-ui,sans-serif;-webkit-font-smoothing:antialiased;caret-color:var(--action)}
+::selection{background:#ecdfc3;color:var(--ink)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:3px}
+.sheet{width:100%;max-width:420px;padding:34px 32px 28px;background:var(--sheet);border:1px solid var(--rule);border-radius:12px;
+  box-shadow:0 1px 2px #58452c0d,0 18px 40px -22px #58452c40}
+.brand{display:grid;justify-items:center;gap:6px;margin:0 0 26px;text-align:center}
+.brand img{width:56px;height:56px;border-radius:50%}
+.brand span{font:400 25px/1.1 Italiana,serif;letter-spacing:.02em}
+.brand .amp{color:var(--gold)}
+.brand small{font-size:13px;color:var(--ink-soft)}
+h1{margin:0 0 10px;font-size:20px;font-weight:600;text-align:center;text-wrap:balance}
+h2{font-size:16px;font-weight:600;margin:24px 0 8px}
+p{margin:0 0 14px;color:var(--ink-soft);font-size:14.5px}
+a{color:var(--action);text-underline-offset:3px}
+label{display:block;margin:0 0 6px;font-size:13.5px;font-weight:600;color:var(--ink)}
+input:not([type=checkbox]):not([type=radio]){display:block;width:100%;height:44px;padding:10px 12px;margin:0 0 14px;font:400 16px Manrope,sans-serif;
+  color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:7px;transition:border-color .15s ease,box-shadow .15s ease}
+input:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px #ac8b5133}
+input[readonly]{background:var(--tint);font-family:ui-monospace,Consolas,monospace;font-size:14px;letter-spacing:.04em}
+input[name=code]{font-size:22px;letter-spacing:.3em;text-align:center;font-variant-numeric:tabular-nums}
+button,input[type=submit]{display:flex;align-items:center;justify-content:center;width:100%;height:44px;margin:6px 0;padding:0 16px;
+  font:600 15px Manrope,sans-serif;color:var(--sheet);background:var(--action);border:1px solid var(--action);border-radius:7px;cursor:pointer;
+  transition:background-color .15s ease,transform .12s var(--ease-out)}
+button:active,input[type=submit]:active{transform:scale(.98)}
+@media (hover:hover){button:hover,input[type=submit]:hover{background:var(--action-deep)}}
+button[name=action][value=cancel],form a{background:transparent}
+ul{padding-left:20px}
+.errorlist{list-style:none;padding:0;margin:0 0 10px;color:#9a4b35;font-size:13.5px;font-weight:500}
+.messages{list-style:none;padding:10px 14px;margin:0 0 20px;background:#eef2e4;color:#3a5430;border:1px solid #d3dec2;border-radius:7px;font-size:14px}
+img{display:block;margin:14px auto;max-width:220px;height:auto}
+textarea{display:block;width:100%;min-height:230px;padding:12px 14px;font:15px/1.7 ui-monospace,Consolas,monospace;color:var(--ink);
+  background:var(--tint);border:1px solid var(--line);border-radius:7px;resize:vertical}
+table{width:100%;border-collapse:collapse}
+td,th{padding:6px 4px;border-bottom:1px solid var(--rule);text-align:left;font-size:14px}
+.sheet>a+a,p>a+a{margin-left:16px}
+nav{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 16px;margin-top:26px;padding-top:16px;border-top:1px solid var(--rule);font-size:13.5px}

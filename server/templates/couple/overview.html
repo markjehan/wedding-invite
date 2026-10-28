@@ -1,0 +1,100 @@
+{% extends "couple/base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+{% url 'couple:guests' as guests_url %}
+
+<div class="hello">
+  <h1>The guest list</h1>
+  <p class="countdown">
+    {% if days > 0 %}<b>{{ days }}</b> day{{ days|pluralize }} to the wedding on Friday, 4 December
+    {% elif days == 0 %}The wedding is today
+    {% else %}The wedding was on 4 December{% endif %}{% if replies_close %}. Guests can reply until {{ replies_close|date:"j F" }}.{% endif %}
+  </p>
+</div>
+
+{# The question most people come here with: has this person replied? #}
+<form class="finder is-home" method="get" action="{{ guests_url }}" role="search">
+  <label class="search">
+    <span class="finder-label">Find a guest</span>
+    <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+    <input type="search" name="q" placeholder="Type a name or phone number" autocomplete="off" enterkeyhint="search">
+  </label>
+  <button class="button">Find</button>
+</form>
+
+<section class="tiles" aria-label="The numbers">
+  {% for tile in tiles %}
+    <a class="tile is-{{ tile.key }}" href="{{ guests_url }}?show={{ tile.key }}">
+      <span class="tile-number">{{ tile.value }}</span>
+      <span class="tile-label">{{ tile.label }}</span>
+      <span class="tile-note">{{ tile.note }}</span>
+      <span class="tile-go">See who <svg class="icon"><use href="#i-back"/></svg></span>
+    </a>
+  {% endfor %}
+</section>
+
+<div class="overview">
+  <section class="sheet needs" aria-labelledby="needs-title">
+    <h2 id="needs-title">What to do next</h2>
+    {% for group in needs %}
+      <div class="need">
+        <h3><a href="{{ guests_url }}?show={{ group.key }}">{{ group.label }}</a> <span class="count">{{ group.total }}</span></h3>
+        {% if group.guests %}
+          <p class="help">{% if group.key == 'unsent' %}They have not been sent their link yet. Press <b>Send</b> and WhatsApp opens with the message already written. Check it, then press send in WhatsApp.{% else %}They have their link but have not answered. <b>Remind</b> opens WhatsApp with a gentle reminder written for you.{% endif %}</p>
+          <ul class="mini-list">
+            {% for guest in group.guests %}
+              <li>
+                <a class="name" href="{% url 'couple:guest' guest.pk %}">{{ guest.name }}</a>
+                {% include "couple/_stage.html" %}
+                {% include "couple/_send.html" %}
+              </li>
+            {% endfor %}
+          </ul>
+          {% if group.total > group.guests|length %}<a class="more" href="{{ guests_url }}?show={{ group.key }}">See all {{ group.total }}</a>{% endif %}
+        {% else %}
+          <p class="empty">{% if group.key == 'unsent' %}Nothing to do. Everyone on the list has been sent their invitation.{% else %}Nothing to do. Nobody is waiting to be reminded.{% endif %}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </section>
+
+  <section class="sheet sides" aria-labelledby="sides-title">
+    <h2 id="sides-title">Each side</h2>
+    <ul class="side-list">
+      {% for side in sides %}
+        <li>
+          <a class="side-name" href="{{ guests_url }}?side={{ side.key }}">{{ side.label }}</a>
+          <p><b class="is-coming">{{ side.people }} coming</b> · {{ side.declined }} can't come · {{ side.waiting }} no answer yet</p>
+          <p class="quiet">{{ side.invited }} invitation{{ side.invited|pluralize }}, {{ side.seats }} seat{{ side.seats|pluralize }} kept</p>
+        </li>
+      {% endfor %}
+      <li class="is-total">
+        <span class="side-name">Everyone</span>
+        <p><b class="is-coming">{{ counts.people }} coming</b> · {{ counts.declined }} can't come · {{ counts.unsent|add:counts.sent|add:counts.opened }} no answer yet</p>
+        <p class="quiet">{{ counts.invited }} invitation{{ counts.invited|pluralize }}, {{ counts.seats }} seat{{ counts.seats|pluralize }} kept</p>
+      </li>
+    </ul>
+    <p class="help">“Coming” counts people. The rest count invitations, and one invitation can be a whole family.</p>
+    <a class="button is-quiet" href="{% url 'couple:export' %}"><svg class="icon"><use href="#i-download"/></svg><span>Download the list as Excel</span></a>
+  </section>
+
+  <section class="sheet replies" aria-labelledby="replies-title">
+    <h2 id="replies-title">Latest replies</h2>
+    {% if latest %}
+      <ul class="reply-list">
+        {% for guest in latest %}
+          <li>
+            <a class="name" href="{% url 'couple:guest' guest.pk %}">{{ guest.name }}</a>
+            <time datetime="{{ guest.replied_at|date:'c' }}">{{ guest.replied_at|date:"j M, g:i a" }}</time>
+            {% include "couple/_stage.html" %}
+            {% if guest.message %}<blockquote>{{ guest.message }}</blockquote>{% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+      <a class="more" href="{{ guests_url }}?show=coming">Everyone coming</a>
+    {% else %}
+      <p class="empty">No replies yet. They appear here, with anything the guest writes, the moment they reply.</p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

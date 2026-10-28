@@ -1,0 +1,63 @@
+{% extends "couple/base.html" %}
+{% block title %}Add from Excel{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Add guests from Excel</h1>
+</div>
+
+{% if not preview %}
+  <div class="import-layout">
+    <section class="sheet">
+      <form method="post" enctype="multipart/form-data" class="drop">
+        {% csrf_token %}
+        <label class="drop-zone">
+          <svg class="icon" aria-hidden="true"><use href="#i-upload"/></svg>
+          <span class="drop-title">Choose your guest list</span>
+          <span class="drop-sub">An Excel file (.xlsx). Nothing changes until you have seen what it will do.</span>
+          <input type="file" name="sheet" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required>
+          <span class="file-name" aria-live="polite"></span>
+        </label>
+        {% if error %}<p class="field-error">{{ error }}</p>{% endif %}
+        <button class="button">Read the sheet</button>
+      </form>
+    </section>
+    <section class="how">
+      <h2>What the sheet needs</h2>
+      <p>A heading row, then one guest per row. <b>Name</b> is the only column it must have.
+        <b>Sinhala name</b>, <b>Phone</b>, <b>Seats</b>, <b>Side</b> (bride or groom) and <b>Notes</b> are used when they are there,
+        in any order and under most names you would give them. Other columns are ignored.</p>
+      <p>Someone already on the list, with the same number or else the same name, is updated rather than added twice,
+        and an empty cell never wipes out what is already there. So the same sheet can be brought in again after you change it.</p>
+      <p><a href="{% url 'couple:blank' %}"><svg class="icon"><use href="#i-download"/></svg>An empty guest list to fill in</a></p>
+    </section>
+  </div>
+{% else %}
+  <section class="sheet">
+    <p class="lead">From <b>{{ file_name }}</b>: <b>{{ adding }}</b> to add, <b>{{ updating }}</b> to update{% if skipping %}, <b>{{ skipping }}</b> left out{% endif %}.
+      <span class="quiet">Columns used: {{ used|join:", " }}.</span></p>
+    <table class="preview-table">
+      <thead>
+        <tr><th scope="col" class="num">Row</th><th scope="col">Name</th><th scope="col">Sinhala name</th><th scope="col">Number</th><th scope="col" class="num">Seats</th><th scope="col">Side</th><th scope="col">What happens</th></tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+          <tr class="is-{{ row.action }}">
+            <td class="num">{{ row.line }}</td>
+            <td>{{ row.fields.name|default:"" }}</td>
+            <td lang="si">{{ row.fields.name_si|default:"" }}</td>
+            <td>{{ row.fields.phone|default:"" }}</td>
+            <td class="num">{{ row.fields.seats|default:"" }}</td>
+            <td>{{ row.fields.side|default:""|capfirst }}</td>
+            <td class="what">{% if row.action == 'add' %}Added{% elif row.action == 'update' %}Updates them{% else %}Left out: {{ row.reason }}{% endif %}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <form method="post" class="form-actions">
+      {% csrf_token %}
+      {% if adding or updating %}<button class="button" name="confirm" value="1">Go ahead</button>{% endif %}
+      <a class="button is-quiet" href="{% url 'couple:import' %}">Choose another sheet</a>
+    </form>
+  </section>
+{% endif %}
+{% endblock %}

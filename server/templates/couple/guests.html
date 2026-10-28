@@ -1,0 +1,94 @@
+{% extends "couple/base.html" %}
+{% block title %}Guests{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Guests <span class="count">{{ counts.invited }}</span></h1>
+  <div class="head-actions">
+    <a class="button" href="{% url 'couple:guest_new' %}"><svg class="icon"><use href="#i-plus"/></svg><span>Add a guest</span></a>
+    <a class="button is-quiet" href="{% url 'couple:export' %}"><svg class="icon"><use href="#i-download"/></svg><span>Download Excel</span></a>
+  </div>
+</div>
+
+<form class="finder" method="get" role="search">
+  {% if show %}<input type="hidden" name="show" value="{{ show }}">{% endif %}
+  <label class="search">
+    <span class="visually-hidden">Find a guest</span>
+    <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+    <input type="search" name="q" value="{{ query }}" placeholder="Type a name or phone number" autocomplete="off" enterkeyhint="search">
+  </label>
+  <label class="side-pick">
+    <span class="visually-hidden">Side</span>
+    <select name="side" onchange="this.form.requestSubmit()">
+      <option value="">Both sides</option>
+      {% for key, label in sides %}<option value="{{ key }}"{% if side == key %} selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select>
+  </label>
+  <button class="button">Find</button>
+</form>
+
+<nav class="stage-tabs" aria-label="Show guests who are">
+  {% for tab in tabs %}
+    <a href="?{% if tab.key %}show={{ tab.key }}&amp;{% endif %}{% if side %}side={{ side }}&amp;{% endif %}{% if query %}q={{ query|urlencode }}{% endif %}"
+       class="is-{{ tab.key|default:'all' }}"{% if show == tab.key %} aria-current="true"{% endif %}>
+      {% if tab.key %}<span class="diamond" aria-hidden="true"></span>{% endif %}{{ tab.label }}<span class="count">{{ tab.count }}</span>
+    </a>
+  {% endfor %}
+</nav>
+
+{% if query or show_label %}
+  <p class="filter-note">
+    Showing {% if show_label %}guests at “{{ show_label }}”{% else %}guests{% endif %}{% if query %} matching “{{ query }}”{% endif %}.
+    <a href="{% url 'couple:guests' %}">Show everyone</a>
+  </p>
+{% endif %}
+
+{% if guests %}
+  <table class="guest-table">
+    <thead>
+      <tr>
+        <th scope="col">Guest</th>
+        <th scope="col" class="num">Seats</th>
+        <th scope="col">Where they are</th>
+        <th scope="col">What they wrote</th>
+        <th scope="col"><span class="visually-hidden">What to do</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for guest in guests %}
+        <tr>
+          <th scope="row" class="who">
+            <a class="name" href="{% url 'couple:guest' guest.pk %}">{{ guest.name }}</a>
+            <span class="sub">{% if guest.name_si %}<span lang="si">{{ guest.name_si }}</span>{% endif %}{% if guest.side %}<span>{{ guest.get_side_display }}</span>{% endif %}</span>
+          </th>
+          <td class="num seats">{{ guest.seats }}<span class="unit"> seat{{ guest.seats|pluralize }}</span></td>
+          <td class="where">{% include "couple/_stage.html" %}</td>
+          <td class="note">{% if guest.message %}<q>{{ guest.message|truncatechars:90 }}</q>{% endif %}</td>
+          <td class="actions">
+            {% include "couple/_send.html" %}
+            <button type="button" class="button is-quiet copy-link" data-link="/{{ guest.code }}" aria-label="Copy the link for {{ guest.name }}">
+              <svg class="icon"><use href="#i-copy"/></svg><span>Copy link</span>
+            </button>
+            <a class="button is-quiet is-open" href="{% url 'couple:guest' guest.pk %}" aria-label="Open {{ guest.name }}"><span>Open</span></a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <p class="help list-help">Tap a name to change their details, record a reply they gave you by phone, or take them off the list.</p>
+{% elif counts.invited == 0 and not query and not side %}
+  <div class="empty-state">
+    <h2>No guests yet</h2>
+    <p>Add them one at a time, or all at once from your Excel guest list. Each guest gets their own link the moment they are added.</p>
+    <p class="empty-actions">
+      <a class="button" href="{% url 'couple:import' %}"><svg class="icon"><use href="#i-upload"/></svg><span>Add from Excel</span></a>
+      <a class="button is-quiet" href="{% url 'couple:guest_new' %}"><svg class="icon"><use href="#i-plus"/></svg><span>Add a guest</span></a>
+    </p>
+  </div>
+{% else %}
+  <div class="empty-state">
+    <h2>Nobody found</h2>
+    <p>{% if query %}No guest matches “{{ query }}”{% if show or side %} with these filters{% endif %}. Try part of the name, like “Nim” for Nimal, or the last few digits of their number.{% else %}No guest is at this step right now.{% endif %}</p>
+    <p class="empty-actions"><a class="button is-quiet" href="{% url 'couple:guests' %}">Show everyone</a></p>
+  </div>
+{% endif %}
+{% endblock %}

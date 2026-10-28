@@ -1,0 +1,122 @@
+{% extends "couple/base.html" %}
+{% block title %}{% if guest %}{{ guest.name }}{% else %}Add a guest{% endif %}{% endblock %}
+{% block content %}
+<a class="back" href="{% url 'couple:guests' %}"><svg class="icon"><use href="#i-back"/></svg>All guests</a>
+
+<div class="guest-head">
+  <h1 class="guest-name">{% if guest %}{{ guest.name }}{% else %}Add a guest{% endif %}</h1>
+  {% if guest %}
+    <p class="guest-sub">
+      {% include "couple/_stage.html" %}
+      {% if guest.name_si %}<span lang="si">{{ guest.name_si }}</span>{% endif %}
+      {% if guest.side %}<span>{{ guest.get_side_display }}</span>{% endif %}
+      <span>{{ guest.seats }} seat{{ guest.seats|pluralize }} kept</span>
+    </p>
+  {% endif %}
+</div>
+
+<div class="guest-page{% if not guest %} is-new{% endif %}">
+  {% if guest %}
+    <aside class="sheet invitation-panel" aria-labelledby="invitation-title">
+      <h2 id="invitation-title">Their invitation</h2>
+      <div class="send-row">{% include "couple/_send.html" %}</div>
+      <p class="link-row">
+        <a class="guest-link" href="/{{ guest.code }}" target="_blank" rel="noopener">{{ link }}</a>
+      </p>
+      <div class="link-actions">
+        <button type="button" class="button is-quiet copy-link" data-link="/{{ guest.code }}"><svg class="icon"><use href="#i-copy"/></svg><span>Copy link</span></button>
+        <a class="button is-quiet" href="/{{ guest.code }}" target="_blank" rel="noopener"><svg class="icon"><use href="#i-open"/></svg><span>See what they see</span></a>
+        {% if guest.phone %}<a class="button is-quiet" href="tel:+{{ guest.phone }}"><svg class="icon"><use href="#i-phone"/></svg><span>Call</span></a>{% endif %}
+      </div>
+      <p class="help">Copy link is for sending it some other way, like SMS or email. Looking at it here does not count as them opening it.</p>
+
+      {% if guest.stage == 'unsent' %}
+        <form method="post" action="{% url 'couple:guest_fix' guest.pk %}" class="inline-fix">{% csrf_token %}
+          <input type="hidden" name="do" value="sent">
+          <span>Already sent it some other way?</span> <button class="text-button">Mark as sent</button>
+        </form>
+      {% elif guest.stage == 'sent' %}
+        <form method="post" action="{% url 'couple:guest_fix' guest.pk %}" class="inline-fix">{% csrf_token %}
+          <input type="hidden" name="do" value="unsent">
+          <span>WhatsApp opened but you didn't actually send it?</span> <button class="text-button">Mark as not sent</button>
+        </form>
+      {% endif %}
+
+      <h2>So far</h2>
+      <ol class="timeline">
+        <li class="is-done"><span class="diamond" aria-hidden="true"></span><b>Added</b> {{ guest.created_at|date:"j M, g:i a" }}</li>
+        <li class="{% if guest.sent_at %}is-done{% endif %}"><span class="diamond" aria-hidden="true"></span><b>Sent</b>
+          {% if guest.sent_at %}{{ guest.sent_at|date:"j M, g:i a" }}{% else %}not yet{% endif %}</li>
+        {% if guest.reminded_at %}<li class="is-done"><span class="diamond" aria-hidden="true"></span><b>Reminded</b> {{ guest.reminded_at|date:"j M, g:i a" }}</li>{% endif %}
+        <li class="{% if guest.first_opened_at %}is-done{% endif %}"><span class="diamond" aria-hidden="true"></span><b>Opened</b>
+          {% if guest.first_opened_at %}{{ guest.first_opened_at|date:"j M, g:i a" }}{% if guest.times_opened > 1 %}, {{ guest.times_opened }} times in all{% endif %}{% else %}not yet{% endif %}</li>
+        <li class="{% if guest.reply %}is-done is-{{ guest.stage }}{% endif %}"><span class="diamond" aria-hidden="true"></span><b>Replied</b>
+          {% if guest.reply == 'yes' %}coming, {{ guest.people }} of {{ guest.seats }}, {{ guest.replied_at|date:"j M, g:i a" }}
+          {% elif guest.reply == 'no' %}can't come, {{ guest.replied_at|date:"j M, g:i a" }}
+          {% else %}not yet{% endif %}</li>
+      </ol>
+      {% if guest.message %}
+        <h2>What they wrote</h2>
+        <blockquote class="their-note">{{ guest.message }}</blockquote>
+      {% endif %}
+    </aside>
+
+    {# For when a guest answers by phone, at the temple, or presses the wrong button. #}
+    <section class="sheet fix-panel" aria-labelledby="fix-title">
+      <h2 id="fix-title">{% if guest.reply %}Change their reply{% else %}Did they reply another way?{% endif %}</h2>
+      <p class="help">{% if guest.reply %}If they told you something different, or pressed the wrong answer, put it right here.{% else %}If they told you by phone or in person, record it here so the numbers stay right.{% endif %}</p>
+      <div class="fix-actions">
+        <form method="post" action="{% url 'couple:guest_fix' guest.pk %}" class="fix-coming">{% csrf_token %}
+          <input type="hidden" name="do" value="coming">
+          <label for="fix-people">Coming, with</label>
+          <select id="fix-people" name="people">
+            {% for n in seat_choices %}<option value="{{ n }}"{% if guest.reply == 'yes' and guest.people == n or guest.reply != 'yes' and n == guest.seats %} selected{% endif %}>{{ n }} {{ n|pluralize:"person,people" }}</option>{% endfor %}
+          </select>
+          <button class="button is-coming">Save: coming</button>
+        </form>
+        <form method="post" action="{% url 'couple:guest_fix' guest.pk %}">{% csrf_token %}
+          <input type="hidden" name="do" value="not-coming">
+          <button class="button is-quiet is-declined">Save: can't come</button>
+        </form>
+      </div>
+      {% if guest.reply %}
+        <form method="post" action="{% url 'couple:guest_fix' guest.pk %}" class="inline-fix"
+              onsubmit="return confirm('Clear the reply for {{ guest.name|escapejs }}? They will be able to answer again on their link.')">{% csrf_token %}
+          <input type="hidden" name="do" value="clear">
+          <span>Want them to answer again themselves?</span> <button class="text-button">Clear their reply</button>
+        </form>
+      {% endif %}
+      <p class="help">More people than {{ guest.seats }}? Change “Seats kept for them” below and save first.</p>
+    </section>
+  {% endif %}
+
+  <section class="sheet guest-form" aria-labelledby="details-title">
+    <h2 id="details-title">{% if guest %}Their details{% else %}Who are you inviting?{% endif %}</h2>
+
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% if form.non_field_errors %}<p class="field-error">{{ form.non_field_errors|join:" " }}</p>{% endif %}
+      {% for field in form %}
+        <div class="field{% if field.errors %} has-error{% endif %} field-{{ field.name }}">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}<p class="field-error">{{ field.errors|join:" " }}</p>
+          {% elif field.help_text %}<p class="help">{{ field.help_text }}</p>{% endif %}
+        </div>
+      {% endfor %}
+      <div class="form-actions">
+        <button class="button">{% if guest %}Save changes{% else %}Add to the list{% endif %}</button>
+        <a class="button is-quiet" href="{% url 'couple:guests' %}">Cancel</a>
+      </div>
+    </form>
+
+    {% if guest %}
+      <form class="remove" method="post" action="{% url 'couple:guest_delete' guest.pk %}"
+            onsubmit="return confirm('Take {{ guest.name|escapejs }} off the list? Their link will stop opening their invitation, and their reply is deleted. This cannot be undone.')">
+        {% csrf_token %}
+        <button class="text-button is-danger"><svg class="icon"><use href="#i-trash"/></svg>Take them off the list</button>
+      </form>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}

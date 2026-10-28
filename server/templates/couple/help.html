@@ -1,0 +1,119 @@
+{% extends "couple/base.html" %}
+{% block title %}Help{% endblock %}
+{% block content %}
+{% url 'couple:guests' as guests_url %}
+<div class="page-head">
+  <h1>Help</h1>
+</div>
+<p class="lead help-lead">Tap a question to see what to do. Nothing here can break the invitation, and almost everything can be put back.</p>
+
+<div class="help-layout">
+  <section class="sheet faq" aria-labelledby="everyday-title">
+    <h2 id="everyday-title">Every day</h2>
+
+    <details>
+      <summary>How do I send someone their invitation?</summary>
+      <ol>
+        <li>Find them on <a href="{{ guests_url }}">Guests</a>, or under <b>What to do next</b> on <a href="{% url 'couple:overview' %}">Home</a>.</li>
+        <li>Press the green <b>Send</b> button. WhatsApp opens with the message and their link already written.</li>
+        <li>Check it, then press send in WhatsApp. Come back to this page when you are done.</li>
+      </ol>
+      <p>The list marks them as sent as soon as you press Send here.</p>
+    </details>
+
+    <details>
+      <summary>How do I know if someone has replied?</summary>
+      <p>Type their name in <b>Find a guest</b> on <a href="{% url 'couple:overview' %}">Home</a>. Next to their name it says in words where they are: not sent yet, sent, opened, coming, or can't come.</p>
+    </details>
+
+    <details>
+      <summary>How do I remind people who haven't answered?</summary>
+      <p>On <a href="{% url 'couple:overview' %}">Home</a>, under <b>Remind them</b>, press <b>Remind</b> next to a name. WhatsApp opens with a gentle reminder and their link. To see everyone still to answer, open <a href="{{ guests_url }}?show=waiting">Waiting for a reply</a>.</p>
+    </details>
+
+    <details>
+      <summary>How many people are coming, for the venue or the caterer?</summary>
+      <p>The big number on <a href="{% url 'couple:overview' %}">Home</a> is the number of people coming. <b>Each side</b> splits it between the bride's and groom's sides.</p>
+      <p>For the full list, press <a href="{% url 'couple:export' %}">Download the list as Excel</a>. It opens in Excel or Google Sheets and has everyone, their seats and their answer.</p>
+    </details>
+  </section>
+
+  <section class="sheet faq" aria-labelledby="wrong-title">
+    <h2 id="wrong-title">When something goes wrong</h2>
+
+    <details>
+      <summary>A guest phoned or told me in person</summary>
+      <p>Open their name, then under <b>Did they reply another way?</b> choose how many are coming and press <b>Save: coming</b>, or press <b>Save: can't come</b>.</p>
+    </details>
+
+    <details>
+      <summary>A guest pressed the wrong answer, or changed their mind</summary>
+      <p>They can open their own link again and change it themselves{% if replies_close %} until {{ replies_close|date:"j F" }}{% endif %}.</p>
+      <p>Or you can do it for them: open their name and use <b>Change their reply</b>. To let them answer again from scratch, press <b>Clear their reply</b>.</p>
+    </details>
+
+    <details>
+      <summary>They say the link doesn't open, or they can't find it</summary>
+      <ol>
+        <li>Open their name and press <b>See what they see</b>. If their invitation opens for you, the link is fine.</li>
+        <li>Send it again: press <b>Send</b> or <b>Remind</b>, or press <b>Copy link</b> and paste it into an SMS or email.</li>
+        <li>Ask them to tap the link rather than typing it. If they are using an old phone, try opening it in Chrome.</li>
+      </ol>
+    </details>
+
+    <details>
+      <summary>They need more seats than we kept</summary>
+      <p>Open their name, change <b>Seats kept for them</b> under <b>Their details</b>, and press <b>Save changes</b>. Their invitation lets them choose up to that many straight away.</p>
+    </details>
+
+    <details>
+      <summary>I sent it to the wrong number</summary>
+      <ol>
+        <li>Open their name, fix the <b>WhatsApp number</b>, and press <b>Save changes</b>.</li>
+        <li>Press <b>Mark as not sent</b> if it shows, then press <b>Send</b> again.</li>
+      </ol>
+      <p>Anyone who got it by mistake only sees that guest's invitation. If you would rather they had nothing, take the guest off the list and add them again: they get a brand new link and the old one stops working.</p>
+    </details>
+
+    <details>
+      <summary>It says “Sent” but I closed WhatsApp without sending</summary>
+      <p>Open their name and press <b>Mark as not sent</b>. They go back under <b>Send their invitation</b>.</p>
+    </details>
+
+    <details>
+      <summary>The Send button isn't there, it says “Add their number”</summary>
+      <p>That guest has no WhatsApp number yet. Press <b>Add their number</b>, type it any way you like (077 123 4567 is fine), and press <b>Save changes</b>.</p>
+    </details>
+
+    <details>
+      <summary>Someone is on the list twice</summary>
+      <p>Open the one that has <b>not</b> replied and press <b>Take them off the list</b> at the bottom. If both have replied, keep the newer reply.</p>
+    </details>
+
+    <details>
+      <summary>I can't find someone I'm sure is on the list</summary>
+      <p>Type just part of the name, like “Nim” for Nimal, or the last four digits of their number. Check <b>Both sides</b> is chosen, and press <a href="{{ guests_url }}">Show everyone</a>.</p>
+    </details>
+  </section>
+
+  <section class="sheet faq" aria-labelledby="signin-title">
+    <h2 id="signin-title">Signing in</h2>
+
+    <details>
+      <summary>Where does the 6-digit code come from?</summary>
+      <p>From the authenticator app on your phone (Google Authenticator, Microsoft Authenticator or similar). Open it and type the 6 numbers shown for this guest list. They change every 30 seconds, so use the newest one.</p>
+    </details>
+
+    <details>
+      <summary>I lost my phone or changed phones</summary>
+      <p>Use one of your backup codes instead of the 6-digit code. Each works once. If you have none left, ask the person who made your account to reset it.</p>
+      <p>Once you are in, <a href="{% url 'mfa_index' %}">Sign-in codes and backup codes</a> lets you set up the new phone and see fresh backup codes.</p>
+    </details>
+
+    <details>
+      <summary>Is it safe to use on someone else's computer?</summary>
+      <p>Yes, if you press <b>Sign out</b> at the top when you are done. The pages are never saved on the computer.</p>
+    </details>
+  </section>
+</div>
+{% endblock %}

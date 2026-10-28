@@ -1,0 +1,69 @@
+{% load static %}<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#fffcf5">
+  <meta name="color-scheme" content="only light">
+  <title>{% block title %}{% endblock %} · Naveen &amp; Dulanjani</title>
+  <link rel="icon" href="/assets/materials/brass-seal-monogram-512.png">
+  <link rel="preload" href="/assets/fonts/manrope-regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="{% static 'guests/couple.css' %}">
+</head>
+<body>
+  {# One set of drawn icons for every page: 24px grid, 1.6 stroke, round ends. #}
+  <svg width="0" height="0" class="sprite" aria-hidden="true">
+    <symbol id="i-send" viewBox="0 0 24 24"><path d="M21 3 10.5 13.5"/><path d="M21 3 14.5 21l-4-7.5L3 9.5 21 3Z"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 9a6 6 0 1 1 12 0c0 6 2.5 8 2.5 8h-17S6 15 6 9"/><path d="M10.2 20.5a2 2 0 0 0 3.6 0"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M15 9V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h4"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 20V9"/><path d="m7 14 5-5 5 5"/><path d="M5 4h14"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-open" viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><path d="M5 3h3.5l1.8 4.6-2.3 1.5a11 11 0 0 0 5.9 5.9l1.5-2.3L20 14.5V18a2 2 0 0 1-2 2A15 15 0 0 1 3 5a2 2 0 0 1 2-2Z"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="m10.9 12.1 8.6-8.6"/><path d="m17 6 2.5 2.5"/><path d="m14.5 8.5 2 2"/></symbol>
+    <symbol id="i-out" viewBox="0 0 24 24"><path d="M15 4h4a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1h-4"/><path d="m10 17 5-5-5-5"/><path d="M15 12H4"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="m6 7 1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M9 7V4h6v3"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V19a1 1 0 0 1-1 1h-4.5v-6h-5v6H5a1 1 0 0 1-1-1v-8.5Z"/></symbol>
+    <symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8"/><path d="M18 14.2a6.5 6.5 0 0 1 3.5 5.8"/></symbol>
+    <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.6"/><path d="M12 17.2v.1"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  </svg>
+
+  <header class="bar">
+    <a class="brand" href="{% url 'couple:overview' %}">
+      <img src="/assets/materials/brass-seal-monogram-512.webp" alt="" width="34" height="34">
+      <span>Naveen <span class="amp">&amp;</span> Dulanjani</span>
+    </a>
+    <form method="post" action="{% url 'account_logout' %}" class="sign-out">{% csrf_token %}
+      <button class="button is-quiet is-small"><svg class="icon"><use href="#i-out"/></svg><span>Sign out</span></button>
+    </form>
+    {# Four places, each with its word under its picture: nobody has to guess what an icon means. #}
+    <nav class="sections" aria-label="Pages">
+      <a href="{% url 'couple:overview' %}"{% if section == 'overview' %} aria-current="page"{% endif %}><svg class="icon"><use href="#i-home"/></svg>Home</a>
+      <a href="{% url 'couple:guests' %}"{% if section == 'guests' %} aria-current="page"{% endif %}><svg class="icon"><use href="#i-people"/></svg>Guests</a>
+      <a href="{% url 'couple:import' %}"{% if section == 'import' %} aria-current="page"{% endif %}><svg class="icon"><use href="#i-upload"/></svg>Add from Excel</a>
+      <a href="{% url 'couple:help' %}"{% if section == 'help' %} aria-current="page"{% endif %}><svg class="icon"><use href="#i-help"/></svg>Help</a>
+    </nav>
+  </header>
+
+  {% if messages %}
+    <div class="notices" role="status">
+      {% for message in messages %}<p class="notice is-{{ message.tags }}"><svg class="icon"><use href="#{% if message.tags == 'error' %}i-x{% else %}i-check{% endif %}"/></svg><span>{{ message }}</span></p>{% endfor %}
+    </div>
+  {% endif %}
+
+  <main class="page">{% block content %}{% endblock %}</main>
+
+  <footer class="foot">
+    <p>Stuck? <a href="{% url 'couple:help' %}">See what to do when something goes wrong</a>.</p>
+    <p><a href="{% url 'mfa_index' %}"><svg class="icon"><use href="#i-key"/></svg>Sign-in codes and backup codes</a></p>
+  </footer>
+
+  <script src="{% static 'guests/couple.js' %}" defer></script>
+</body>
+</html>

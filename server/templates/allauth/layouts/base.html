@@ -1,0 +1,37 @@
+{% load static %}<!doctype html>
+{# Every sign-in page (password, authenticator code, backup codes) is one sheet of the invitation's paper. #}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="color-scheme" content="only light">
+  <title>{% block head_title %}{% endblock head_title %} · Naveen &amp; Dulanjani</title>
+  <link rel="icon" href="/assets/materials/brass-seal-monogram-512.png">
+  <link rel="stylesheet" href="{% static 'guests/accounts.css' %}">
+  {% block extra_head %}{% endblock extra_head %}
+</head>
+<body>
+  {% block body %}
+    <main class="sheet">
+      <p class="brand">
+        <img src="/assets/materials/brass-seal-monogram-512.webp" alt="" width="56" height="56">
+        <span>Naveen <span class="amp">&amp;</span> Dulanjani</span>
+        <small>The guest list</small>
+      </p>
+      {% if messages %}
+        <ul class="messages">{% for message in messages %}<li>{{ message }}</li>{% endfor %}</ul>
+      {% endif %}
+      {% block content %}{% endblock content %}
+      {% if user.is_authenticated %}
+        <nav>
+          <a href="{% url 'couple:overview' %}">Back to the guest list</a>
+          <a href="{% url 'mfa_index' %}">Two-step sign-in</a>
+          <a href="{% url 'account_logout' %}">Sign out</a>
+        </nav>
+      {% endif %}
+    </main>
+  {% endblock body %}
+  {% block extra_body %}{% endblock extra_body %}
+</body>
+</html>

@@ -1,0 +1,10 @@
+{# Where one guest is, in plain words: the diamond fills as they move along. #}
+<span class="stage is-{{ guest.stage }}" data-stage>
+  <span class="diamond" aria-hidden="true"></span>
+  {% if guest.stage == 'unsent' %}Not sent yet
+  {% elif guest.stage == 'sent' %}Sent {{ guest.sent_at|date:"j M" }}, not opened yet{% if guest.reminded_at %}<small>reminded {{ guest.reminded_at|date:"j M" }}</small>{% endif %}
+  {% elif guest.stage == 'opened' %}Opened {{ guest.first_opened_at|date:"j M" }}, no reply yet{% if guest.reminded_at %}<small>reminded {{ guest.reminded_at|date:"j M" }}</small>{% endif %}
+  {% elif guest.stage == 'coming' %}Coming, {{ guest.people }} of {{ guest.seats }}
+  {% else %}Can't come
+  {% endif %}
+</span>
