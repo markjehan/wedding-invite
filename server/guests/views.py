@@ -11,8 +11,9 @@ from . import site
 from .models import Guest, ReplyTo
 
 
-def _page(data, status=200):
-    response = HttpResponse(site.page(data), status=status)
+def _page(request, data, status=200):
+    base = settings.SITE_URL or request.build_absolute_uri('/').rstrip('/')
+    response = HttpResponse(site.page(data, base), status=status)
     # A personal page carries the guest's name and reply: never kept by a browser or a proxy, never
     # listed by a search engine.
     response['Cache-Control'] = 'no-store'
@@ -31,7 +32,7 @@ def _reply_of(guest):
 @require_GET
 def general(request):
     """The invitation without a name: everything to read, nothing to reply with."""
-    return _page({'mode': 'general'})
+    return _page(request, {'mode': 'general'})
 
 
 @require_GET
@@ -39,8 +40,8 @@ def personal(request, code):
     guest = Guest.objects.filter(code=code.lower()).first()
     # A mistyped or retired link still shows the invitation, just not anyone's details.
     if guest is None:
-        return _page({'mode': 'general'}, status=404)
-    return _page({
+        return _page(request, {'mode': 'general'}, status=404)
+    return _page(request, {
         'mode': 'guest',
         'code': guest.code,
         'name': guest.name,

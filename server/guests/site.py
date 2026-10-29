@@ -67,9 +67,15 @@ def content_type(path):
     return mimetypes.guess_type(path.name)[0] or 'application/octet-stream'
 
 
-def page(data):
-    """index.html with what the page needs to know about this visit, as JSON for invitation.js."""
+def page(data, base=''):
+    """index.html with what the page needs to know about this visit, as JSON for invitation.js.
+
+    `base` is the site's address, like https://wedding-invite-mark-6689.vercel.app: the link card's
+    picture is given in full, because WhatsApp will not follow a relative address to fetch it.
+    """
     text, _ = _index()
     if '</head>' not in text:
         raise ValueError('index.html has no </head> to put the guest details before.')
+    if base:
+        text = text.replace('<meta property="og:image" content="assets/', f'<meta property="og:image" content="{base}/assets/', 1)
     return text.replace('</head>', f'  {json_script(data, "invite-data")}\n</head>', 1)

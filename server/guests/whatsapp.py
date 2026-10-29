@@ -1,39 +1,46 @@
 """The WhatsApp messages each guest is sent with their link: the invitation, and a reminder.
 
-Both are written in both languages because the guest chooses theirs on the invitation's first page;
-a message never chooses for them. Change the wording here.
+They are written in English, as the couple asked on 30 October 2026. The invitation itself still opens
+on its language page, where every guest chooses English or Sinhala for themselves. Change the wording
+here; {name} is the name the invitation greets them by.
 """
 from urllib.parse import quote
 
 INVITATION = (
-    'Dear {name},\n'
-    'Naveen & Dulanjani warmly invite you to their wedding on Monday, 7 December 2026, '
-    'at Avenra Gardens, Negombo.\n'
+    '💌 Dear {name},\n'
     '\n'
-    'ආදරණීය {name_si},\n'
-    'නවීන් සහ දුලාංජනී, 2026 දෙසැම්බර් 7 වන සඳුදා මීගමුව ඇවන්රා ගාඩන්ස් හිදී පැවැත්වෙන '
-    'සිය විවාහ මංගල්‍යයට ඔබට සාදරයෙන් ආරාධනා කරති.\n'
+    'With joy in our hearts, we would love you to be part of the most special day of our lives. '
+    'Please join us as we begin our forever together. 💍✨\n'
     '\n'
-    'Your invitation · ඔබගේ ආරාධනාව:\n'
-    '{link}'
+    '📅 Monday, 7 December 2026\n'
+    '📍 Avenra Gardens, Negombo\n'
+    '\n'
+    'Your own invitation is waiting for you here 👇\n'
+    '{link}\n'
+    '\n'
+    'Open it to see all the details, and let us know if you can come. '
+    'Having you there would mean the world to us. 🤍\n'
+    '\n'
+    'With love,\n'
+    'Naveen & Dulanjani 🌸'
 )
 
 REMINDER = (
-    'Dear {name},\n'
-    'A gentle reminder: Naveen & Dulanjani would love to know whether you can join them '
-    'on Monday, 7 December 2026. You can reply on your invitation.\n'
+    '🌸 Dear {name},\n'
     '\n'
-    'ආදරණීය {name_si},\n'
-    'නවීන් සහ දුලාංජනී, 2026 දෙසැම්බර් 7 වන සඳුදා සිය විවාහ මංගල්‍යයට ඔබට සහභාගී විය '
-    'හැකිදැයි දැන ගැනීමට කැමැත්තෙන් සිටිති. ඔබගේ ආරාධනාවේ පිළිතුර යැවිය හැක.\n'
+    'A gentle reminder from Naveen & Dulanjani: we would love to know whether you can celebrate '
+    'with us on Monday, 7 December 2026. 💍\n'
     '\n'
-    'Your invitation · ඔබගේ ආරාධනාව:\n'
-    '{link}'
+    'It only takes a moment to reply on your invitation 👇\n'
+    '{link}\n'
+    '\n'
+    'We truly hope to see you there. 🤍\n'
+    'Naveen & Dulanjani'
 )
 
 
 def message(guest, link, reminder=False):
-    return (REMINDER if reminder else INVITATION).format(name=guest.name, name_si=guest.name_si or guest.name, link=link)
+    return (REMINDER if reminder else INVITATION).format(name=guest.name, link=link)
 
 
 def chat_url(guest, link, reminder=False):

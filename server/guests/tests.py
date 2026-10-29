@@ -64,6 +64,11 @@ class PageTests(TestCase):
         guest = Guest.objects.create(name='Ruwan', side='groom')
         self.assertEqual(invite_data(self.client.get(f'/{guest.code}'))['whatsapp'], ReplyTo.MAIN)
 
+    def test_the_link_card_shows_the_couple(self):
+        page = self.client.get(f'/{self.guest.code}').content.decode()
+        self.assertIn('<meta property="og:image" content="http://testserver/assets/couple/naveen-dulanjani-preview.jpg">', page)
+        self.assertEqual(self.client.get('/assets/couple/naveen-dulanjani-preview.jpg').status_code, 200)
+
     def test_code_in_capitals_still_works(self):
         self.assertEqual(self.client.get(f'/{self.guest.code.upper()}').status_code, 200)
 
