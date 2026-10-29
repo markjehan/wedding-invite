@@ -19,7 +19,18 @@
   {% if guest %}
     <aside class="sheet invitation-panel" aria-labelledby="invitation-title">
       <h2 id="invitation-title">Their invitation</h2>
-      <div class="send-row">{% include "couple/_send.html" %}</div>
+      <div class="send-row">
+        {% include "couple/_send.html" %}
+        {# Once it has gone out, the invitation can always go again: a lost message, a new phone, or a guest who replied and wants their link. #}
+        {% if guest.phone and guest.stage != 'unsent' %}
+          <form class="send-form is-resend" method="post" action="{% url 'couple:send' guest.pk %}" target="_blank">
+            {% csrf_token %}
+            <button class="button {% if guest.stage == 'coming' or guest.stage == 'declined' %}is-whatsapp{% else %}is-quiet{% endif %}" data-done="Sent again">
+              <svg class="icon"><use href="#i-send"/></svg><span>Send the invitation again</span>
+            </button>
+          </form>
+        {% endif %}
+      </div>
       <p class="link-row">
         <a class="guest-link" href="/{{ guest.code }}" target="_blank" rel="noopener">{{ link }}</a>
       </p>

@@ -218,6 +218,16 @@ class GuestListTests(TestCase):
         response = self.client.post(reverse('couple:send', args=[self.guest.pk]))
         self.assertIn(f'https://naveenanddulanjani.com/{self.guest.code}', unquote(response['Location']))
 
+    def test_sending_again_after_they_replied(self):
+        guest = self.guests['coming']
+        guest.phone = '94770000007'
+        guest.save()
+        self.assertContains(self.client.get(reverse('couple:guest', args=[guest.pk])), 'Send the invitation again')
+        response = self.client.post(reverse('couple:send', args=[guest.pk]))
+        self.assertTrue(response['Location'].startswith('https://wa.me/94770000007?text='))
+        guest.refresh_from_db()
+        self.assertEqual((guest.stage, guest.people), ('coming', 2))
+
     def test_no_whatsapp_without_a_number(self):
         guest = self.guests['opened']
         response = self.client.post(reverse('couple:send', args=[guest.pk]))

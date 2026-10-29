@@ -41,7 +41,7 @@
       if (words) words.textContent = button.dataset.done;
       button.querySelector('use').setAttribute('href', '#i-check');
       const stage = form.closest('tr, li, .invitation-panel')?.querySelector('[data-stage]');
-      if (!stage || reminder) return;
+      if (!stage || reminder || form.classList.contains('is-resend')) return;  // sending again moves no one back
       stage.classList.add('is-changing');
       setTimeout(() => {
         stage.className = 'stage is-sent';

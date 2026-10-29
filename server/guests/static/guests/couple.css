@@ -256,6 +256,7 @@ a.side-name:hover{text-decoration:underline}
 
 .invitation-panel > h2{margin:24px 0 10px}
 .invitation-panel > h2:first-child{margin-top:0}
+.send-row{display:flex;flex-wrap:wrap;gap:10px}
 .send-row:not(:empty){margin:4px 0 14px}
 .send-row .button{min-height:52px;padding:0 26px;font-size:17px}
 .link-row{font-size:15px;word-break:break-all}
