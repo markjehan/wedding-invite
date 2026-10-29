@@ -1,0 +1,2 @@
+# For Vercel, which installs from the top folder. The list itself is server/requirements.txt.
+-r server/requirements.txt
