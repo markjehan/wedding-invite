@@ -9,7 +9,7 @@
   <title>{% block title %}{% endblock %} · Naveen &amp; Dulanjani</title>
   <link rel="icon" href="/assets/materials/brass-seal-monogram-512.png">
   <link rel="preload" href="/assets/fonts/manrope-regular.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="{% static 'guests/couple.css' %}">
+  <link rel="stylesheet" href="{% static 'guests/couple.css' %}?v={{ asset_version }}">
 </head>
 <body>
   {# One set of drawn icons for every page: 24px grid, 1.6 stroke, round ends. #}
@@ -64,6 +64,6 @@
     <p><a href="{% url 'mfa_index' %}"><svg class="icon"><use href="#i-key"/></svg>Sign-in codes and backup codes</a></p>
   </footer>
 
-  <script src="{% static 'guests/couple.js' %}" defer></script>
+  <script src="{% static 'guests/couple.js' %}?v={{ asset_version }}" defer></script>
 </body>
 </html>

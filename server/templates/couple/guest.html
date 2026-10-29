@@ -19,27 +19,31 @@
   {% if guest %}
     <aside class="sheet invitation-panel" aria-labelledby="invitation-title">
       <h2 id="invitation-title">Their invitation</h2>
+      {# The one next thing to do is the solid button; sending again is always there beside it, quieter. #}
       <div class="send-row">
         {% include "couple/_send.html" %}
-        {# Once it has gone out, the invitation can always go again: a lost message, a new phone, or a guest who replied and wants their link. #}
         {% if guest.phone and guest.stage != 'unsent' %}
           <form class="send-form is-resend" method="post" action="{% url 'couple:send' guest.pk %}" target="_blank">
             {% csrf_token %}
-            <button class="button {% if guest.stage == 'coming' or guest.stage == 'declined' %}is-whatsapp{% else %}is-quiet{% endif %}" data-done="Sent again">
+            <button class="button is-quiet" data-done="Sent again">
               <svg class="icon"><use href="#i-send"/></svg><span>Send the invitation again</span>
             </button>
           </form>
         {% endif %}
       </div>
-      <p class="link-row">
+
+      <div class="link-box">
+        <p class="link-label">Their link</p>
         <a class="guest-link" href="/{{ guest.code }}" target="_blank" rel="noopener">{{ link }}</a>
-      </p>
-      <div class="link-actions">
-        <button type="button" class="button is-quiet copy-link" data-link="/{{ guest.code }}"><svg class="icon"><use href="#i-copy"/></svg><span>Copy link</span></button>
-        <a class="button is-quiet" href="/{{ guest.code }}" target="_blank" rel="noopener"><svg class="icon"><use href="#i-open"/></svg><span>See what they see</span></a>
-        {% if guest.phone %}<a class="button is-quiet" href="tel:+{{ guest.phone }}"><svg class="icon"><use href="#i-phone"/></svg><span>Call</span></a>{% endif %}
+        <div class="link-actions">
+          <button type="button" class="button is-quiet is-small copy-link" data-link="/{{ guest.code }}"><svg class="icon"><use href="#i-copy"/></svg><span>Copy link</span></button>
+          <a class="button is-quiet is-small" href="/{{ guest.code }}" target="_blank" rel="noopener"><svg class="icon"><use href="#i-open"/></svg><span>See what they see</span></a>
+        </div>
       </div>
-      <p class="help">Copy link is for sending it some other way, like SMS or email. Looking at it here does not count as them opening it.</p>
+      <p class="help">Copy the link to send it some other way, like SMS or email. Looking at it here does not count as them opening it.</p>
+      {% if guest.phone %}
+        <p class="phone-line"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><a href="tel:+{{ guest.phone }}">Call +{{ guest.phone }}</a></p>
+      {% endif %}
 
       {% if guest.stage == 'unsent' %}
         <form method="post" action="{% url 'couple:guest_fix' guest.pk %}" class="inline-fix">{% csrf_token %}

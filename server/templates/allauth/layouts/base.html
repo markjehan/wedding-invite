@@ -8,7 +8,7 @@
   <meta name="color-scheme" content="only light">
   <title>{% block head_title %}{% endblock head_title %} · Naveen &amp; Dulanjani</title>
   <link rel="icon" href="/assets/materials/brass-seal-monogram-512.png">
-  <link rel="stylesheet" href="{% static 'guests/accounts.css' %}">
+  <link rel="stylesheet" href="{% static 'guests/accounts.css' %}?v={{ asset_version }}">
   {% block extra_head %}{% endblock extra_head %}
 </head>
 <body>

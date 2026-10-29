@@ -3,12 +3,23 @@
   'use strict';
   document.documentElement.classList.add('js');
 
+  // A button's words change through a short blur, so the old and new label never sit on top of
+  // each other for a frame.
+  const relabel = (button, text, icon) => {
+    const words = button.querySelector('span'), use = button.querySelector('use');
+    button.classList.add('is-swapping');
+    setTimeout(() => {
+      if (words && text) words.textContent = text;
+      if (use && icon) use.setAttribute('href', icon);
+      button.classList.remove('is-swapping');
+    }, 120);
+  };
+
   // "Copy link": the guest's full link, ready to paste into any message.
   document.addEventListener('click', async event => {
     const button = event.target.closest('.copy-link');
     if (!button) return;
     const link = new URL(button.dataset.link, location.origin).href;
-    const use = button.querySelector('use'), words = button.querySelector('span');
     button.label ??= button.getAttribute('aria-label');
     try {
       await navigator.clipboard.writeText(link);
@@ -16,13 +27,11 @@
       window.prompt('Copy this link:', link);
       return;
     }
-    use.setAttribute('href', '#i-check');
-    if (words) words.textContent = 'Copied';
+    relabel(button, 'Copied', '#i-check');
     button.setAttribute('aria-label', 'Copied');
     clearTimeout(button.reset);
     button.reset = setTimeout(() => {
-      use.setAttribute('href', '#i-copy');
-      if (words) words.textContent = 'Copy link';
+      relabel(button, 'Copy link', '#i-copy');
       if (button.label) button.setAttribute('aria-label', button.label);
       else button.removeAttribute('aria-label');
     }, 1600);
@@ -34,12 +43,11 @@
   document.addEventListener('submit', event => {
     const form = event.target.closest('.send-form');
     if (!form) return;
-    const button = form.querySelector('button'), words = button.querySelector('span');
+    const button = form.querySelector('button');
     const reminder = form.querySelector('[name=kind]');
     setTimeout(() => {
       button.classList.add('is-done');
-      if (words) words.textContent = button.dataset.done;
-      button.querySelector('use').setAttribute('href', '#i-check');
+      relabel(button, button.dataset.done, '#i-check');
       const stage = form.closest('tr, li, .invitation-panel')?.querySelector('[data-stage]');
       if (!stage || reminder || form.classList.contains('is-resend')) return;  // sending again moves no one back
       stage.classList.add('is-changing');

@@ -84,14 +84,18 @@ def overview(request):
     def invitations(n):
         return f'{n} invitation{"s" * (n != 1)}'
 
+    # Each part of the list: its number, what it is, and its share of the invitations, which sets
+    # its length on the home page's champagne rule.
     tiles = [
-        {'key': 'coming', 'value': counts['people'], 'label': 'person coming' if counts['people'] == 1 else 'people coming',
-         'note': f'from {counts["coming"]} of {invitations(counts["invited"])}'},
-        {'key': 'declined', 'value': counts['declined'], 'label': "can't come", 'note': f'{invitations(counts["declined"])} said no'},
-        {'key': 'waiting', 'value': waiting, 'label': 'waiting for a reply',
-         'note': f'{invitations(waiting)}, {counts["sent"]} not opened yet' if counts['sent'] else invitations(waiting)},
-        {'key': 'unsent', 'value': counts['unsent'], 'label': 'not sent yet',
-         'note': f'{invitations(counts["unsent"])} to send' if counts['unsent'] else 'everyone has theirs'},
+        {'key': 'coming', 'value': counts['people'], 'share': counts['coming'],
+         'label': 'person coming' if counts['people'] == 1 else 'people coming',
+         'note': f'from {invitations(counts["coming"])}'},
+        {'key': 'declined', 'value': counts['declined'], 'share': counts['declined'], 'label': "can't come",
+         'note': f'{invitations(counts["declined"])} said no'},
+        {'key': 'waiting', 'value': waiting, 'share': waiting, 'label': 'waiting for a reply',
+         'note': f'{counts["sent"]} not opened yet' if counts['sent'] else 'all of them opened it'},
+        {'key': 'unsent', 'value': counts['unsent'], 'share': counts['unsent'], 'label': 'not sent yet',
+         'note': 'send these first' if counts['unsent'] else 'everyone has theirs'},
     ]
 
     sides = []

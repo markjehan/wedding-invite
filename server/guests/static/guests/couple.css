@@ -16,7 +16,7 @@
   --coming:#3f6331; --coming-wash:#eef2e4; --declined:#953f2a; --declined-wash:#f8e9e2; --opened:#7d5a1a; --waiting-wash:#f6eedd;
   --whatsapp:#23704a; --whatsapp-deep:#1a5638;
   --radius:9px; --tap:46px;
-  --shadow:0 1px 2px #58452c0d, 0 10px 28px -18px #58452c33;
+  --shadow:0 1px 1px #58452c0a, 0 12px 32px -24px #58452c40;
   --ease-out:cubic-bezier(.23,1,.32,1);
   color-scheme:light;
 }
@@ -51,7 +51,7 @@ table{font-variant-numeric:tabular-nums}
 .sections{grid-column:2;grid-row:1;display:flex;gap:2px;align-self:stretch}
 .sections a{display:flex;align-items:center;gap:8px;min-height:68px;padding:0 14px;color:var(--ink-soft);text-decoration:none;font-weight:600;font-size:16px;
   border-bottom:3px solid transparent;margin-bottom:-1px;transition:color .15s ease,border-color .15s ease,background-color .15s ease}
-.sections a:hover{color:var(--ink);background:var(--tint)}
+@media (hover:hover){.sections a:hover{color:var(--ink);background:var(--tint)}}
 .sections a[aria-current]{color:var(--ink);border-bottom-color:var(--gold)}
 .sign-out{grid-column:3;grid-row:1}
 
@@ -86,7 +86,8 @@ table{font-variant-numeric:tabular-nums}
   .button.is-coming:hover{background:#30501f;border-color:#30501f}
   .button.is-declined:hover{background:var(--declined-wash);color:var(--declined);border-color:var(--declined)}
 }
-.button > span{transition:filter .2s ease,opacity .2s ease}
+.button > span,.button > .icon{transition:filter .12s ease,opacity .12s ease}
+.button.is-swapping > span,.button.is-swapping > .icon{filter:blur(3px);opacity:0}
 .button.is-done{background:var(--coming-wash);color:var(--whatsapp);border-color:#bcd3c4}
 .button.is-done.is-quiet{color:var(--ink-soft);background:var(--tint);border-color:var(--rule)}
 .text-button{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:4px 0;border:0;background:none;
@@ -96,9 +97,9 @@ table{font-variant-numeric:tabular-nums}
 
 /* ---------- The diamond, and where a guest is ---------- */
 .diamond{display:inline-block;flex:none;width:9px;height:9px;rotate:45deg;border:1.5px solid var(--gold);background:var(--gold)}
-.stage{display:inline-flex;align-items:baseline;flex-wrap:wrap;gap:0 8px;font-size:16px;color:var(--ink-soft)}
-.stage .diamond{align-self:center;margin-right:2px}
-.stage small{font-size:14px;color:var(--ink-soft);font-weight:400}
+.stage{display:inline;font-size:16px;color:var(--ink-soft)}
+.stage .diamond{margin:0 9px 0 1px;vertical-align:.06em}
+.stage small{margin-left:8px;font-size:14px;color:var(--ink-soft);font-weight:400;white-space:nowrap}
 .stage.is-unsent .diamond{background:transparent;border-color:var(--ink-soft)}
 .stage.is-sent .diamond{background:transparent}
 .stage.is-opened{color:var(--opened)} .stage.is-opened .diamond{border-color:var(--opened);background:var(--opened)}
@@ -130,19 +131,37 @@ table{font-variant-numeric:tabular-nums}
 .search input:focus,.side-pick select:focus,.field input:focus,.field select:focus,.field textarea:focus,.fix-coming select:focus{
   outline:none;border-color:var(--gold);box-shadow:0 0 0 3px #ac8b5140}
 
-.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:26px}
-.tile{display:grid;align-content:start;gap:2px;padding:18px 20px 16px;border-radius:12px;background:var(--sheet);border:1px solid var(--rule);
-  box-shadow:var(--shadow);color:var(--ink);text-decoration:none;transition:border-color .15s ease,transform .15s var(--ease-out)}
-.tile:hover{border-color:var(--gold);color:var(--ink)}
-.tile:active{transform:scale(.98)}
-.tile-number{font-size:44px;font-weight:600;line-height:1.05;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-.tile-label{font-size:17px;font-weight:600}
-.tile-note{font-size:15px;color:var(--ink-soft)}
-.tile-go{display:inline-flex;align-items:center;gap:4px;margin-top:10px;font-size:15px;font-weight:600;color:var(--action)}
-.tile-go .icon{width:16px;height:16px;rotate:180deg}
-.tile.is-coming{background:var(--coming-wash);border-color:#cfdcbd}
-.tile.is-coming .tile-number,.tile.is-coming .tile-label{color:var(--coming)}
-.tile.is-declined .tile-number{color:var(--declined)}
+/* The whole list on one champagne rule. Each part is as long as its share of the invitations, and the
+   key under it names the part with its number, its diamond and where it leads. */
+.summary{margin-bottom:24px;padding:26px 28px 12px}
+.summary-lead{display:flex;align-items:baseline;flex-wrap:wrap;gap:2px 12px;font-size:24px;line-height:1.2;color:var(--coming)}
+.summary-figure{font-size:56px;font-weight:500;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.summary-sub{margin-top:8px;font-size:16px;color:var(--ink-soft)}
+.tally{display:flex;gap:3px;height:12px;margin:22px 0 8px;border-radius:99px;overflow:hidden}
+.tally.is-thin{height:6px;gap:2px;margin:9px 0 7px}
+.tally-part{flex-basis:0;min-width:6px}
+.tally-part.is-coming{background:var(--coming)}
+.tally-part.is-declined{background:var(--declined)}
+.tally-part.is-waiting{background:var(--gold)}
+.tally-part.is-unsent{background:repeating-linear-gradient(135deg,var(--line) 0 2px,var(--wash) 2px 5px)}
+.tally-key{list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:6px -12px 0;padding:0}
+.tally-key li + li{border-left:1px solid var(--rule)}
+.key{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"swatch figure go" ". text text";align-items:center;
+  gap:2px 10px;height:100%;padding:12px 12px 14px;border-radius:10px;color:var(--ink);text-decoration:none;
+  transition:background-color .15s ease}
+.key:active{background:var(--wash)}
+.key .swatch{grid-area:swatch;width:10px;height:10px;rotate:45deg;border:1.5px solid var(--gold);background:var(--gold)}
+.key.is-coming .swatch{border-color:var(--coming);background:var(--coming)}
+.key.is-declined .swatch{border-color:var(--declined);background:var(--declined)}
+.key.is-unsent .swatch{background:transparent;border-color:var(--ink-soft)}
+.key-figure{grid-area:figure;font-size:30px;font-weight:500;line-height:1.15;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.key.is-coming .key-figure,.key.is-coming .key-label{color:var(--coming)}
+.key.is-declined .key-figure{color:var(--declined)}
+.key-text{grid-area:text;display:grid}
+.key-label{font-size:16px;font-weight:600}
+.key-note{font-size:14.5px;color:var(--ink-soft)}
+.key-go{grid-area:go;width:18px;height:18px;rotate:180deg;color:var(--action);transition:translate .2s var(--ease-out)}
+@media (hover:hover){.key:hover{background:var(--tint);color:var(--ink)}.key:hover .key-go{translate:3px 0}}
 
 /* ---------- Sheets ---------- */
 .sheet{background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:24px 26px;box-shadow:var(--shadow)}
@@ -174,7 +193,6 @@ table{font-variant-numeric:tabular-nums}
 .side-list{list-style:none;margin:6px 0 14px;padding:0}
 .side-list li{padding:12px 0;border-top:1px solid var(--rule)}
 .side-list li:first-child{border-top:0}
-.side-list li.is-total{border-top:1.5px solid var(--line)}
 .side-name{display:inline-block;font-weight:600;font-size:17px;color:var(--ink);text-decoration:none;margin-bottom:2px}
 a.side-name:hover{text-decoration:underline}
 .side-list p{font-size:16px}
@@ -188,7 +206,9 @@ a.side-name:hover{text-decoration:underline}
 .reply-list .stage{grid-column:1/-1;font-size:15px}
 .reply-list time{font-size:14px;color:var(--ink-soft)}
 .reply-list blockquote,.guest-table .note q,.their-note{font:400 16.5px/1.5 Manrope,sans-serif;color:var(--ink)}
-.reply-list blockquote{grid-column:1/-1;margin:6px 0 0;padding:8px 12px;background:var(--tint);border-left:3px solid var(--gold);border-radius:0 6px 6px 0}
+.reply-list blockquote{grid-column:1/-1;margin:6px 0 0}
+.reply-list blockquote,.their-note{position:relative;padding:10px 14px 10px 36px;background:var(--tint);border-radius:8px}
+.reply-list blockquote::before,.their-note::before{content:'\201C';position:absolute;left:12px;top:6px;font:400 32px/1 Italiana,serif;color:var(--gold)}
 
 /* ---------- The guest list ---------- */
 .page-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 20px;margin-bottom:18px}
@@ -200,7 +220,7 @@ a.side-name:hover{text-decoration:underline}
 .stage-tabs a{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 15px;border:1.5px solid var(--rule);border-radius:99px;
   background:var(--sheet);color:var(--ink);font-weight:600;font-size:16px;text-decoration:none;white-space:nowrap;
   transition:background-color .15s ease,border-color .15s ease,color .15s ease}
-.stage-tabs a:hover{border-color:var(--gold);color:var(--ink)}
+@media (hover:hover){.stage-tabs a:hover{border-color:var(--gold);color:var(--ink)}}
 .stage-tabs a[aria-current]{background:var(--ink);border-color:var(--ink);color:var(--sheet)}
 .stage-tabs a[aria-current] .count{background:#ffffff26;color:var(--sheet)}
 .stage-tabs .is-unsent .diamond{background:transparent;border-color:var(--ink-soft)}
@@ -218,6 +238,7 @@ a.side-name:hover{text-decoration:underline}
 @media (hover:hover){.guest-table tbody tr{transition:background-color .12s ease}.guest-table tbody tr:hover{background:var(--tint)}}
 .guest-table .num,.preview-table .num{text-align:right}
 .guest-table .who{max-width:260px}
+.guest-table .where{min-width:13rem}
 .who .name{display:block;font-size:17px}
 .who .sub{display:flex;flex-wrap:wrap;gap:0 10px;margin-top:2px;font-size:14.5px;color:var(--ink-soft)}
 .seats .unit{display:none}
@@ -228,6 +249,7 @@ a.side-name:hover{text-decoration:underline}
 .guest-table .send-form{display:inline-block}
 .guest-table .is-open{display:none}
 .list-help{margin-top:12px}
+.foot-download{display:none}
 
 .empty-state{padding:52px 24px;text-align:center;background:var(--sheet);border:1.5px dashed var(--line);border-radius:12px}
 .empty-state h2{font-size:24px;margin-bottom:8px}
@@ -258,10 +280,17 @@ a.side-name:hover{text-decoration:underline}
 .invitation-panel > h2:first-child{margin-top:0}
 .send-row{display:flex;flex-wrap:wrap;gap:10px}
 .send-row:not(:empty){margin:4px 0 14px}
-.send-row .button{min-height:52px;padding:0 26px;font-size:17px}
-.link-row{font-size:15px;word-break:break-all}
-.guest-link{font-weight:500}
-.link-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 8px}
+.send-row .button{min-height:52px;padding:0 24px;font-size:17px}
+.send-row .send-form:not(.is-resend) .button{background:var(--whatsapp);border-color:var(--whatsapp);color:#fff}
+@media (hover:hover){.send-row .send-form:not(.is-resend) .button:hover{background:var(--whatsapp-deep);border-color:var(--whatsapp-deep);color:#fff}}
+.send-row .send-form .button.is-done{background:var(--coming-wash);color:var(--whatsapp);border-color:#bcd3c4}
+.link-box{padding:14px 16px 16px;background:var(--tint);border:1px solid var(--rule);border-radius:10px}
+.link-label{margin-bottom:2px;font-size:14px;font-weight:600;color:var(--ink-soft)}
+.guest-link{display:block;font-size:15.5px;font-weight:500;word-break:break-all}
+.link-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.invitation-panel .link-box + .help{margin-top:10px}
+.phone-line{display:flex;align-items:center;gap:8px;margin-top:14px;font-weight:600}
+.phone-line .icon{width:18px;height:18px;color:var(--action)}
 .inline-fix{display:flex;flex-wrap:wrap;align-items:center;gap:0 8px;margin-top:12px;padding-top:10px;border-top:1px solid var(--rule);font-size:15.5px;color:var(--ink-soft)}
 
 .fix-actions{display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px;margin:14px 0 4px}
@@ -279,7 +308,7 @@ a.side-name:hover{text-decoration:underline}
 .timeline li.is-done .diamond{background:var(--gold);border-color:var(--gold)}
 .timeline li.is-coming .diamond{background:var(--coming);border-color:var(--coming)}
 .timeline li.is-declined .diamond{background:var(--declined);border-color:var(--declined)}
-.their-note{margin:0;padding:10px 14px;background:var(--tint);border-left:3px solid var(--gold);border-radius:0 6px 6px 0}
+.their-note{margin:0}
 .remove{margin-top:26px;padding-top:14px;border-top:1px solid var(--rule)}
 
 /* ---------- Help ---------- */
@@ -326,7 +355,12 @@ a.side-name:hover{text-decoration:underline}
   .overview,.import-layout{grid-template-columns:minmax(0,1fr)}
   .overview{grid-template-areas:"needs" "sides" "replies";grid-template-rows:none}
   .guest-page{grid-template-columns:minmax(0,1fr);grid-template-areas:"invite" "fix" "form"}
-  .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tally-key{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .tally-key li:nth-child(3){border-left:0}
+  .tally-key li:nth-child(n+3){border-top:1px solid var(--rule)}
+}
+/* What guests wrote is on Home and on each guest's page; below this width the list keeps its buttons. */
+@media (max-width:1180px) and (min-width:761px){
   .guest-table .note{display:none}
 }
 @media (max-width:760px){
@@ -343,14 +377,24 @@ a.side-name:hover{text-decoration:underline}
   .page{padding:22px 16px 44px}
   .foot{padding:20px 16px 32px;flex-direction:column}
   .hello h1,.page-head h1{font-size:26px}
-  .tiles{gap:10px}
-  .tile{padding:14px 14px 12px}
-  .tile-number{font-size:36px}
-  .tile-label{font-size:16px}
-  .tile-note{font-size:14px}
   .sheet{padding:20px 18px;border-radius:11px}
+  .summary{padding:22px 18px 8px}
+  .summary-lead{font-size:21px}
+  .summary-figure{font-size:46px}
+  .tally-key{margin:4px -8px 0}
+  .key{padding:12px 8px 14px;gap:2px 8px}
+  .key-figure{font-size:26px}
+  .key-go{display:none}
   .search{max-width:none;flex-basis:100%}
   .finder > .button{flex:1}
+  /* On Home the box and its button share one line, as on any search page. */
+  .finder.is-home .search{flex:1 1 0;min-width:0}
+  .finder.is-home > .button{flex:none}
+  .stage-tabs{gap:6px}
+  .stage-tabs a{min-height:42px;padding:0 13px;font-size:15px}
+  .head-download{display:none}
+  .foot-download{display:block;margin-top:16px}
+  .foot-download .button{width:100%}
   .side-pick{flex:1 1 auto}
   .side-pick select{width:100%}
   .head-actions{width:100%}
@@ -379,6 +423,7 @@ a.side-name:hover{text-decoration:underline}
   .mini-list .send-form{margin-top:6px}
   .mini-list .button{width:100%}
   .guest-name{font-size:28px}
+  .send-row > *{flex:1 1 100%}
   .send-row .button{width:100%}
   .link-actions .button{flex:1 1 auto}
   .fix-actions,.fix-coming{display:grid;width:100%}
@@ -386,7 +431,9 @@ a.side-name:hover{text-decoration:underline}
   .form-actions .button{flex:1}
 }
 @media (max-width:340px){
-  .tiles{grid-template-columns:minmax(0,1fr)}
+  .tally-key{grid-template-columns:minmax(0,1fr)}
+  .tally-key li{border-left:0!important}
+  .tally-key li + li{border-top:1px solid var(--rule)}
   .sign-out .button{padding:0 10px}
 }
 @media (prefers-reduced-motion:reduce){

@@ -17,20 +17,31 @@
   <label class="search">
     <span class="finder-label">Find a guest</span>
     <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
-    <input type="search" name="q" placeholder="Type a name or phone number" autocomplete="off" enterkeyhint="search">
+    <input type="search" name="q" placeholder="Name or phone number" autocomplete="off" enterkeyhint="search">
   </label>
   <button class="button">Find</button>
 </form>
 
-<section class="tiles" aria-label="The numbers">
-  {% for tile in tiles %}
-    <a class="tile is-{{ tile.key }}" href="{{ guests_url }}?show={{ tile.key }}">
-      <span class="tile-number">{{ tile.value }}</span>
-      <span class="tile-label">{{ tile.label }}</span>
-      <span class="tile-note">{{ tile.note }}</span>
-      <span class="tile-go">See who <svg class="icon"><use href="#i-back"/></svg></span>
-    </a>
-  {% endfor %}
+{% comment %}The whole list on one champagne rule: each part as long as its share of the invitations, and named
+   underneath with its number. Every part opens that part of the list.{% endcomment %}
+<section class="sheet summary" aria-labelledby="summary-title">
+  <h2 id="summary-title" class="summary-lead"><span class="summary-figure">{{ counts.people }}</span> {{ counts.people|pluralize:"person is,people are" }} coming</h2>
+  <p class="summary-sub">{% if counts.invited %}From {{ counts.coming }} of {{ counts.invited }} invitation{{ counts.invited|pluralize }}, with {{ counts.seats }} seat{{ counts.seats|pluralize }} kept in all.{% else %}Nobody is on the list yet.{% endif %}</p>
+  {% if counts.invited %}
+    <div class="tally" aria-hidden="true">{% for tile in tiles %}{% if tile.share %}<span class="tally-part is-{{ tile.key }}" style="flex-grow:{{ tile.share }}"></span>{% endif %}{% endfor %}</div>
+  {% endif %}
+  <ul class="tally-key">
+    {% for tile in tiles %}
+      <li>
+        <a class="key is-{{ tile.key }}" href="{{ guests_url }}?show={{ tile.key }}">
+          <span class="swatch" aria-hidden="true"></span>
+          <span class="key-figure">{{ tile.value }}</span>
+          <span class="key-text"><span class="key-label">{{ tile.label }}</span><span class="key-note">{{ tile.note }}</span></span>
+          <svg class="icon key-go" aria-hidden="true"><use href="#i-back"/></svg>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
 </section>
 
 <div class="overview">
@@ -65,14 +76,12 @@
         <li>
           <a class="side-name" href="{{ guests_url }}?side={{ side.key }}">{{ side.label }}</a>
           <p><b class="is-coming">{{ side.people }} coming</b> · {{ side.declined }} can't come · {{ side.waiting }} no answer yet</p>
+          {% if side.invited %}
+            <div class="tally is-thin" aria-hidden="true">{% if side.coming %}<span class="tally-part is-coming" style="flex-grow:{{ side.coming }}"></span>{% endif %}{% if side.declined %}<span class="tally-part is-declined" style="flex-grow:{{ side.declined }}"></span>{% endif %}{% if side.sent or side.opened %}<span class="tally-part is-waiting" style="flex-grow:{{ side.sent|add:side.opened }}"></span>{% endif %}{% if side.unsent %}<span class="tally-part is-unsent" style="flex-grow:{{ side.unsent }}"></span>{% endif %}</div>
+          {% endif %}
           <p class="quiet">{{ side.invited }} invitation{{ side.invited|pluralize }}, {{ side.seats }} seat{{ side.seats|pluralize }} kept</p>
         </li>
       {% endfor %}
-      <li class="is-total">
-        <span class="side-name">Everyone</span>
-        <p><b class="is-coming">{{ counts.people }} coming</b> · {{ counts.declined }} can't come · {{ counts.unsent|add:counts.sent|add:counts.opened }} no answer yet</p>
-        <p class="quiet">{{ counts.invited }} invitation{{ counts.invited|pluralize }}, {{ counts.seats }} seat{{ counts.seats|pluralize }} kept</p>
-      </li>
     </ul>
     <p class="help">“Coming” counts people. The rest count invitations, and one invitation can be a whole family.</p>
     <a class="button is-quiet" href="{% url 'couple:export' %}"><svg class="icon"><use href="#i-download"/></svg><span>Download the list as Excel</span></a>

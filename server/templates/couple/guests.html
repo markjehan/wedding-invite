@@ -5,7 +5,7 @@
   <h1>Guests <span class="count">{{ counts.invited }}</span></h1>
   <div class="head-actions">
     <a class="button" href="{% url 'couple:guest_new' %}"><svg class="icon"><use href="#i-plus"/></svg><span>Add a guest</span></a>
-    <a class="button is-quiet" href="{% url 'couple:export' %}"><svg class="icon"><use href="#i-download"/></svg><span>Download Excel</span></a>
+    <a class="button is-quiet head-download" href="{% url 'couple:export' %}"><svg class="icon"><use href="#i-download"/></svg><span>Download Excel</span></a>
   </div>
 </div>
 
@@ -14,7 +14,7 @@
   <label class="search">
     <span class="visually-hidden">Find a guest</span>
     <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
-    <input type="search" name="q" value="{{ query }}" placeholder="Type a name or phone number" autocomplete="off" enterkeyhint="search">
+    <input type="search" name="q" value="{{ query }}" placeholder="Name or phone number" autocomplete="off" enterkeyhint="search">
   </label>
   <label class="side-pick">
     <span class="visually-hidden">Side</span>
@@ -75,6 +75,7 @@
     </tbody>
   </table>
   <p class="help list-help">Tap a name to change their details, record a reply they gave you by phone, or take them off the list.</p>
+  <p class="foot-download"><a class="button is-quiet" href="{% url 'couple:export' %}"><svg class="icon"><use href="#i-download"/></svg><span>Download the list as Excel</span></a></p>
 {% elif counts.invited == 0 and not query and not side %}
   <div class="empty-state">
     <h2>No guests yet</h2>
