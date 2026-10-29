@@ -66,9 +66,10 @@
     document.querySelector('.file-name').textContent = sheet.files[0]?.name || '';
   });
 
-  // The garden on Home: one flower per invitation (overview.html, _flowers.html).
-  const garden = document.querySelector('.garden');
-  if (garden) {
+  // Home: the garden, one flower per invitation (overview.html, _flowers.html), and the page around it
+  // kept up to date while it is open.
+  const summary = document.querySelector('.summary[data-live]');
+  if (summary) {
     const still = matchMedia('(prefers-reduced-motion: reduce)');
     const words = flower => ({
       coming: `coming, ${flower.people} of ${flower.seats}`, declined: "can't come",
@@ -76,11 +77,12 @@
     })[flower.stage];
 
     // It grows in once a visit, not every time Home is opened.
+    const garden = () => summary.querySelector('.garden');
     let grown = null;
     try { grown = sessionStorage.getItem('garden-grown'); sessionStorage.setItem('garden-grown', '1'); } catch {}
-    if (!grown && !still.matches) {
-      garden.classList.add('is-growing');
-      setTimeout(() => garden.classList.remove('is-growing'), 700 + 40 * 18 + 200);
+    if (garden() && !grown && !still.matches) {
+      garden().classList.add('is-growing');
+      setTimeout(() => garden()?.classList.remove('is-growing'), 700 + 40 * 18 + 200);
     }
 
     // A name near either edge of the screen is nudged back inside it.
@@ -92,24 +94,23 @@
       const nudge = box.left < 12 ? 12 - box.left : box.right > room ? room - box.right : 0;
       tip.style.setProperty('--nudge', `${Math.round(nudge)}px`);
     };
-    garden.addEventListener('pointerover', place);
-    garden.addEventListener('focusin', place);
+    summary.addEventListener('pointerover', place);
+    summary.addEventListener('focusin', place);
 
-    // A reply that comes in while the page is open: the flower blooms where it stands, and a card in
-    // the corner says who it was.
+    // A reply that comes in while the page is open: a card in the corner says who it was.
     const news = document.querySelector('.garden-news');
     const say = flower => {
       if (!news) return;
       const card = document.createElement('div');
       card.className = 'news';
       card.innerHTML = '<svg class="swatch" viewBox="0 0 40 60" aria-hidden="true"><use/></svg><p><b></b> just replied: <span></span>.<br>'
-        + '<button type="button" class="text-button">Refresh for the new numbers</button></p>'
+        + '<a class="text-button">Open their page</a></p>'
         + '<button type="button" class="news-close" aria-label="Close"><svg class="icon"><use href="#i-x"/></svg></button>';
       card.querySelector('.swatch').classList.add(`is-${flower.stage}`);
       card.querySelector('.swatch use').setAttribute('href', `#f-${flower.stage}`);
       card.querySelector('b').textContent = flower.name;
       card.querySelector('p span').textContent = flower.stage === 'coming' ? `coming, ${flower.people}` : "can't come";
-      card.querySelector('.text-button').addEventListener('click', () => location.reload());
+      card.querySelector('a').href = `${summary.dataset.guests}${flower.pk}/`;
       let timer;
       const leave = () => { card.classList.add('is-leaving'); setTimeout(() => card.remove(), 200); };
       const wait = () => { clearTimeout(timer); timer = setTimeout(leave, 14000); };
@@ -131,20 +132,53 @@
       item.classList.add('is-blooming');
       setTimeout(() => item.classList.remove('is-blooming'), 2400);
     };
-    const look = async () => {
-      if (document.hidden) return;
-      let flowers;
+
+    // Everything else on Home comes fresh from the server, so each number, list and reply matches
+    // what a reload would show. Only the parts that are there are swapped; the garden is swapped
+    // whole only when guests were added or taken off, and otherwise blooms in place.
+    const refresh = async replant => {
+      let fresh;
       try {
-        const answer = await fetch(garden.dataset.garden, {headers: {Accept: 'application/json'}, cache: 'no-store'});
-        if (!answer.ok || !answer.headers.get('Content-Type')?.includes('json')) return;
-        ({flowers} = await answer.json());
+        const answer = await fetch(location.href, {cache: 'no-store', headers: {Accept: 'text/html'}});
+        if (!answer.ok || answer.redirected) return;
+        fresh = new DOMParser().parseFromString(await answer.text(), 'text/html');
       } catch { return; }
-      flowers.forEach(flower => {
-        const item = garden.querySelector(`.flower[data-pk="${flower.pk}"]`);
-        if (!item || item.classList.contains(`is-${flower.stage}`)) return;
-        bloom(item, flower);
-        if (flower.stage === 'coming' || flower.stage === 'declined') say(flower);
-      });
+      const parts = ['.summary-lead', '.summary-sub', '.tally-key', '.overview'];
+      if (replant) parts.push('.garden');
+      for (const part of parts) {
+        const now = document.querySelector(part), next = fresh.querySelector(part);
+        if (now && next) now.replaceWith(next);
+        else if (next && part === '.garden') summary.querySelector('.summary-sub').after(next);
+        else if (now && !next) now.remove();
+      }
+      const note = document.querySelector('.setup-note'), freshNote = fresh.querySelector('.setup-note');
+      if (note && freshNote) note.replaceWith(freshNote);
+      else if (note) note.remove();
+      else if (freshNote) document.querySelector('.finder.is-home')?.before(freshNote);
+    };
+
+    let busy = false;
+    const look = async () => {
+      if (document.hidden || busy) return;
+      busy = true;
+      try {
+        const answer = await fetch(summary.dataset.live, {headers: {Accept: 'application/json'}, cache: 'no-store'});
+        if (!answer.ok || !answer.headers.get('Content-Type')?.includes('json')) return;
+        const {flowers} = await answer.json();
+        const shown = [...summary.querySelectorAll('.garden .flower')].map(item => item.dataset.pk).sort().join();
+        const replant = shown !== flowers.map(flower => String(flower.pk)).sort().join();
+        const changed = flowers.filter(flower => {
+          const item = summary.querySelector(`.garden .flower[data-pk="${flower.pk}"]`);
+          return item && !item.classList.contains(`is-${flower.stage}`);
+        });
+        if (!changed.length && !replant) return;
+        await refresh(replant);
+        changed.forEach(flower => {
+          if (!replant) bloom(summary.querySelector(`.garden .flower[data-pk="${flower.pk}"]`), flower);
+          if (flower.stage === 'coming' || flower.stage === 'declined') say(flower);
+        });
+      } catch {
+      } finally { busy = false; }
     };
     setInterval(look, 15000);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) look(); });

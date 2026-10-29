@@ -35,11 +35,11 @@
 {% comment %}The whole list as a garden: one magnolia for every invitation, at the stage it has reached, on one
    champagne ground line. Each flower opens its guest; the key under it names each stage with its number
    and opens that part of the list. A flower blooms on this page the moment its guest replies (couple.js).{% endcomment %}
-<section class="sheet summary" aria-labelledby="summary-title">
+<section class="sheet summary" aria-labelledby="summary-title" data-live="{% url 'couple:garden' %}" data-guests="{{ guests_url }}">
   <h2 id="summary-title" class="summary-lead"><span class="summary-figure">{{ counts.people }}</span> {{ counts.people|pluralize:"person is,people are" }} coming</h2>
   <p class="summary-sub">{% if counts.invited %}From {{ counts.coming }} of {{ counts.invited }} invitation{{ counts.invited|pluralize }}, with {{ counts.seats }} seat{{ counts.seats|pluralize }} kept in all.{% else %}Nobody is on the list yet.{% endif %}</p>
   {% if garden %}
-    <ul class="garden{% if garden|length > 90 %} is-crowded{% elif garden|length > 36 %} is-dense{% endif %}" data-garden="{% url 'couple:garden' %}" aria-label="Every invitation, as a flower">
+    <ul class="garden{% if garden|length > 90 %} is-crowded{% elif garden|length > 36 %} is-dense{% endif %}" aria-label="Every invitation, as a flower">
       {% for flower in garden %}
         <li class="flower is-{{ flower.stage }}" data-pk="{{ flower.pk }}" style="--i:{{ forloop.counter0 }}">
           <a href="{% url 'couple:guest' flower.pk %}" aria-describedby="tip-{{ flower.pk }}">

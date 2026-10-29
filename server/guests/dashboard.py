@@ -110,7 +110,7 @@ def overview(request):
         {'key': 'declined', 'flower': 'declined', 'value': counts['declined'], 'share': counts['declined'], 'label': "can't come",
          'note': f'{invitations(counts["declined"])} said no'},
         {'key': 'waiting', 'flower': 'opened', 'value': waiting, 'share': waiting, 'label': 'waiting for a reply',
-         'note': f'{counts["sent"]} not opened yet' if counts['sent'] else 'all of them opened it'},
+         'note': f'{counts["sent"]} not opened yet' if counts['sent'] else 'all of them opened it' if waiting else 'nobody is waiting'},
         {'key': 'unsent', 'flower': 'unsent', 'value': counts['unsent'], 'share': counts['unsent'], 'label': 'not sent yet',
          'note': 'send these first' if counts['unsent'] else 'everyone has theirs'},
     ]
