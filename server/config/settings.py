@@ -61,6 +61,13 @@ else:
 # The address guests' links start with, as written into WhatsApp messages and the Excel download,
 # e.g. https://naveenanddulanjani.com. Unset, it is whatever address the admin pages were opened at.
 SITE_URL = os.environ.get('INVITE_SITE_URL', '').rstrip('/')
+# On Vercel every deployment also keeps an address of its own, like wedding-invite-3f8iv4ffm-....vercel.app,
+# frozen at that version forever. The project's main address always has the newest. Links sent to guests
+# use the main one, and a visit to this deployment's own address is sent there (guests/middleware.py).
+VERCEL_MAIN_HOST = os.environ.get('VERCEL_PROJECT_PRODUCTION_URL', '') if ON_VERCEL else ''
+VERCEL_OWN_HOST = os.environ.get('VERCEL_URL', '') if ON_VERCEL else ''
+if not SITE_URL and VERCEL_MAIN_HOST:
+    SITE_URL = f'https://{VERCEL_MAIN_HOST}'
 
 INSTALLED_APPS = [
     'django.contrib.auth',
@@ -76,6 +83,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'guests.middleware.MainAddress',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

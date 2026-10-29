@@ -320,6 +320,18 @@ class ReplyNumberTests(TestCase):
         self.assertEqual(ReplyTo.current().bride, '')
 
 
+class VercelAddressTests(TestCase):
+    @override_settings(VERCEL_OWN_HOST='wedding-invite-3f8iv4ffm-mark-6689.vercel.app', VERCEL_MAIN_HOST='wedding-invite-mark-6689.vercel.app')
+    def test_a_deployment_address_goes_to_the_main_one(self):
+        response = self.client.get('/admin/guests/?show=coming', HTTP_HOST='wedding-invite-3f8iv4ffm-mark-6689.vercel.app')
+        self.assertEqual(response['Location'], 'https://wedding-invite-mark-6689.vercel.app/admin/guests/?show=coming')
+        response = self.client.get('/', HTTP_HOST='wedding-invite-mark-6689.vercel.app')
+        self.assertEqual(response.status_code, 200)
+
+    def test_off_vercel_nothing_moves(self):
+        self.assertEqual(self.client.get('/', HTTP_HOST='localhost').status_code, 200)
+
+
 class ExcelTests(TestCase):
     def setUp(self):
         self.client.force_login(admin_with_two_step())
