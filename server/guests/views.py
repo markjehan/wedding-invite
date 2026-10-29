@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 from . import site
-from .models import Guest
+from .models import Guest, ReplyTo
 
 
 def _page(data, status=200):
@@ -47,6 +47,8 @@ def personal(request, code):
         'nameSi': guest.name_si,
         'seats': guest.seats,
         'open': _replies_open(),
+        # Their reply opens in WhatsApp addressed to their side: the bride's number or the groom's.
+        'whatsapp': ReplyTo.current().for_side(guest.side),
         **_reply_of(guest),
     })
 

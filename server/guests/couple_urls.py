@@ -13,6 +13,7 @@ urlpatterns = [
     path('guests/<int:pk>/whatsapp/', dashboard.send, name='send'),
     path('guests/<int:pk>/fix/', dashboard.guest_fix, name='guest_fix'),
     path('help/', dashboard.help_page, name='help'),
+    path('where-replies-go/', dashboard.reply_numbers, name='numbers'),
     path('add-from-excel/', dashboard.import_sheet, name='import'),
     path('add-from-excel/guest-list.xlsx', dashboard.blank_sheet, name='blank'),
     path('guests.xlsx', dashboard.export_sheet, name='export'),

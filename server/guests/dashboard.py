@@ -20,7 +20,7 @@ from django.views.decorators.http import require_POST
 
 from . import spreadsheet, whatsapp
 from .middleware import has_two_step
-from .models import Guest
+from .models import Guest, ReplyTo
 
 WEDDING = date(2026, 12, 7)
 XLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -98,11 +98,12 @@ def overview(request):
          'note': 'send these first' if counts['unsent'] else 'everyone has theirs'},
     ]
 
-    sides = []
+    sides, reply_to = [], ReplyTo.current()
     for key, label in SIDES + [('', 'No side set')]:
         row = _counts(Guest.objects.filter(side=key))
         if key or row['invited']:
-            sides.append({'key': key, 'label': label, **row, 'waiting': row['unsent'] + row['sent'] + row['opened']})
+            sides.append({'key': key, 'label': label, **row, 'waiting': row['unsent'] + row['sent'] + row['opened'],
+                          'reply_to': reply_to.for_side(key)})
 
     return render(request, 'couple/overview.html', {
         'section': 'overview',
@@ -305,3 +306,28 @@ def blank_sheet(request):
 def export_sheet(request):
     sheet = spreadsheet.write(Guest.objects.all(), lambda guest: link_of(request, guest))
     return _download(sheet, f'guests-{timezone.localdate():%Y-%m-%d}.xlsx')
+
+
+class ReplyToForm(forms.ModelForm):
+    class Meta:
+        model = ReplyTo
+        fields = ['bride', 'groom', 'everyone']
+        labels = {'bride': "Bride's side replies go to", 'groom': "Groom's side replies go to",
+                  'everyone': 'Everyone else'}
+        help_texts = {'bride': "Dulanjani's WhatsApp, or whoever looks after the bride's side. Left empty, they go to the main number.",
+                      'groom': "Naveen's WhatsApp, or whoever looks after the groom's side. Left empty, they go to the main number.",
+                      'everyone': 'For guests with no side set, and for a side left empty above.'}
+        widgets = {field: forms.TextInput(attrs={'inputmode': 'tel', 'autocomplete': 'off', 'placeholder': '077 123 4567'})
+                   for field in ('bride', 'groom', 'everyone')}
+        error_messages = {'everyone': {'required': 'Keep a main number, so a reply always has somewhere to go.'}}
+
+
+@couple_only
+def reply_numbers(request):
+    """Whose WhatsApp each guest's reply opens addressed to."""
+    form = ReplyToForm(request.POST or None, instance=ReplyTo.current())
+    if request.method == 'POST' and form.is_valid():
+        form.save()
+        messages.success(request, 'Saved. Replies from now on go to these numbers.')
+        return redirect('couple:numbers')
+    return render(request, 'couple/numbers.html', {'section': 'numbers', 'form': form})

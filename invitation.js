@@ -770,11 +770,12 @@
       const count=answer==='yes'?+people.value||1:0,note=form.elements.namedItem('note').value.trim();
       // WhatsApp opens now, inside the press, or the phone holds it back; the panel stays as the
       // fallback. It goes whether or not the save below works, so the couple hear either way.
-      const message=say('message',name(),say('party',picked.parentElement.textContent.trim(),count),note);
+      // The server says whose WhatsApp it goes to: the bride's for her side, the groom's for his.
+      const message=say('message',name(),say('party',picked.parentElement.textContent.trim(),count),note),to=me.whatsapp||RSVP_WHATSAPP;
       $('#reply-text').textContent=message;
-      $('#send-whatsapp').href='https://wa.me/'+RSVP_WHATSAPP+'?text='+encodeURIComponent(message);
+      $('#send-whatsapp').href='https://wa.me/'+to+'?text='+encodeURIComponent(message);
       $('#send-email').href='mailto:'+RSVP_EMAIL+'?subject='+encodeURIComponent(say('subject'))+'&body='+encodeURIComponent(message);
-      if(RSVP_WHATSAPP)window.open($('#send-whatsapp').href,'_blank','noopener');
+      if(to)window.open($('#send-whatsapp').href,'_blank','noopener');
       $('#prepared').hidden=false;
       button.disabled=true;status.textContent=say('sending');
       try{
@@ -783,7 +784,7 @@
         if(sent.status===403){me.open=false;paint();lock();return;}
         if(!sent.ok)throw new Error(sent.status);
         Object.assign(me,await sent.json());paint();
-        status.textContent=`${say('thanks',name())} ${RSVP_WHATSAPP?say('opening'):say('ready')}`;
+        status.textContent=`${say('thanks',name())} ${to?say('opening'):say('ready')}`;
       }catch{status.textContent=say('failed')}
       finally{if(me.open)button.disabled=false}
     });

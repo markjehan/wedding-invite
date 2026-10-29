@@ -1,0 +1,29 @@
+{% extends "couple/base.html" %}
+{% block title %}Where replies go{% endblock %}
+{% block content %}
+<a class="back" href="{% url 'couple:overview' %}"><svg class="icon"><use href="#i-back"/></svg>Home</a>
+<div class="page-head">
+  <h1>Where replies go</h1>
+</div>
+<p class="lead numbers-lead">When a guest presses “Send my reply”, it is saved here and WhatsApp opens with it written out to one of these numbers.
+  Guests on the bride's side write to the first, guests on the groom's side to the second.</p>
+
+<section class="sheet numbers-sheet" aria-label="WhatsApp numbers">
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {% for field in form %}
+      <div class="field{% if field.errors %} has-error{% endif %} field-{{ field.name }}">
+        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+        {{ field }}
+        {% if field.errors %}<p class="field-error">{{ field.errors|join:" " }}</p>
+        {% elif field.help_text %}<p class="help">{{ field.help_text }}</p>{% endif %}
+      </div>
+    {% endfor %}
+    <div class="form-actions">
+      <button class="button">Save the numbers</button>
+      <a class="button is-quiet" href="{% url 'couple:overview' %}">Cancel</a>
+    </div>
+  </form>
+</section>
+<p class="help numbers-note">A guest's side is set on their page, or in the Side column of your Excel list. Changing a number here changes it for every reply sent after you save.</p>
+{% endblock %}

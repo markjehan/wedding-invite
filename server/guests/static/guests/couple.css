@@ -199,6 +199,14 @@ a.side-name:hover{text-decoration:underline}
 .side-list .quiet{font-size:15px}
 .side-list .is-coming{color:var(--coming)}
 .sides .help{margin-bottom:14px}
+.reply-to{display:flex;align-items:center;gap:7px;margin-top:4px;font-size:15px;color:var(--ink-soft)}
+.reply-to .icon{width:16px;height:16px;color:var(--gold)}
+.numbers-link{margin:-4px 0 14px;font-size:15.5px;font-weight:600}
+.numbers-lead{max-width:62ch;margin:-6px 0 20px}
+.numbers-sheet{max-width:660px}
+.numbers-sheet form{display:grid;gap:18px}
+.numbers-sheet .field input{max-width:320px}
+.numbers-note{max-width:62ch;margin-top:14px}
 
 .reply-list{list-style:none;margin:6px 0 0;padding:0}
 .reply-list li{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;gap:2px 12px;padding:13px 0;border-top:1px solid var(--rule)}

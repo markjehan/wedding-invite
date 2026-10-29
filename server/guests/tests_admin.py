@@ -15,7 +15,7 @@ from django.utils.html import escape
 from openpyxl import Workbook, load_workbook
 
 from .dashboard import STAGES
-from .models import Guest
+from .models import Guest, ReplyTo
 from .phones import normalise_phone
 
 XLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -271,6 +271,27 @@ class GuestListTests(TestCase):
         self.client.post(f'/{self.guest.code}/opened')
         self.guest.refresh_from_db()
         self.assertEqual(self.guest.times_opened, 0)
+
+
+class ReplyNumberTests(TestCase):
+    def test_it_needs_signing_in(self):
+        self.assertEqual(self.client.get(reverse('couple:numbers')).status_code, 302)
+
+    def test_numbers_are_tidied_and_saved(self):
+        self.client.force_login(admin_with_two_step())
+        self.assertContains(self.client.get(reverse('couple:numbers')), ReplyTo.MAIN)
+        response = self.client.post(reverse('couple:numbers'), {'bride': '077 000 0101', 'groom': '+94 77 000 0202', 'everyone': '0771281561'})
+        self.assertRedirects(response, reverse('couple:numbers'), fetch_redirect_response=False)
+        numbers = ReplyTo.current()
+        self.assertEqual((numbers.bride, numbers.groom, numbers.everyone), ('94770000101', '94770000202', '94771281561'))
+        self.assertContains(self.client.get('/admin/'), 'Replies go to +94770000101')
+
+    def test_a_wrong_number_or_no_main_number_is_refused(self):
+        self.client.force_login(admin_with_two_step())
+        response = self.client.post(reverse('couple:numbers'), {'bride': 'ask Malini', 'groom': '', 'everyone': ''})
+        self.assertContains(response, 'does not look like a phone number')
+        self.assertContains(response, 'Keep a main number')
+        self.assertEqual(ReplyTo.current().bride, '')
 
 
 class ExcelTests(TestCase):

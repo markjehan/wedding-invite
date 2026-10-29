@@ -6,7 +6,7 @@ from django.test import TestCase, override_settings
 from django.utils import timezone
 
 from .codes import ALPHABET, LENGTH, new_code
-from .models import Guest
+from .models import Guest, ReplyTo
 
 
 def invite_data(response):
@@ -49,6 +49,18 @@ class PageTests(TestCase):
         self.assertTrue(data['open'])
         self.assertEqual(response['Cache-Control'], 'no-store')
         self.assertEqual(response['Referrer-Policy'], 'same-origin')
+
+    def test_a_reply_goes_to_its_side(self):
+        numbers = ReplyTo.current()
+        numbers.bride, numbers.groom = '94770000101', '94770000202'
+        numbers.save()
+        for side, number in [('bride', '94770000101'), ('groom', '94770000202'), ('', ReplyTo.MAIN)]:
+            guest = Guest.objects.create(name=f'Guest of {side or "nobody"}', side=side)
+            self.assertEqual(invite_data(self.client.get(f'/{guest.code}'))['whatsapp'], number, side)
+
+    def test_a_side_without_a_number_uses_the_main_one(self):
+        guest = Guest.objects.create(name='Ruwan', side='groom')
+        self.assertEqual(invite_data(self.client.get(f'/{guest.code}'))['whatsapp'], ReplyTo.MAIN)
 
     def test_code_in_capitals_still_works(self):
         self.assertEqual(self.client.get(f'/{self.guest.code.upper()}').status_code, 200)

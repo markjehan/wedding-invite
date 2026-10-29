@@ -80,9 +80,11 @@
             <div class="tally is-thin" aria-hidden="true">{% if side.coming %}<span class="tally-part is-coming" style="flex-grow:{{ side.coming }}"></span>{% endif %}{% if side.declined %}<span class="tally-part is-declined" style="flex-grow:{{ side.declined }}"></span>{% endif %}{% if side.sent or side.opened %}<span class="tally-part is-waiting" style="flex-grow:{{ side.sent|add:side.opened }}"></span>{% endif %}{% if side.unsent %}<span class="tally-part is-unsent" style="flex-grow:{{ side.unsent }}"></span>{% endif %}</div>
           {% endif %}
           <p class="quiet">{{ side.invited }} invitation{{ side.invited|pluralize }}, {{ side.seats }} seat{{ side.seats|pluralize }} kept</p>
+          <p class="reply-to"><svg class="icon" aria-hidden="true"><use href="#i-send"/></svg>Replies go to +{{ side.reply_to }}</p>
         </li>
       {% endfor %}
     </ul>
+    <p class="numbers-link"><a href="{% url 'couple:numbers' %}">Change where replies go</a></p>
     <p class="help">“Coming” counts people. The rest count invitations, and one invitation can be a whole family.</p>
     <a class="button is-quiet" href="{% url 'couple:export' %}"><svg class="icon"><use href="#i-download"/></svg><span>Download the list as Excel</span></a>
   </section>

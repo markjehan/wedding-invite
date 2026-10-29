@@ -74,3 +74,36 @@ class Guest(models.Model):
             except IntegrityError:
                 continue
         raise IntegrityError('Could not find a free guest code.')
+
+
+class ReplyTo(models.Model):
+    """Where a guest's reply goes on WhatsApp: the bride's number for her side, the groom's for his, and
+    the main number for anyone without a side or when a side has none. There is only ever one of these."""
+
+    MAIN = '94771281561'  # the number the invitation used before there were sides
+
+    bride = models.CharField("bride's WhatsApp number", max_length=20, blank=True)
+    groom = models.CharField("groom's WhatsApp number", max_length=20, blank=True)
+    everyone = models.CharField('main WhatsApp number', max_length=20, default=MAIN)
+
+    def __str__(self):
+        return 'Where replies go'
+
+    @classmethod
+    def current(cls):
+        return cls.objects.get_or_create(pk=1)[0]
+
+    def for_side(self, side):
+        return {'bride': self.bride, 'groom': self.groom}.get(side) or self.everyone
+
+    def clean(self):
+        errors = {}
+        for field in ('bride', 'groom', 'everyone'):
+            try:
+                setattr(self, field, normalise_phone(getattr(self, field)))
+            except ValueError:
+                errors[field] = 'This does not look like a phone number. Try 0771234567 or +94 77 123 4567.'
+        if not errors and not self.everyone:
+            errors['everyone'] = 'Keep a main number, so a reply always has somewhere to go.'
+        if errors:
+            raise ValidationError(errors)
