@@ -43,10 +43,11 @@ if PRODUCTION:
     else:
         raise ImproperlyConfigured('Set DJANGO_SECRET_KEY.')
     ALLOWED_HOSTS = [host for host in os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',') if host]
-    # Vercel names each deployment itself: its own address, its branch's, and the project's main one
-    # (your domain, once it is added).
-    ALLOWED_HOSTS += [os.environ[name] for name in ('VERCEL_URL', 'VERCEL_BRANCH_URL', 'VERCEL_PROJECT_PRODUCTION_URL')
-                      if os.environ.get(name)]
+    if ON_VERCEL:
+        # Vercel only hands this app requests for the project's own addresses (its .vercel.app names
+        # and any domain added to it), so the check is already done before Django sees the request.
+        # Its VERCEL_URL and friends turned out not to cover the main .vercel.app address.
+        ALLOWED_HOSTS = ['*']
     if not ALLOWED_HOSTS:
         raise ImproperlyConfigured('Set DJANGO_ALLOWED_HOSTS to the address the site is served at.')
 else:
@@ -175,7 +176,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 if PRODUCTION:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SESSION_COOKIE_SECURE = CSRF_COOKIE_SECURE = True
-    CSRF_TRUSTED_ORIGINS = [f'https://{host}' for host in ALLOWED_HOSTS]
+    # Forms posted from the site's own address pass Django's check anyway; these are any others.
+    CSRF_TRUSTED_ORIGINS = [f'https://{host}' for host in ALLOWED_HOSTS if host != '*']
 
 # The last day a guest can send or change a reply, as YYYY-MM-DD, Sri Lanka time. Unset, replies
 # stay open.

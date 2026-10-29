@@ -60,9 +60,7 @@ The live site starts with nobody on the guest list and no accounts.
    the domain where you bought it.
 2. In **Settings**, then **Environment Variables**, add `INVITE_SITE_URL` = `https://yourdomain.com`.
    This is the address WhatsApp messages and the Excel download use.
-3. If you add both `yourdomain.com` and `www.yourdomain.com`, also add `DJANGO_ALLOWED_HOSTS` =
-   `yourdomain.com,www.yourdomain.com`.
-4. Redeploy.
+3. Redeploy.
 
 ## Good to know
 
