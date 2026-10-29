@@ -136,6 +136,7 @@ def overview(request):
         ],
         'latest': Guest.objects.exclude(reply='').order_by('-replied_at')[:8],
         'days': (WEDDING - timezone.localdate()).days,
+        'reply_to': reply_to,
         'replies_close': settings.RSVP_CLOSES,
     })
 

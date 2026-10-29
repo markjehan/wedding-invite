@@ -42,11 +42,12 @@
     <form method="post" action="{% url 'account_logout' %}" class="sign-out">{% csrf_token %}
       <button class="button is-quiet is-small"><svg class="icon"><use href="#i-out"/></svg><span>Sign out</span></button>
     </form>
-    {# Four places, each with its word under its picture: nobody has to guess what an icon means. #}
+    {# Five places, each with its word under its picture: nobody has to guess what an icon means. #}
     <nav class="sections" aria-label="Pages">
       <a href="{% url 'couple:overview' %}"{% if section == 'overview' %} aria-current="page"{% endif %}><svg class="icon"><use href="#i-home"/></svg>Home</a>
       <a href="{% url 'couple:guests' %}"{% if section == 'guests' %} aria-current="page"{% endif %}><svg class="icon"><use href="#i-people"/></svg>Guests</a>
       <a href="{% url 'couple:import' %}"{% if section == 'import' %} aria-current="page"{% endif %}><svg class="icon"><use href="#i-upload"/></svg>Add from Excel</a>
+      <a href="{% url 'couple:numbers' %}"{% if section == 'numbers' %} aria-current="page"{% endif %}><svg class="icon"><use href="#i-phone"/></svg>Reply numbers</a>
       <a href="{% url 'couple:help' %}"{% if section == 'help' %} aria-current="page"{% endif %}><svg class="icon"><use href="#i-help"/></svg>Help</a>
     </nav>
   </header>
@@ -61,7 +62,7 @@
 
   <footer class="foot">
     <p>Stuck? <a href="{% url 'couple:help' %}">See what to do when something goes wrong</a>.</p>
-    <p><a href="{% url 'couple:numbers' %}"><svg class="icon"><use href="#i-send"/></svg>Where replies go</a></p>
+    <p><a href="{% url 'couple:numbers' %}"><svg class="icon"><use href="#i-phone"/></svg>Reply numbers</a></p>
     <p><a href="{% url 'mfa_index' %}"><svg class="icon"><use href="#i-key"/></svg>Sign-in codes and backup codes</a></p>
   </footer>
 

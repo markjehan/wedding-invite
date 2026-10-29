@@ -12,6 +12,15 @@
   </p>
 </div>
 
+{% if not reply_to.bride or not reply_to.groom %}
+  <div class="setup-note">
+    <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>
+    <p><b>Replies from both sides go to +{{ reply_to.everyone }} for now.</b>
+      Add {% if not reply_to.bride and not reply_to.groom %}the bride's and the groom's{% elif not reply_to.bride %}the bride's{% else %}the groom's{% endif %} WhatsApp number so each reply reaches the right person.</p>
+    <a class="button" href="{% url 'couple:numbers' %}">Add the numbers</a>
+  </div>
+{% endif %}
+
 {# The question most people come here with: has this person replied? #}
 <form class="finder is-home" method="get" action="{{ guests_url }}" role="search">
   <label class="search">
@@ -98,7 +107,7 @@
         </li>
       {% endfor %}
     </ul>
-    <p class="numbers-link"><a href="{% url 'couple:numbers' %}">Change where replies go</a></p>
+    <p class="numbers-link"><a class="button is-quiet is-small" href="{% url 'couple:numbers' %}"><svg class="icon"><use href="#i-phone"/></svg><span>Change the reply numbers</span></a></p>
     <p class="help">“Coming” counts people. The rest count invitations, and one invitation can be a whole family.</p>
     <a class="button is-quiet" href="{% url 'couple:export' %}"><svg class="icon"><use href="#i-download"/></svg><span>Download the list as Excel</span></a>
   </section>

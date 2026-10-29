@@ -303,6 +303,15 @@ class ReplyNumberTests(TestCase):
         self.assertEqual((numbers.bride, numbers.groom, numbers.everyone), ('94770000101', '94770000202', '94771281561'))
         self.assertContains(self.client.get('/admin/'), 'Replies go to +94770000101')
 
+    def test_home_asks_for_the_numbers_until_both_are_set(self):
+        self.client.force_login(admin_with_two_step())
+        self.assertContains(self.client.get('/admin/'), "Add the bride's and the groom's WhatsApp number")
+        self.client.post(reverse('couple:numbers'), {'bride': '0770000101', 'groom': '', 'everyone': '0771281561'})
+        self.assertContains(self.client.get('/admin/'), "Add the groom's WhatsApp number")
+        self.client.post(reverse('couple:numbers'), {'bride': '0770000101', 'groom': '0770000202', 'everyone': '0771281561'})
+        self.assertNotContains(self.client.get('/admin/'), 'Add the numbers')
+        self.assertContains(self.client.get('/admin/'), 'Reply numbers')
+
     def test_a_wrong_number_or_no_main_number_is_refused(self):
         self.client.force_login(admin_with_two_step())
         response = self.client.post(reverse('couple:numbers'), {'bride': 'ask Malini', 'groom': '', 'everyone': ''})
