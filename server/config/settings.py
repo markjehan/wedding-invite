@@ -8,6 +8,7 @@ On Vercel (which sets VERCEL=1) it is always in production, and the guest list l
 database named by DATABASE_URL, which adding Neon to the project sets. Vercel keeps no file the app
 writes, so the SQLite file would lose every reply there.
 """
+import hashlib
 import os
 import secrets
 from datetime import datetime, time
@@ -30,7 +31,17 @@ if not ON_VERCEL:  # Vercel's disk is read-only
 PRODUCTION = os.environ.get('INVITE_ENV') == 'production' or ON_VERCEL
 DEBUG = not PRODUCTION
 if PRODUCTION:
-    SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
+    if os.environ.get('DJANGO_SECRET_KEY'):
+        SECRET_KEY = os.environ['DJANGO_SECRET_KEY']
+    elif ON_VERCEL and os.environ.get('DATABASE_URL'):
+        # One less thing to set up on Vercel: the database address carries Neon's long random
+        # password, which only this project knows, so the key is drawn from it. A new database
+        # password signs everyone out once, and nothing else.
+        SECRET_KEY = hashlib.sha256(b'wedding-invite secret key:' + os.environ['DATABASE_URL'].encode()).hexdigest()
+    elif ON_VERCEL:
+        raise ImproperlyConfigured('No DATABASE_URL: add the Neon database to the Vercel project (Storage tab).')
+    else:
+        raise ImproperlyConfigured('Set DJANGO_SECRET_KEY.')
     ALLOWED_HOSTS = [host for host in os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',') if host]
     # Vercel names each deployment itself: its own address, its branch's, and the project's main one
     # (your domain, once it is added).

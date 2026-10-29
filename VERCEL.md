@@ -6,28 +6,19 @@ Allow about 20 minutes the first time.
 
 ## Before you start
 
-- Vercel publishes the **main** branch as the real site. Get everything onto main and push it to
-  GitHub first, including the invitation changes you want guests to see.
-- Make a secret key and keep it handy. Run this in PowerShell and copy the line it prints:
-
-  ```
-  python -c "import secrets; print(secrets.token_urlsafe(50))"
-  ```
+Vercel publishes the **main** branch as the real site. Get everything onto main and push it to
+GitHub first, including the invitation changes you want guests to see.
 
 ## 1. Create the project
 
 1. Go to <https://vercel.com/new?teamSlug=mark-6689> and choose **Import** next to
    `markjehan/wedding-invite`. If it isn't listed, choose **Adjust GitHub App Permissions** and allow
    that repository.
-2. **Framework Preset** should say **Django**. If it doesn't, choose Django. Leave **Root Directory**
-   as `./`.
-3. Open **Environment Variables** and add:
-
-   | Name | Value |
-   | --- | --- |
-   | `DJANGO_SECRET_KEY` | the key you made above |
-   | `INVITE_RSVP_DEADLINE` | the last day guests can reply, like `2026-11-20` (optional) |
-
+2. Vercel says “Multiple applications detected” and lists **server** and **app**. On the **app** row
+   (the one marked `/`), press **Import single project**. Leave **Root Directory** as `./`.
+3. You don't need any environment variables. The secret key is made from the database's own
+   password. If you have chosen a last day for replies, you can add `INVITE_RSVP_DEADLINE`, like
+   `2026-11-20`.
 4. Press **Deploy**. **The first build will fail** with “No DATABASE_URL”. That is expected: the
    database comes next.
 
