@@ -22,19 +22,31 @@
   <button class="button">Find</button>
 </form>
 
-{% comment %}The whole list on one champagne rule: each part as long as its share of the invitations, and named
-   underneath with its number. Every part opens that part of the list.{% endcomment %}
+{% include "couple/_flowers.html" %}
+{% comment %}The whole list as a garden: one magnolia for every invitation, at the stage it has reached, on one
+   champagne ground line. Each flower opens its guest; the key under it names each stage with its number
+   and opens that part of the list. A flower blooms on this page the moment its guest replies (couple.js).{% endcomment %}
 <section class="sheet summary" aria-labelledby="summary-title">
   <h2 id="summary-title" class="summary-lead"><span class="summary-figure">{{ counts.people }}</span> {{ counts.people|pluralize:"person is,people are" }} coming</h2>
   <p class="summary-sub">{% if counts.invited %}From {{ counts.coming }} of {{ counts.invited }} invitation{{ counts.invited|pluralize }}, with {{ counts.seats }} seat{{ counts.seats|pluralize }} kept in all.{% else %}Nobody is on the list yet.{% endif %}</p>
-  {% if counts.invited %}
-    <div class="tally" aria-hidden="true">{% for tile in tiles %}{% if tile.share %}<span class="tally-part is-{{ tile.key }}" style="flex-grow:{{ tile.share }}"></span>{% endif %}{% endfor %}</div>
+  {% if garden %}
+    <ul class="garden{% if garden|length > 90 %} is-crowded{% elif garden|length > 36 %} is-dense{% endif %}" data-garden="{% url 'couple:garden' %}" aria-label="Every invitation, as a flower">
+      {% for flower in garden %}
+        <li class="flower is-{{ flower.stage }}" data-pk="{{ flower.pk }}" style="--i:{{ forloop.counter0 }}">
+          <a href="{% url 'couple:guest' flower.pk %}" aria-describedby="tip-{{ flower.pk }}">
+            <svg viewBox="0 0 40 60" aria-hidden="true"><use href="#f-{{ flower.stage }}"/></svg>
+            <span class="visually-hidden">{{ flower.name }}</span>
+          </a>
+          <span class="flower-tip" id="tip-{{ flower.pk }}" role="tooltip"><b>{{ flower.name }}</b> <span class="flower-stage">{% if flower.stage == 'coming' %}coming, {{ flower.people }} of {{ flower.seats }}{% elif flower.stage == 'declined' %}can't come{% elif flower.stage == 'opened' %}opened, no reply yet{% elif flower.stage == 'sent' %}sent, not opened yet{% else %}not sent yet{% endif %}</span></span>
+        </li>
+      {% endfor %}
+    </ul>
   {% endif %}
   <ul class="tally-key">
     {% for tile in tiles %}
       <li>
         <a class="key is-{{ tile.key }}" href="{{ guests_url }}?show={{ tile.key }}">
-          <span class="swatch" aria-hidden="true"></span>
+          <svg class="swatch is-{{ tile.flower }}" viewBox="0 0 40 60" aria-hidden="true"><use href="#f-{{ tile.flower }}"/></svg>
           <span class="key-figure">{{ tile.value }}</span>
           <span class="key-text"><span class="key-label">{{ tile.label }}</span><span class="key-note">{{ tile.note }}</span></span>
           <svg class="icon key-go" aria-hidden="true"><use href="#i-back"/></svg>
@@ -43,6 +55,8 @@
     {% endfor %}
   </ul>
 </section>
+
+<div class="garden-news" role="status" aria-live="polite"></div>
 
 <div class="overview">
   <section class="sheet needs" aria-labelledby="needs-title">

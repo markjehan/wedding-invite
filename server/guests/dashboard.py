@@ -12,7 +12,7 @@ from django.contrib import messages
 from django.contrib.auth.views import redirect_to_login
 from django.core.exceptions import PermissionDenied
 from django.db.models import Count, Q, Sum
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.cache import never_cache
@@ -76,6 +76,23 @@ def _counts(guests):
     )
 
 
+# The home page's garden: one flower per invitation, at the stage it has reached. Replies come first,
+# then those waiting, then the buds still to send, so the bed reads like the rule it replaced.
+BLOOM_ORDER = {'coming': 0, 'declined': 1, 'opened': 2, 'sent': 3, 'unsent': 4}
+
+
+def garden():
+    guests = Guest.objects.only('name', 'seats', 'people', 'reply', 'first_opened_at', 'sent_at')
+    return sorted(({'pk': guest.pk, 'name': guest.name, 'stage': guest.stage, 'people': guest.people, 'seats': guest.seats}
+                   for guest in guests), key=lambda flower: (BLOOM_ORDER[flower['stage']], flower['name'].lower()))
+
+
+@couple_only
+def garden_now(request):
+    """The garden as it stands, for the home page to bloom a flower the moment its guest replies."""
+    return JsonResponse({'flowers': garden()})
+
+
 @couple_only
 def overview(request):
     counts = _counts(Guest.objects.all())
@@ -87,14 +104,14 @@ def overview(request):
     # Each part of the list: its number, what it is, and its share of the invitations, which sets
     # its length on the home page's champagne rule.
     tiles = [
-        {'key': 'coming', 'value': counts['people'], 'share': counts['coming'],
+        {'key': 'coming', 'flower': 'coming', 'value': counts['people'], 'share': counts['coming'],
          'label': 'person coming' if counts['people'] == 1 else 'people coming',
          'note': f'from {invitations(counts["coming"])}'},
-        {'key': 'declined', 'value': counts['declined'], 'share': counts['declined'], 'label': "can't come",
+        {'key': 'declined', 'flower': 'declined', 'value': counts['declined'], 'share': counts['declined'], 'label': "can't come",
          'note': f'{invitations(counts["declined"])} said no'},
-        {'key': 'waiting', 'value': waiting, 'share': waiting, 'label': 'waiting for a reply',
+        {'key': 'waiting', 'flower': 'opened', 'value': waiting, 'share': waiting, 'label': 'waiting for a reply',
          'note': f'{counts["sent"]} not opened yet' if counts['sent'] else 'all of them opened it'},
-        {'key': 'unsent', 'value': counts['unsent'], 'share': counts['unsent'], 'label': 'not sent yet',
+        {'key': 'unsent', 'flower': 'unsent', 'value': counts['unsent'], 'share': counts['unsent'], 'label': 'not sent yet',
          'note': 'send these first' if counts['unsent'] else 'everyone has theirs'},
     ]
 
@@ -109,6 +126,7 @@ def overview(request):
         'section': 'overview',
         'counts': counts,
         'tiles': tiles,
+        'garden': garden(),
         'sides': sides,
         'needs': [
             {'key': 'unsent', 'label': 'Send their invitation', 'total': counts['unsent'],

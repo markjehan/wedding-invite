@@ -6,6 +6,7 @@ from . import dashboard
 app_name = 'couple'
 urlpatterns = [
     path('', dashboard.overview, name='overview'),
+    path('garden.json', dashboard.garden_now, name='garden'),
     path('guests/', dashboard.guest_list, name='guests'),
     path('guests/new/', dashboard.guest_new, name='guest_new'),
     path('guests/<int:pk>/', dashboard.guest_page, name='guest'),

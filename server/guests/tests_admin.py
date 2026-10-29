@@ -129,6 +129,23 @@ class OverviewTests(TestCase):
         self.assertEqual(sides['No side set'], (3, 0, 0, 3))
         self.assertContains(response, 'See you there!')
 
+    def test_the_garden_has_a_flower_for_every_invitation(self):
+        one_at_every_stage()
+        response = self.client.get('/admin/')
+        self.assertEqual([flower['stage'] for flower in response.context['garden']], ['coming', 'declined', 'opened', 'sent', 'unsent'])
+        self.assertContains(response, 'class="flower is-coming"')
+        self.assertContains(response, 'coming, 2 of 2')
+
+    def test_the_garden_live(self):
+        guests = one_at_every_stage()
+        flowers = self.client.get(reverse('couple:garden')).json()['flowers']
+        self.assertEqual({flower['pk']: flower['stage'] for flower in flowers}[guests['opened'].pk], 'opened')
+        Guest.objects.filter(pk=guests['opened'].pk).update(reply='yes', people=3)
+        flowers = self.client.get(reverse('couple:garden')).json()['flowers']
+        self.assertEqual({flower['pk']: flower['stage'] for flower in flowers}[guests['opened'].pk], 'coming')
+        self.client.logout()
+        self.assertEqual(self.client.get(reverse('couple:garden')).status_code, 302)
+
     def test_an_empty_list(self):
         response = self.client.get('/admin/')
         self.assertEqual(response.status_code, 200)

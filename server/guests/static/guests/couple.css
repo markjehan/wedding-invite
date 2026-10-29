@@ -150,10 +150,7 @@ table{font-variant-numeric:tabular-nums}
   gap:2px 10px;height:100%;padding:12px 12px 14px;border-radius:10px;color:var(--ink);text-decoration:none;
   transition:background-color .15s ease}
 .key:active{background:var(--wash)}
-.key .swatch{grid-area:swatch;width:10px;height:10px;rotate:45deg;border:1.5px solid var(--gold);background:var(--gold)}
-.key.is-coming .swatch{border-color:var(--coming);background:var(--coming)}
-.key.is-declined .swatch{border-color:var(--declined);background:var(--declined)}
-.key.is-unsent .swatch{background:transparent;border-color:var(--ink-soft)}
+.key .swatch{grid-area:swatch;width:20px;height:30px;align-self:center;overflow:visible}
 .key-figure{grid-area:figure;font-size:30px;font-weight:500;line-height:1.15;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
 .key.is-coming .key-figure,.key.is-coming .key-label{color:var(--coming)}
 .key.is-declined .key-figure{color:var(--declined)}
@@ -162,6 +159,49 @@ table{font-variant-numeric:tabular-nums}
 .key-note{font-size:14.5px;color:var(--ink-soft)}
 .key-go{grid-area:go;width:18px;height:18px;rotate:180deg;color:var(--action);transition:translate .2s var(--ease-out)}
 @media (hover:hover){.key:hover{background:var(--tint);color:var(--ink)}.key:hover .key-go{translate:3px 0}}
+
+/* The garden: one magnolia per invitation on a champagne ground line, drawn in _flowers.html. Each
+   stage sets its own colours here, so the bed, the key and a live bloom share one drawing. */
+.flower,.swatch{--stem:#8d9b6e;--leaf:#ebefdd}
+.flower.is-unsent,.swatch.is-unsent{--petal:#fffcf5;--edge:#a8977a}
+.flower.is-sent,.swatch.is-sent{--petal:#fcf5e6;--edge:#b99a5e;--heart:#e8d2a2}
+.flower.is-opened,.swatch.is-opened{--petal:#f6e8cc;--edge:#a8843f;--heart:#e2c487}
+.flower.is-coming,.swatch.is-coming{--petal:#eef4e3;--inner:#fffcf5;--edge:#58784a;--heart:#c9a45d}
+.flower.is-declined,.swatch.is-declined{--petal:#f5e1d8;--edge:#a6604b}
+/* The fewer the guests, the larger each flower: a short list should still look like a garden. */
+.garden{list-style:none;display:flex;flex-wrap:wrap;margin:24px 0 10px;padding:0;--w:52px;--h:78px}
+.garden.is-dense{--w:38px;--h:57px}
+.garden.is-crowded{--w:26px;--h:39px}
+.flower{position:relative;width:var(--w);height:var(--h);border-bottom:1px solid var(--line)}
+.flower a{display:block;width:100%;height:100%;border-radius:8px 8px 0 0}
+.flower a:focus-visible{outline-offset:-1px}
+.flower svg{display:block;width:100%;height:100%;overflow:visible;transform-origin:50% 100%;transition:translate .25s var(--ease-out)}
+@media (hover:hover){.flower a:hover svg{translate:0 -3px}}
+.flower-tip{position:absolute;left:50%;bottom:calc(100% + 8px);z-index:5;padding:7px 11px;border-radius:8px;background:var(--ink);color:var(--sheet);
+  font-size:14.5px;line-height:1.35;white-space:nowrap;pointer-events:none;box-shadow:0 8px 20px -10px #2a1f1066;
+  opacity:0;translate:calc(-50% + var(--nudge,0px)) 4px;scale:.97;transform-origin:50% 100%;
+  transition:opacity .15s ease-out,translate .15s var(--ease-out),scale .15s var(--ease-out)}
+.flower-tip b{font-weight:600}
+.flower-stage{color:#eadfc8}
+.flower:hover .flower-tip,.flower:focus-within .flower-tip{opacity:1;translate:calc(-50% + var(--nudge,0px)) 0;scale:1}
+/* The first time Home opens in a visit, the bed grows in from the left, a flower at a time. */
+.garden.is-growing .flower svg{animation:grow .7s var(--ease-out) both;animation-delay:calc(min(var(--i),40) * 18ms)}
+@keyframes grow{from{opacity:0;scale:.62;translate:0 5px;filter:blur(2px)}}
+.flower.is-blooming .flower-tip{opacity:1;translate:calc(-50% + var(--nudge,0px)) 0;scale:1}
+
+/* A reply that arrives while Home is open: a card in the corner with the flower that just bloomed. */
+.garden-news{position:fixed;right:20px;bottom:20px;z-index:20;display:grid;gap:10px;width:min(390px,calc(100vw - 32px))}
+.news{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:4px 12px;padding:12px 10px 12px 14px;background:var(--sheet);
+  border:1px solid var(--rule);border-radius:12px;box-shadow:0 1px 1px #58452c0a,0 18px 40px -22px #58452c80;
+  transition:opacity .3s ease-out,translate .3s var(--ease-out)}
+@starting-style{.news{opacity:0;translate:0 12px}}
+.news.is-leaving{opacity:0;translate:0 8px;transition-duration:.18s}
+.news svg.swatch{width:28px;height:42px}
+.news p{font-size:16px;line-height:1.4}
+.news p b{font-weight:600}
+.news .text-button{min-height:32px;font-size:15px}
+.news .news-close{display:grid;place-items:center;width:36px;height:36px;border:0;border-radius:8px;background:none;color:var(--ink-soft);cursor:pointer}
+@media (hover:hover){.news .news-close:hover{background:var(--wash);color:var(--ink)}}
 
 /* ---------- Sheets ---------- */
 .sheet{background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:24px 26px;box-shadow:var(--shadow)}
@@ -403,6 +443,10 @@ a.side-name:hover{text-decoration:underline}
   .head-download{display:none}
   .foot-download{display:block;margin-top:16px}
   .foot-download .button{width:100%}
+  .garden{--w:40px;--h:60px;margin-top:20px}
+  .garden.is-dense{--w:31px;--h:46px}
+  .garden.is-crowded{--w:22px;--h:33px}
+  .garden-news{left:16px;right:16px;bottom:16px;width:auto}
   .side-pick{flex:1 1 auto}
   .side-pick select{width:100%}
   .head-actions{width:100%}
@@ -446,4 +490,5 @@ a.side-name:hover{text-decoration:underline}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{transition-duration:0s!important}
+  .garden.is-growing .flower svg{animation:none}
 }
