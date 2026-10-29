@@ -31,7 +31,7 @@
   const J = '‍';
 
   const calendarLink = (title, note) => 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' +
-    encodeURIComponent(title) + '&dates=20261204/20261205&location=' + encodeURIComponent('Avenra Gardens, Negombo') +
+    encodeURIComponent(title) + '&dates=20261207/20261208&location=' + encodeURIComponent('Avenra Gardens, Negombo') +
     '&details=' + encodeURIComponent(note);
 
   // The words the scripts write for themselves.
@@ -41,14 +41,14 @@
       soundOn: 'Turn the music on',
       replay: 'Replay the opening',
       preparing: 'Preparing your invitation…',
-      scratchDone: 'Friday, 4 December 2026. Find the details below.',
+      scratchDone: 'Monday, 7 December 2026. Find the details below.',
       today: 'Today is our wedding day!',
       after: 'Thank you for celebrating this beautiful chapter with us.',
       venueReal: 'See the real venue',
       venueSketch: 'Return to the sketch',
       nameMissing: 'Please enter your name.',
-      message: (name, answer, note) => `Dear Naveen & Dulanjani,\n\n${name} — ${answer}.\nWedding: 4 December 2026, Avenra Gardens, Negombo${note ? '\n\n' + note : ''}`,
-      subject: 'RSVP — Naveen & Dulanjani, 4 December 2026',
+      message: (name, answer, note) => `Dear Naveen & Dulanjani,\n\n${name} — ${answer}.\nWedding: 7 December 2026, Avenra Gardens, Negombo${note ? '\n\n' + note : ''}`,
+      subject: 'RSVP — Naveen & Dulanjani, 7 December 2026',
       ready: 'Your reply is ready. Choose how to send it.',
       opening: 'WhatsApp is opening with your reply. If it does not, press Send on WhatsApp below.',
       changed: 'Details changed. Send your updated RSVP.',
@@ -74,14 +74,14 @@
       soundOn: 'සංගීතය වාදනය කරන්න',
       replay: 'ආරම්භය නැවත නරඹන්න',
       preparing: 'ඔබගේ ආරාධනාව සූදානම් වෙමින්…',
-      scratchDone: '2026 දෙසැම්බර් 4, සිකුරාදා. විස්තර පහතින්.',
+      scratchDone: '2026 දෙසැම්බර් 7, සඳුදා. විස්තර පහතින්.',
       today: 'අද අපගේ විවාහ දිනයයි!',
       after: 'මෙම සුන්දර පරිච්ඡේදය අප සමඟ සැමරීමට ඔබට ස්තූතියි.',
       venueReal: 'සැබෑ ස්ථානය බලන්න',
       venueSketch: 'සිතුවම වෙත ආපසු',
       nameMissing: 'කරුණාකර ඔබගේ නම ඇතුළත් කරන්න.',
-      message: (name, answer, note) => `ආදරණීය නවීන් සහ දුලාංජනී,\n\n${name} — ${answer}.\nවිවාහ මංගල්${J}යය: 2026 දෙසැම්බර් 4, ඇවන්රා ගාඩන්ස්, මීගමුව${note ? '\n\n' + note : ''}`,
-      subject: 'පැමිණීම තහවුරු කිරීම — නවීන් සහ දුලාංජනී, 2026 දෙසැම්බර් 4',
+      message: (name, answer, note) => `ආදරණීය නවීන් සහ දුලාංජනී,\n\n${name} — ${answer}.\nවිවාහ මංගල්${J}යය: 2026 දෙසැම්බර් 7, ඇවන්රා ගාඩන්ස්, මීගමුව${note ? '\n\n' + note : ''}`,
+      subject: 'පැමිණීම තහවුරු කිරීම — නවීන් සහ දුලාංජනී, 2026 දෙසැම්බර් 7',
       ready: 'ඔබගේ පිළිතුර සූදානම්. එය යවන ආකාරය තෝරන්න.',
       opening: 'ඔබගේ පිළිතුර සමඟ WhatsApp විවෘත වේ. එය විවෘත නොවුණොත්, පහත ඇති “WhatsApp හරහා යවන්න” ඔබන්න.',
       changed: 'විස්තර වෙනස් විය. යාවත්කාලීන පිළිතුර යවන්න.',
@@ -105,7 +105,7 @@
 
   // The Sinhala invitation, key for key with the markup.
   const SI = {
-    title: 'නවීන් සහ දුලාංජනී — 2026 දෙසැම්බර් 4',
+    title: 'නවීන් සහ දුලාංජනී — 2026 දෙසැම්බර් 7',
 
     'door.label': `විවාහ ආරාධනාවේ ප්${J}රවේශය`,
     'door.seal': `මුද්${J}රාව බිඳ ආරාධනාව විවෘත කරන්න. ආරම්භක දර්${J}ශනය මඟහැරීමට Escape යතුර ඔබන්න.`,
@@ -169,7 +169,7 @@
 
     'date.title': 'සිහියේ රැඳෙන දිනයක්',
     'date.lead': 'ඔබ වෙනුවෙන්ම, පුංචි රන්වන් විස්මයක්.',
-    'date.day': 'සිකුරාදා',
+    'date.day': 'සඳුදා',
     'date.month': 'දෙසැම්බර් 2026',
     'date.details': 'විස්තර පහතින්',
     'date.reveal': 'විවාහ දිනය හෙළි කරන්න',
@@ -185,7 +185,7 @@
     'count.hours': 'පැය',
     'count.minutes': 'මිනිත්තු',
     'count.seconds': 'තත්පර',
-    'count.note': `ශ්${J}රී ලංකා වේලාවෙන් දෙසැම්බර් 4 මධ්${J}යම රාත්${J}රිය දක්වා.`,
+    'count.note': `ශ්${J}රී ලංකා වේලාවෙන් දෙසැම්බර් 7 මධ්${J}යම රාත්${J}රිය දක්වා.`,
 
     'agenda.title': 'මතක දහසක් රැඳෙන දවසක්',
     'agenda.lead': 'සැමරුමේ පෙරදසුනක්. අවසන් වැඩසටහන පසුව දැනුම් දෙනු ඇත.',
@@ -231,7 +231,7 @@
     'rsvp.general': 'පිළිතුරු යැවිය හැක්කේ ඔබට ලැබුණු ආරාධනා සබැඳිය හරහා පමණි. එය නොලැබුණේ නම්, කරුණාකර නවීන් හෝ දුලාංජනී අමතන්න.',
     'rsvp.disclosure': 'ඔබගේ පිළිතුර දැනටමත් ලියා, යුවළගේ WhatsApp අංකයට යොමු කර WhatsApp තුළ විවෘත වේ. ඔබ කළ යුත්තේ එය යැවීම පමණි. මෙහි කිසිවක් ගබඩා නොකෙරේ.',
 
-    'closing.line': '2026 දෙසැම්බර් 4 · ඇවන්රා ගාඩන්ස්',
+    'closing.line': '2026 දෙසැම්බර් 7 · ඇවන්රා ගාඩන්ස්',
     'closing.back': 'මුලට ආපසු'
   };
 

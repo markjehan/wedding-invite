@@ -209,9 +209,9 @@ variables, so they have to be changed with them.
 ## Demo details
 
 - Confirmed names: Naveen and Dulanjani.
-- Confirmed date: 4 December 2026.
+- Confirmed date: Monday, 7 December 2026.
 - Venue: Avenra Gardens, Negombo, with the supplied Google Maps location.
-- Exact ceremony times and agenda remain provisional. Calendars use an all-day event; the countdown targets the start of 4 December in Sri Lanka.
+- Exact ceremony times and agenda remain provisional. Calendars use an all-day event; the countdown targets the start of 7 December in Sri Lanka.
 - All couple photographs are labelled illustrative demo assets.
 - RSVP replies go to WhatsApp +94 77 128 1561: pressing the button opens WhatsApp with the reply written and addressed, and the guest presses send. Email and copy stay as fallbacks. Nothing is stored. The number is `RSVP_WHATSAPP` in `invitation.js`.
 

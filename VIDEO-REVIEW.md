@@ -32,7 +32,7 @@ An exact cinematic replica would require matching source artwork or a custom ren
 - Additional invitation wording, family names or dress code if wanted.
 - RSVP destination: email, WhatsApp number or a response collection service. The demo prepares an unsent response and never pretends to submit it.
 
-The confirmed date is 4 December 2026. Calendars use an all-day event until a time is supplied. The countdown targets the start of that date in Sri Lanka. The supplied Maps short link resolves to Avenra Gardens Hotel Negombo, latitude 7.2175792, longitude 79.8554087.
+The confirmed date is Monday, 7 December 2026. Calendars use an all-day event until a time is supplied. The countdown targets the start of that date in Sri Lanka. The supplied Maps short link resolves to Avenra Gardens Hotel Negombo, latitude 7.2175792, longitude 79.8554087.
 
 ## Door hinge bug recording — 12 September 2026
 

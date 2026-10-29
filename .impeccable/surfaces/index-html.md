@@ -13,7 +13,7 @@ Experience: one responsive champagne-gold and off-white invitation with continuo
 
 ## Audience, job, action, content, constraints
 
-A wedding guest, often a Sinhala-reading family member on a phone, receives the invitation, chooses a language, checks when and where, explores the proposed programme, and prepares a reply. Naveen and Dulanjani (නවීන් සහ දුලාංජනී), 4 December 2026, and Avenra Gardens Hotel in Negombo are confirmed. Exact times, final agenda, real photographs, and RSVP contact remain intentionally provisional. The date is real; calendars are all-day and the countdown targets midnight in Sri Lanka. RSVP is prepared and unsent. The Sinhala spelling of the names and the venue transliteration (ඇවන්රා ගාඩන්ස්) should be confirmed by the couple before sending.
+A wedding guest, often a Sinhala-reading family member on a phone, receives the invitation, chooses a language, checks when and where, explores the proposed programme, and prepares a reply. Naveen and Dulanjani (නවීන් සහ දුලාංජනී), 7 December 2026, and Avenra Gardens Hotel in Negombo are confirmed. Exact times, final agenda, real photographs, and RSVP contact remain intentionally provisional. The date is real; calendars are all-day and the countdown targets midnight in Sri Lanka. RSVP is prepared and unsent. The Sinhala spelling of the names and the venue transliteration (ඇවන්රා ගාඩන්ස්) should be confirmed by the couple before sending.
 
 ## Current direction and reference authority
 

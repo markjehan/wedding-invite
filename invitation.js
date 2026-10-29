@@ -337,7 +337,7 @@
   window.invitationBooted=true;
   reduced.addEventListener('change',()=>{if(reduced.matches&&!intro.hidden)finishIntro()});
   // Only the date is confirmed. Calendar entries remain all-day until timing is supplied.
-  const weddingDay = new Date('2026-12-04T00:00:00+05:30').getTime();
+  const weddingDay = new Date('2026-12-07T00:00:00+05:30').getTime();
   function countdown() {
     const delta = Math.max(0, Math.floor((weddingDay - Date.now()) / 1000));
     const values = [Math.floor(delta / 86400), Math.floor(delta / 3600) % 24, Math.floor(delta / 60) % 60, delta % 60];
@@ -364,16 +364,16 @@
     // folded the way the format asks: a break and a space, never inside a letter.
     const field = value => value.replace(/[\\;,]/g, m => '\\' + m);
     const fold = line => { let out = '', run = 0; for (const ch of line) { const size = new TextEncoder().encode(ch).length; if (run + size > 74) { out += '\r\n '; run = 1; } out += ch; run += size; } return out; };
-    const text = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Naveen and Dulanjani//Wedding//EN','CALSCALE:GREGORIAN','BEGIN:VEVENT','UID:naveen-dulanjani-20261204@invitation.local','DTSTAMP:' + stamp,'DTSTART;VALUE=DATE:20261204','DTEND;VALUE=DATE:20261205','SUMMARY:' + field(say('calendarTitle') || 'Naveen & Dulanjani Wedding'),'LOCATION:Avenra Gardens\\, Negombo\\, Sri Lanka','DESCRIPTION:' + field(say('calendarNote') || 'Ceremony time to be confirmed.'),'END:VEVENT','END:VCALENDAR',''].map(fold).join('\r\n');
+    const text = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Naveen and Dulanjani//Wedding//EN','CALSCALE:GREGORIAN','BEGIN:VEVENT','UID:naveen-dulanjani-20261204@invitation.local','DTSTAMP:' + stamp,'SEQUENCE:1','DTSTART;VALUE=DATE:20261207','DTEND;VALUE=DATE:20261208','SUMMARY:' + field(say('calendarTitle') || 'Naveen & Dulanjani Wedding'),'LOCATION:Avenra Gardens\\, Negombo\\, Sri Lanka','DESCRIPTION:' + field(say('calendarNote') || 'Ceremony time to be confirmed.'),'END:VEVENT','END:VCALENDAR',''].map(fold).join('\r\n');
     const url = URL.createObjectURL(new Blob([text], {type:'text/calendar;charset=utf-8'}));
-    const a = document.createElement('a'); a.href = url; a.download = 'Naveen-and-Dulanjani-4-December-2026.ics'; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 30000);
+    const a = document.createElement('a'); a.href = url; a.download = 'Naveen-and-Dulanjani-7-December-2026.ics'; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 30000);
   });
   const card = $('#scratch-card'), canvas = $('#scratch'), ctx = canvas.getContext('2d');
   let revealed = false, drawing = false, last = null, moved = 0, foilSolid = 0;
   // The foil covers only the cameo, so the canvas corners outside it are clear from the start. How
   // much has been scratched is therefore measured against what was painted, not the whole canvas.
   const solidFoil = () => { const pixels = ctx.getImageData(0,0,canvas.width,canvas.height).data; let solid = 0; for (let i = 3; i < pixels.length; i += 64) if (pixels[i] >= 80) solid++; return solid; };
-  function reveal() { if (revealed) return; revealed = true; drawing = false; card.classList.add('revealed'); canvas.setAttribute('aria-disabled','true'); canvas.tabIndex = -1; $('#scratch-status').textContent = say('scratchDone') || 'Friday, 4 December 2026. Find the details below.'; }
+  function reveal() { if (revealed) return; revealed = true; drawing = false; card.classList.add('revealed'); canvas.setAttribute('aria-disabled','true'); canvas.tabIndex = -1; $('#scratch-status').textContent = say('scratchDone') || 'Monday, 7 December 2026. Find the details below.'; }
   let foilRetry = 0;
   function paintFoil(force) {
     if (!ctx || revealed) return;
@@ -699,10 +699,10 @@
     const data=new FormData(e.target),note=(data.get('note')||'').trim();
     // The answer is quoted as the guest saw it, from its label, so a Sinhala reply stays Sinhala.
     const answer=e.target.querySelector('[name=attendance]:checked')?.parentElement.textContent.trim()||data.get('attendance');
-    const message=say('message',data.get('name').trim(),answer,note)||`Dear Naveen & Dulanjani,\n\n${data.get('name').trim()} — ${data.get('attendance')}.\nWedding: 4 December 2026, Avenra Gardens, Negombo${note?'\n\n'+note:''}`;
+    const message=say('message',data.get('name').trim(),answer,note)||`Dear Naveen & Dulanjani,\n\n${data.get('name').trim()} — ${data.get('attendance')}.\nWedding: 7 December 2026, Avenra Gardens, Negombo${note?'\n\n'+note:''}`;
     $('#reply-text').textContent=message;
     $('#send-whatsapp').href='https://wa.me/'+RSVP_WHATSAPP+'?text='+encodeURIComponent(message);
-    $('#send-email').href='mailto:'+RSVP_EMAIL+'?subject='+encodeURIComponent(say('subject')||'RSVP — Naveen & Dulanjani, 4 December 2026')+'&body='+encodeURIComponent(message);
+    $('#send-email').href='mailto:'+RSVP_EMAIL+'?subject='+encodeURIComponent(say('subject')||'RSVP — Naveen & Dulanjani, 7 December 2026')+'&body='+encodeURIComponent(message);
     $('#prepared').hidden=false;
     // The press is what lets the browser open WhatsApp, so it has to happen here and not later. The
     // panel stays as the fallback: if the phone holds the new window back, the reply is still written
@@ -722,7 +722,7 @@
     Music.relabel();
     replayLabel.textContent=say('replay')||'Replay the opening';
     countdown();
-    if(revealed)$('#scratch-status').textContent=say('scratchDone')||'Friday, 4 December 2026. Find the details below.';
+    if(revealed)$('#scratch-status').textContent=say('scratchDone')||'Monday, 7 December 2026. Find the details below.';
     if(!$('#prepared').hidden){$('#prepared').hidden=true;$('#reply-status').textContent=say('changed')||'Details changed. Prepare your updated RSVP.';}
   });
   $('#rsvp').addEventListener('input',()=>{if(!$('#prepared').hidden){$('#prepared').hidden=true;$('#reply-status').textContent=say('changed')||'Details changed. Prepare your updated RSVP.';}});

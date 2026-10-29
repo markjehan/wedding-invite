@@ -659,7 +659,7 @@ An arched outline frames the welcome. Thin champagne outlines connect rectangula
 ## Do's and Don'ts
 
 - Do preserve the confirmed names, venue, gold/ivory palette, and truthful demo labeling.
-- Do preserve the confirmed date, 4 December 2026, and continuous native scrolling.
+- Do preserve the confirmed date, 7 December 2026, and continuous native scrolling.
 - Do retain three disclosed sample photographs and actual venue evidence.
 - Do confirm times, final agenda, real photographs, and RSVP destination before real distribution.
 - Keep the opening doors as a separate entrance before natural scrolling; do not restore fixed book stages or page-flip navigation.

@@ -22,7 +22,7 @@ from . import spreadsheet, whatsapp
 from .middleware import has_two_step
 from .models import Guest
 
-WEDDING = date(2026, 12, 4)
+WEDDING = date(2026, 12, 7)
 XLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
 # The five places a guest can be, in the order they move through them (see Guest.stage).

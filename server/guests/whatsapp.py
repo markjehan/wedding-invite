@@ -7,11 +7,11 @@ from urllib.parse import quote
 
 INVITATION = (
     'Dear {name},\n'
-    'Naveen & Dulanjani warmly invite you to their wedding on Friday, 4 December 2026, '
+    'Naveen & Dulanjani warmly invite you to their wedding on Monday, 7 December 2026, '
     'at Avenra Gardens, Negombo.\n'
     '\n'
     'ආදරණීය {name_si},\n'
-    'නවීන් සහ දුලාංජනී, 2026 දෙසැම්බර් 4 වන සිකුරාදා මීගමුව ඇවන්රා ගාඩන්ස් හිදී පැවැත්වෙන '
+    'නවීන් සහ දුලාංජනී, 2026 දෙසැම්බර් 7 වන සඳුදා මීගමුව ඇවන්රා ගාඩන්ස් හිදී පැවැත්වෙන '
     'සිය විවාහ මංගල්‍යයට ඔබට සාදරයෙන් ආරාධනා කරති.\n'
     '\n'
     'Your invitation · ඔබගේ ආරාධනාව:\n'
@@ -21,10 +21,10 @@ INVITATION = (
 REMINDER = (
     'Dear {name},\n'
     'A gentle reminder: Naveen & Dulanjani would love to know whether you can join them '
-    'on Friday, 4 December 2026. You can reply on your invitation.\n'
+    'on Monday, 7 December 2026. You can reply on your invitation.\n'
     '\n'
     'ආදරණීය {name_si},\n'
-    'නවීන් සහ දුලාංජනී, 2026 දෙසැම්බර් 4 වන සිකුරාදා සිය විවාහ මංගල්‍යයට ඔබට සහභාගී විය '
+    'නවීන් සහ දුලාංජනී, 2026 දෙසැම්බර් 7 වන සඳුදා සිය විවාහ මංගල්‍යයට ඔබට සහභාගී විය '
     'හැකිදැයි දැන ගැනීමට කැමැත්තෙන් සිටිති. ඔබගේ ආරාධනාවේ පිළිතුර යැවිය හැක.\n'
     '\n'
     'Your invitation · ඔබගේ ආරාධනාව:\n'

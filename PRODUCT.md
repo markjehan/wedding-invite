@@ -31,7 +31,7 @@ Guests open a message link on phones or laptops. The current user instruction is
 - Two complete languages, English and Sinhala, chosen on a language page before the doors. The Sinhala invitation is entirely Sinhala, names and monogram included; only the photographed wax seal keeps N&D. Animations, imagery and timings are shared by both.
 - One responsive static template with six sections: welcome; invitation and a six-photograph gallery; scratch date, calendar actions and countdown; full proposed agenda; automatic Avenra drawing and directions; RSVP.
 - Continuous native scrolling, not page flips or gated reading.
-- Confirmed: Naveen and Dulanjani, 4 December 2026, Avenra Gardens Hotel in Negombo, Sri Lanka.
+- Confirmed: Naveen and Dulanjani, 7 December 2026, Avenra Gardens Hotel in Negombo, Sri Lanka.
 - Unconfirmed: ceremony time, final agenda, real couple photographs, and an RSVP email address (WhatsApp replies go to +94 77 128 1561). Sample images and proposed programme are visibly disclosed.
 - Google Calendar and iCalendar save an all-day event. The countdown targets midnight at the start of the confirmed date in Sri Lanka, not an invented ceremony time.
 - No backend: RSVP opens WhatsApp with the reply written and addressed to the couple; the guest sends it. Responses are not stored. An optional guest URL parameter prefills the name.

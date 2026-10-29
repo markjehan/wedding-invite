@@ -6,9 +6,9 @@
 <div class="hello">
   <h1>The guest list</h1>
   <p class="countdown">
-    {% if days > 0 %}<b>{{ days }}</b> day{{ days|pluralize }} to the wedding on Friday, 4 December
+    {% if days > 0 %}<b>{{ days }}</b> day{{ days|pluralize }} to the wedding on Monday, 7 December
     {% elif days == 0 %}The wedding is today
-    {% else %}The wedding was on 4 December{% endif %}{% if replies_close %}. Guests can reply until {{ replies_close|date:"j F" }}.{% endif %}
+    {% else %}The wedding was on 7 December{% endif %}{% if replies_close %}. Guests can reply until {{ replies_close|date:"j F" }}.{% endif %}
   </p>
 </div>
 
