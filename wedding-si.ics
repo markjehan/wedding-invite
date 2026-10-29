@@ -1,0 +1,16 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Naveen and Dulanjani//Wedding//SI
+CALSCALE:GREGORIAN
+BEGIN:VEVENT
+UID:naveen-dulanjani-20261204@invitation.local
+DTSTAMP:20260914T000000Z
+DTSTART;VALUE=DATE:20261204
+DTEND;VALUE=DATE:20261205
+SUMMARY:නවීන් සහ දුලාංජනීගේ විවා
+ හ මංගල්‍යය
+LOCATION:Avenra Gardens\, Negombo\, Sri Lanka
+DESCRIPTION:උත්සව වේලාව පසුව තහවුර
+ ු කෙරේ.
+END:VEVENT
+END:VCALENDAR

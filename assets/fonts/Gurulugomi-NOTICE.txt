@@ -1,0 +1,9 @@
+UN-Gurulugomi (subset: sinhala-script.woff)
+
+Designed by Pushpananda Ekanayaka, The FontMaster (Fontographer 4.1, September 2002).
+Source: https://github.com/JakeLoganUK/Sinhala-Unicode-Fonts (UN-Gurulugomi.ttf)
+
+The font file carries no licence text of its own (OS/2 fsType 0, no embedding restriction).
+Pushpananda Ekanayaka's FontMaster fonts are distributed as free for personal use; commercial use
+requires a licence from FontMaster. This invitation is a personal wedding invitation, which is
+personal use. If this site is ever reused commercially, license the font from FontMaster or replace it.

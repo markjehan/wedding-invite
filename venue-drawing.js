@@ -2,6 +2,10 @@
  const data=window.AVENRA_STROKES,canvas=document.getElementById('venue-canvas'),stage=document.getElementById('architecture'),button=document.getElementById('venue-photo');
  if(!data||!canvas)return;
  const ctx=canvas.getContext('2d');if(!ctx)return;
+ // The photograph toggle's two captions come from i18n.js in the guest's language, English kept beside them.
+ const label=photo=>window.invitationLanguage?.say(photo?'venueSketch':'venueReal')||(photo?'Return to the sketch':'See the real venue');
+ button.textContent=label(stage.classList.contains('show-photo'));
+ document.addEventListener('invitation:language',()=>{button.textContent=label(stage.classList.contains('show-photo'))});
  let frame=0,started=0,cursor=0,playing=false,lead=0;
  // Three bars of the score at 100bpm. This is the longest single move in the invitation and so the
  // one most worth putting on the grid: started on a beat, it also finishes on a downbeat.
@@ -12,7 +16,7 @@
  function tick(now){const t=Math.min(1,(now-started)/DRAW_MS),limit=total*(1-Math.pow(1-t,1.5));ctx.beginPath();while(cursor<segments.length&&segments[cursor].start<limit){const s=segments[cursor++];ctx.moveTo(...s.a);ctx.lineTo(...s.b)}ctx.stroke();if(t<1){frame=requestAnimationFrame(tick)}else{playing=false;stage.classList.remove('is-drawing');stage.classList.add('is-drawn')}}
  window.playVenueDrawing=()=>{
   cancelAnimationFrame(frame);clearTimeout(lead);
-  stage.classList.remove('show-photo','is-drawn');button.setAttribute('aria-pressed','false');button.textContent='See the real venue';
+  stage.classList.remove('show-photo','is-drawn');button.setAttribute('aria-pressed','false');button.textContent=label(false);
   setup();cursor=0;
   if(matchMedia('(prefers-reduced-motion: reduce)').matches){stage.classList.add('is-drawn');return}
   stage.classList.add('is-drawing');playing=true;
@@ -22,7 +26,7 @@
   const go=()=>{started=performance.now();frame=requestAnimationFrame(tick)};
   if(wait>30)lead=setTimeout(go,wait);else go();
  };
- button.addEventListener('click',()=>{const show=!stage.classList.contains('show-photo');stage.classList.toggle('show-photo',show);button.setAttribute('aria-pressed',String(show));button.textContent=show?'Return to the sketch':'See the real venue'});
+ button.addEventListener('click',()=>{const show=!stage.classList.contains('show-photo');stage.classList.toggle('show-photo',show);button.setAttribute('aria-pressed',String(show));button.textContent=label(show)});
  document.addEventListener('visibilitychange',()=>{if(document.hidden&&playing){cancelAnimationFrame(frame);clearTimeout(lead);playing=false;stage.classList.remove('is-drawing');stage.classList.add('is-drawn')}});
  // invitation.js now runs before this file, so on a slow connection the venue can already have
  // scrolled into view, and asked for the drawing, while this file was still arriving.

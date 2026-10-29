@@ -1,6 +1,9 @@
 (() => {
   'use strict';
   const $ = s => document.querySelector(s);
+  // The words this script writes itself come from i18n.js, in whichever language the guest chose.
+  // Every call keeps its English beside it, so the invitation still reads if that file never arrived.
+  const say=(key,...args)=>window.invitationLanguage?.say(key,...args);
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   // Motion is opt-in twice over: the guest has not asked for less of it, and the engine has the
   // properties the choreography is written in. It is settled here, before the entrance runs,
@@ -58,7 +61,7 @@
       toggle.hidden=false;
       toggle.setAttribute('aria-pressed',String(muted));
       if(icon)icon.setAttribute('href',muted?'#sound-off':'#sound-on');
-      if(label)label.textContent=muted?'Turn the music on':'Turn the music off';
+      if(label)label.textContent=(muted?say('soundOn'):say('soundOff'))||(muted?'Turn the music on':'Turn the music off');
       toggle.toggleAttribute('data-playing',playing&&!muted);
     }
     function halt(){
@@ -163,6 +166,9 @@
     reflect();
     return{
       begin,halt,arm,
+      // The decode, so the language page can wait for the score as well as the art; and the label,
+      // so a change of language can rewrite it.
+      ready:decoding,relabel:reflect,
       playing:()=>playing&&!muted,
       // Seconds into the recording, wrapped through the loop, or null when nothing is sounding.
       // Everything that wants to move in time with the music reads its phase from here.
@@ -183,6 +189,9 @@
   // How far into the entrance the welcome begins to speak. The camera is still moving at this
   // point, so the first line surfaces through the dissolve rather than waiting behind it.
   const ARRIVE_LEAD=TEMPO.beat*6;
+  // When the arrival's figure was set going. A name traded in by a change of language later on is moved
+  // to this point in the figure rather than starting it again; see catchUp below.
+  let arrivedAt=null;
   // The figure plays once. Whichever path gets the guest here sets it going -- the doors hand it
   // their own remaining time as a lead, everything else starts it from the top -- and the guard
   // keeps the second caller from re-cueing a figure that is already part-way through.
@@ -205,6 +214,7 @@
       content.style.setProperty('--crest-lift',lift.toFixed(1)+'px');
     }
     document.body.classList.add('arrived');
+    arrivedAt=performance.now();
   }
   // The closing signs off with the same mark the arrival opens on, and it draws itself down there
   // too. It is cloned from the hero rather than written out a second time, so the two can never
@@ -227,7 +237,8 @@
   })();
   // The door ritual precedes the continuous document; it never replaces native scrolling.
   const intro=$('#door-intro'),openButton=$('#open-doors');
-  const outside=[...document.body.children].filter(el=>el!==intro&&!['SCRIPT','STYLE','NOSCRIPT'].includes(el.tagName));
+  // The language page is left out: it stands over the doors and has to stay answerable.
+  const outside=[...document.body.children].filter(el=>el!==intro&&el.id!=='language-gate'&&!['SCRIPT','STYLE','NOSCRIPT','TEMPLATE'].includes(el.tagName));
   let introTimer,opening=false,returnHash=location.hash;
   // Called on the paths that skip the entrance, and at the end of the entrance itself. The document
   // underneath has been painted and locked since the first frame; this is what unlocks it.
@@ -236,6 +247,8 @@
   // through a decode — that was the stall between pressing the seal and the doors moving.
   const entranceArt=Promise.all(['assets/magnolia-suite/doors.webp','assets/magnolia-suite/portrait.webp','assets/magnolia-suite/garden.webp']
     .map(src=>{const img=new Image();img.src=src;return img.decode().catch(()=>{});}));
+  // The language page shows these arriving, and lets the guest through once they have.
+  window.invitationLanguage?.track(entranceArt);window.invitationLanguage?.track(Music.ready);
   function openIntro(skip=false){
     if(skip||reduced.matches){Music.begin();finishIntro();return}
     if(opening)return;
@@ -270,16 +283,56 @@
     });
   }
   // Replay puts the entrance back; on first load the markup already has it, so nothing here moves.
-  function showIntro(){clearTimeout(introTimer);Music.halt();document.body.classList.remove('arrived');document.documentElement.style.setProperty('--sync','0s');document.documentElement.style.setProperty('--arrive','0s');opening=false;intro.classList.remove('opening','pressed');document.body.classList.remove('intro-opening');window.scrollTo({top:0,behavior:'instant'});intro.hidden=false;outside.forEach(el=>el.inert=true);document.body.classList.add('intro-locked');openButton.focus({preventScroll:true});}
+  function showIntro(){clearTimeout(introTimer);Music.halt();document.body.classList.remove('arrived');arrivedAt=null;document.documentElement.style.setProperty('--sync','0s');document.documentElement.style.setProperty('--arrive','0s');opening=false;intro.classList.remove('opening','pressed');document.body.classList.remove('intro-opening');window.scrollTo({top:0,behavior:'instant'});intro.hidden=false;outside.forEach(el=>el.inert=true);document.body.classList.add('intro-locked');openButton.focus({preventScroll:true});}
   // Pressing the seal opens it; anywhere on the doors works too, and Escape skips straight through.
   openButton.addEventListener('click',()=>openIntro());
   intro.addEventListener('click',e=>{if(e.target!==openButton)openIntro()});
   intro.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();openIntro(true)}if(e.key==='Tab'){e.preventDefault();openButton.focus()}});
-  const replay=document.createElement('button');replay.className='intro-replay';replay.textContent='Replay the opening';replay.addEventListener('click',()=>{returnHash='#welcome';showIntro()});$('.closing').append(replay);
+  // The foot of the invitation offers three things: back to the beginning, the doors again, and the other
+  // language. The first two are a pair beside the programme's diamond, each a small drawn icon over its
+  // label; the language is a control of its own beneath them (see magnolia.css).
+  const actions=$('.closing-actions')||$('.closing');
+  const replay=document.createElement('button');replay.type='button';replay.className='intro-replay closing-action';
+  replay.innerHTML='<span class="closing-icon" aria-hidden="true"><svg><use href="#replay"/></svg></span><span class="closing-label"></span>';
+  const replayLabel=replay.querySelector('.closing-label');replayLabel.textContent=say('replay')||'Replay the opening';
+  replay.addEventListener('click',()=>{returnHash='#welcome';showIntro()});
+  const between=document.createElement('span');between.className='closing-sep';between.setAttribute('aria-hidden','true');
+  actions.append(between,replay);
+  // A guest who pressed the wrong language on the first page can change it here: both languages, each
+  // named in its own script, with the one being read filled in gold. The words swap in place and
+  // nothing replays. The other language's faces are fetched while the foot of the page is still a
+  // screen or more away, so the switch itself never waits on a download; a guest quicker than that
+  // waits a fraction of a second at most, rather than watching the page redraw in a fallback face.
+  if(window.invitationLanguage){
+    const languages=window.invitationLanguage,toggle=document.createElement('div');
+    toggle.className='language-toggle';toggle.setAttribute('role','group');toggle.setAttribute('aria-label','Language · \u0db7\u0dcf\u0dc2\u0dcf\u0dc0');
+    toggle.innerHTML='<button type="button" lang="en">English</button><button type="button" lang="si">\u0dc3\u0dd2\u0d82\u0dc4\u0dbd</button>';
+    const choices=[...toggle.querySelectorAll('button')];
+    const reflect=()=>{toggle.dataset.current=languages.current;choices.forEach(b=>b.setAttribute('aria-pressed',String(b.lang===languages.current)))};
+    let near=false,warmed=null;
+    const warm=()=>{const other=languages.other();if(warmed!==other){warmed=other;languages.warm(other)}};
+    if('IntersectionObserver' in window)new IntersectionObserver(entries=>{near=entries.some(e=>e.isIntersecting);if(near)warm()},{rootMargin:'150% 0px'}).observe(toggle);else warm();
+    choices.forEach(button=>{
+      button.addEventListener('pointerenter',warm);button.addEventListener('focus',warm);
+      button.addEventListener('click',()=>{
+        const lang=button.lang;if(lang===languages.current)return;
+        toggle.dataset.current=lang;
+        Promise.race([languages.warm(lang),new Promise(done=>setTimeout(done,450))]).then(()=>languages.set(lang));
+      });
+    });
+    reflect();$('.closing').append(toggle);
+    document.addEventListener('invitation:language',()=>{reflect();if(near)warm()});
+  }
   // A shared section link opens straight to that section. Reduced motion bypasses the intro.
   // Neither route passes through the seal, so neither has a gesture to start the score on; arming
   // it hands that job to the guest's first touch instead of losing the music altogether.
-  if(reduced.matches || returnHash){Music.arm();finishIntro()} else showIntro();
+  // The language page, when there is one, stands over all of this. The doors are set up beneath it at
+  // once, so they are already painted when it dissolves. The routes that skip the doors still arm the
+  // score now, so the press that answers the page is the gesture that starts it, and they only wait
+  // for the answer before opening the invitation.
+  const languageChosen=window.invitationLanguage?.chosen||Promise.resolve();
+  if(reduced.matches || returnHash){Music.arm();languageChosen.then(()=>finishIntro())}
+  else{showIntro();languageChosen.then(()=>{if(!intro.hidden&&!opening)openButton.focus({preventScroll:true})})}
   // Tells the safety net at the foot of index.html that the doors are in working order.
   window.invitationBooted=true;
   reduced.addEventListener('change',()=>{if(reduced.matches&&!intro.hidden)finishIntro()});
@@ -294,7 +347,7 @@
       cell.textContent = next;
       if (!reduced.matches) cell.animate?.([{opacity:.25,translate:'0 -7px'},{opacity:1,translate:'0 0'}], {duration:TEMPO.beat*500,easing:'cubic-bezier(.16,1,.3,1)'});
     });
-    if (!delta) $('#countdown-note').textContent = Date.now() < weddingDay + 86400000 ? 'Today is our wedding day!' : 'Thank you for celebrating this beautiful chapter with us.';
+    if (!delta) $('#countdown-note').textContent = Date.now() < weddingDay + 86400000 ? (say('today')||'Today is our wedding day!') : (say('after')||'Thank you for celebrating this beautiful chapter with us.');
   }
   countdown(); setInterval(countdown, 1000);
   // On an iPhone or iPad the plain link does better than the generated file. Safari opens a calendar
@@ -307,19 +360,26 @@
     if (appleTouch) return;
     event.preventDefault();
     const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
-    const text = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Naveen and Dulanjani//Wedding//EN','CALSCALE:GREGORIAN','BEGIN:VEVENT','UID:naveen-dulanjani-20261204@invitation.local','DTSTAMP:' + stamp,'DTSTART;VALUE=DATE:20261204','DTEND;VALUE=DATE:20261205','SUMMARY:Naveen & Dulanjani Wedding','LOCATION:Avenra Gardens\\, Negombo\\, Sri Lanka','DESCRIPTION:Ceremony time to be confirmed.','END:VEVENT','END:VCALENDAR',''].join('\r\n');
+    // A calendar line may not run past 75 bytes, and Sinhala is three bytes a letter, so long lines are
+    // folded the way the format asks: a break and a space, never inside a letter.
+    const field = value => value.replace(/[\\;,]/g, m => '\\' + m);
+    const fold = line => { let out = '', run = 0; for (const ch of line) { const size = new TextEncoder().encode(ch).length; if (run + size > 74) { out += '\r\n '; run = 1; } out += ch; run += size; } return out; };
+    const text = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Naveen and Dulanjani//Wedding//EN','CALSCALE:GREGORIAN','BEGIN:VEVENT','UID:naveen-dulanjani-20261204@invitation.local','DTSTAMP:' + stamp,'DTSTART;VALUE=DATE:20261204','DTEND;VALUE=DATE:20261205','SUMMARY:' + field(say('calendarTitle') || 'Naveen & Dulanjani Wedding'),'LOCATION:Avenra Gardens\\, Negombo\\, Sri Lanka','DESCRIPTION:' + field(say('calendarNote') || 'Ceremony time to be confirmed.'),'END:VEVENT','END:VCALENDAR',''].map(fold).join('\r\n');
     const url = URL.createObjectURL(new Blob([text], {type:'text/calendar;charset=utf-8'}));
     const a = document.createElement('a'); a.href = url; a.download = 'Naveen-and-Dulanjani-4-December-2026.ics'; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 30000);
   });
   const card = $('#scratch-card'), canvas = $('#scratch'), ctx = canvas.getContext('2d');
-  let revealed = false, drawing = false, last = null, moved = 0;
-  function reveal() { if (revealed) return; revealed = true; drawing = false; card.classList.add('revealed'); canvas.setAttribute('aria-disabled','true'); canvas.tabIndex = -1; $('#scratch-status').textContent = 'Friday, 4 December 2026. Find the details below.'; }
+  let revealed = false, drawing = false, last = null, moved = 0, foilSolid = 0;
+  // The foil covers only the cameo, so the canvas corners outside it are clear from the start. How
+  // much has been scratched is therefore measured against what was painted, not the whole canvas.
+  const solidFoil = () => { const pixels = ctx.getImageData(0,0,canvas.width,canvas.height).data; let solid = 0; for (let i = 3; i < pixels.length; i += 64) if (pixels[i] >= 80) solid++; return solid; };
+  function reveal() { if (revealed) return; revealed = true; drawing = false; card.classList.add('revealed'); canvas.setAttribute('aria-disabled','true'); canvas.tabIndex = -1; $('#scratch-status').textContent = say('scratchDone') || 'Friday, 4 December 2026. Find the details below.'; }
   let foilRetry = 0;
   function paintFoil(force) {
     if (!ctx || revealed) return;
     const rect = card.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
-    // The card can still measure zero on the pass that runs before layout has settled — the arches
-    // are drawn inset from its edges, so a zero width asks for a negative corner radius and throws,
+    // The card can still measure zero on the pass that runs before layout has settled — the rules
+    // are drawn inset from its edges, so a zero width asks for a negative radius and throws,
     // leaving the foil unpainted and the date on show. Wait for a real box and come back.
     if (rect.width < 80 || rect.height < 80) {
       cancelAnimationFrame(foilRetry);
@@ -330,7 +390,13 @@
     if (!force && canvas.width === width && canvas.height === height) return;
     canvas.width = width; canvas.height = height; ctx.setTransform(dpr,0,0,dpr,0,0); ctx.globalCompositeOperation = 'source-over';
     const w = rect.width, h = rect.height;
-    // Pale champagne leaf on pearl, guilloche lattice, arched pressed rules, a small stamped monogram.
+    // The leaf is laid only inside the cameo. Its outline is the #cameo clip path in the document,
+    // drawn in the card's own units, so scaling by the card's size gives the die-cut the paper
+    // beneath is clipped to by CSS - one outline, not a second copy that could drift from it.
+    const cameo = new Path2D(document.querySelector('#cameo path').getAttribute('d'));
+    ctx.save();
+    ctx.scale(w, h); ctx.clip(cameo); ctx.setTransform(dpr,0,0,dpr,0,0);
+    // Pale champagne leaf on pearl, guilloche lattice, oval pressed rules, a small stamped monogram.
     const gold = ctx.createLinearGradient(0,0,w,h);
     [[0,'#bf9f61'],[.14,'#e4d3ab'],[.27,'#fcf6e9'],[.41,'#d3b77f'],[.55,'#c7a76a'],[.69,'#f5ecd6'],[.83,'#d9bf8d'],[1,'#b8965a']].forEach(([at,tone]) => gold.addColorStop(at,tone));
     ctx.fillStyle = gold; ctx.fillRect(0,0,w,h);
@@ -340,12 +406,13 @@
       ctx.beginPath(); ctx.moveTo(i,h); ctx.lineTo(i+h,0); ctx.stroke();
     }
     ctx.restore();
-    const arch = (inset, tone) => {
-      const iw = w - inset*2, dome = iw*.5;
+    // The scallops reach 3.63% of the width and 3.05% of the height in from the edge; the two rules
+    // start there, at the same nine and sixteen pixels as the revealed face's border and inner rule.
+    const rule = (gap, tone) => {
       ctx.strokeStyle = tone; ctx.lineWidth = 1; ctx.beginPath();
-      ctx.roundRect(inset, inset, iw, h - inset*2, [dome, dome, 3, 3]); ctx.stroke();
+      ctx.ellipse(w/2, h/2, w/2 - w*.0363 - gap, h/2 - h*.0305 - gap, 0, 0, Math.PI*2); ctx.stroke();
     };
-    arch(15,'#7d5f2b5e'); arch(22,'#7d5f2b30');
+    rule(9,'#7d5f2b5e'); rule(16,'#7d5f2b30');
     // The same mark that heads every section, struck into the leaf. It is walked out of the #crest
     // symbol in the document rather than written out a second time here: the medallion, the section
     // flourishes and this foil are then one drawing by construction, and redrawing the mark can no
@@ -369,6 +436,8 @@
     };
     const walk = (node, tone, hair) => {
       for (const el of node.children) {
+        // A part the current language hides - the English ampersand, or the Sinhala diamond - is not struck.
+        if (el.style && el.style.display === 'none') continue;
         ctx.save();
         const k = applyTransform(el.getAttribute('transform'));
         const tag = el.tagName.toLowerCase();
@@ -398,13 +467,18 @@
       ctx.restore();
     };
     strike(1.2, 1.2, '#fff8e4b8'); strike(0, 0, '#7d5f2b8f');
+    // A darker line just inside the scallops, as the edge of cut foil catches it. Stroked in the
+    // outline's own units under the clip, so only its inner half shows: about one pixel.
+    ctx.scale(w, h); ctx.lineWidth = 2.4 / ((w + h) / 2); ctx.strokeStyle = '#8a6b3399'; ctx.stroke(cameo);
+    ctx.restore();
+    foilSolid = solidFoil();
     ctx.globalCompositeOperation='destination-out';ctx.lineWidth=42;ctx.lineCap='round';ctx.lineJoin='round';moved=0;card.classList.remove('scratching');
   }
   function point(e) {const r=canvas.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top};}
   function scratch(e) { if (!drawing || revealed || !ctx) return; const p=point(e);ctx.beginPath();ctx.moveTo(last.x,last.y);ctx.lineTo(p.x,p.y);ctx.stroke();moved+=Math.hypot(p.x-last.x,p.y-last.y);last=p;card.classList.add('scratching'); }
   canvas.addEventListener('pointerdown', e=>{if(revealed||!ctx)return;drawing=true;last=point(e);canvas.setPointerCapture(e.pointerId);ctx.beginPath();ctx.arc(last.x,last.y,21,0,Math.PI*2);ctx.fill();card.classList.add('scratching');});
   canvas.addEventListener('pointermove',scratch);
-  function finishScratch(){if(!drawing)return;drawing=false;if(moved>100){const pixels=ctx.getImageData(0,0,canvas.width,canvas.height).data;let empty=0,count=0;for(let i=3;i<pixels.length;i+=64){count++;if(pixels[i]<80)empty++;}if(empty/count>.38)reveal();}}
+  function finishScratch(){if(!drawing)return;drawing=false;if(moved>100&&foilSolid&&1-solidFoil()/foilSolid>.38)reveal();}
   canvas.addEventListener('pointerup',finishScratch);canvas.addEventListener('pointercancel',finishScratch);
   // The foil itself provides the keyboard alternative to scratching, without a separate button.
   canvas.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();reveal();}});
@@ -414,6 +488,13 @@
     paintFoil();
     // The stamped monogram needs the script face; restrike once it lands, unless scratching began.
     document.fonts?.ready.then(()=>{if(!revealed&&!moved)paintFoil(true)});
+    // The mark on the foil is walked out of the #crest symbol, whose initials change with the language,
+    // so the foil is struck again - once the face for the new initials is actually in hand.
+    document.addEventListener('invitation:language',()=>{
+      if(revealed||moved)return;
+      const faces=document.fonts?.load?Promise.all([document.fonts.load('34px Script','ND'),document.fonts.load('44px SinhalaScript','\u0db1\u0daf\u0dd4'),document.fonts.load('20px SinhalaSerif','\u0dc3\u0dc4')]).catch(()=>{}):Promise.resolve();
+      faces.then(()=>{if(!revealed&&!moved)paintFoil(true)});
+    });
     let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(paintFoil,180)});
   }else reveal();
   let venueStarted=false;
@@ -429,7 +510,7 @@
     // subdivision makes each of them read as one figure played against the music underneath.
     const STEP=TEMPO.beat*1000/4;
     const plan=[
-      ['.photo-invitation','fade',0],
+      ['.couple-print','scale',0],
       ['.invitation-letter>*','up',STEP],
       ['.memory-gallery figure','scale',STEP],
       ['.invitation>.disclosure','fade',0],
@@ -440,13 +521,13 @@
       ['.date-section>.disclosure','fade',0],
       ['.countdown-title','up',0],
       ['.countdown>div','up',STEP],
-      ['.agenda>.flourish,.agenda>h2,.agenda>h2+p','up',STEP],
-      ['.timeline li','up',0],
-      ['.agenda>.disclosure','fade',0],
       ['.venue>.flourish,.venue>h2,.venue>h2+p','up',STEP],
       ['.architecture','lift',0],
       ['.drawing-actions','fade',0],
       ['.venue address,.venue>.button,.map-place','up',STEP],
+      ['.agenda>.flourish,.agenda>h2,.agenda>h2+p','up',STEP],
+      ['.timeline li','up',0],
+      ['.agenda>.disclosure','fade',0],
       ['.response>.flourish,.response>h2,.response>h2+p','up',STEP],
       ['.reply-card','lift',0],
       ['.closing>*','up',STEP]
@@ -466,6 +547,10 @@
     const rearmer=new IntersectionObserver(entries=>entries.forEach(entry=>{
       if(entry.isIntersecting)return;
       const el=entry.target;
+      // The closing's mark draws itself once. Re-armed like everything else, it began its seven-second
+      // drawing again every time the guest came back to the foot of the page, and a mark caught half
+      // drawn reads as one still loading.
+      if(el.classList.contains('closing-crest')&&el.classList.contains('shown'))return;
       el.classList.remove('shown');
       // Read the live rect, not the entry's snapshot: a fast jump can deliver a stale one, which
       // arms the element to return from the side it is no longer on.
@@ -503,12 +588,27 @@
     // The pen's travel has to be the path's real length. A guessed dasharray shorter than the
     // outline turns a script name into a row of beads, and the outline of nine joined letters is not
     // a number anyone can estimate -- so it is measured here, per name, and handed to the keyframes.
-    document.querySelectorAll('.welcome h1 .name-trace').forEach(path => {
+    // The Sinhala names are traded into the heading when that language is chosen, and their pens are
+    // measured the same way the moment they are in the document.
+    const measureTraces = () => document.querySelectorAll('.welcome h1 .name-trace:not(.traceable)').forEach(path => {
       const len = path.getTotalLength();
       if(!len) return;
       path.style.setProperty('--len', len.toFixed(1));
       path.classList.add('traceable');
     });
+    measureTraces();
+    // A name traded in after the arrival has begun would start its figure from the top: its letters sat
+    // invisible for the nine seconds before their pen was due, then wrote themselves all over again.
+    // Every animation on the incoming letters is moved to where the figure already is, so the new name
+    // is simply there - or mid-stroke, if the guest switched while the first was still being written.
+    const catchUp = () => {
+      if (arrivedAt === null || !document.body.classList.contains('arrived')) return;
+      const elapsed = performance.now() - arrivedAt;
+      document.querySelectorAll('#welcome-title .given').forEach(name => name.getAnimations({subtree: true}).forEach(a => {
+        try { if ((a.currentTime || 0) < elapsed) a.currentTime = elapsed; } catch {}
+      }));
+    };
+    document.addEventListener('invitation:language', () => { measureTraces(); catchUp(); });
     // The pen is one CSS pixel wide, written in the font's own units: 2048 units to the em, divided by
     // however many pixels the em is right now. It used to be vector-effect:non-scaling-stroke, which
     // holds the width with no script at all but rebuilds the stroke in screen space on every paint,
@@ -519,7 +619,7 @@
     setPen();addEventListener('resize',setPen);
 
     const progress=document.createElement('span');progress.className='scroll-progress';$('.masthead').append(progress);
-    const acts=[...document.querySelectorAll('.timeline li')],pan=$('.couple-background'),panFrame=$('.photo-invitation');
+    const acts=[...document.querySelectorAll('.timeline li')],pan=$('.print-photo img'),panFrame=$('.couple-print');
     let queued=false;
     function paintScroll(){
       queued=false;
@@ -532,7 +632,9 @@
         act.classList.toggle('is-active',act===nearest);
         act.classList.toggle('is-passed',box.top+box.height/2<middle);});
       const frame=panFrame.getBoundingClientRect();
-      if(frame.bottom>0&&frame.top<view)pan.style.objectPosition='center '+(36+(view-frame.top)/(view+frame.height)*14).toFixed(2)+'%';
+      // The photograph drifts inside its window as the print crosses the screen. It moves by translate,
+      // which the compositor can do alone; moving object-position repainted the graded image every frame.
+      if(frame.bottom>0&&frame.top<view)pan.style.translate='0 '+(3.5-(view-frame.top)/(view+frame.height)*7).toFixed(2)+'%';
       // Anything resting in the last screenful can sit below the reveal boundary; show what is
       // actually on screen rather than the whole document, so re-arming still works above.
       if(scrollY>=travel-2)document.querySelectorAll('[data-reveal]:not(.shown)').forEach(el=>{
@@ -579,25 +681,102 @@
     }
   }
   const guest=(new URLSearchParams(location.search).get('guest')||'').trim().slice(0,100);if(guest)$('[name=name]').value=guest;
-  // Delivery destinations are not supplied yet. Left blank, WhatsApp and the mail client still open
-  // with the reply written and let the guest pick the recipient; fill these in to address them.
-  const RSVP_WHATSAPP='';   // digits only, with country code, e.g. '94771234567'
+  // Where replies go. With a WhatsApp number, sending the form opens WhatsApp straight onto a message to
+  // it, already written. Left blank, WhatsApp and the mail client still open with the reply written and
+  // let the guest pick the recipient.
+  const RSVP_WHATSAPP='94771281561';   // digits only, with country code and without the leading 0
   const RSVP_EMAIL='';      // e.g. 'naveen.and.dulanjani@example.com'
-  $('#rsvp').addEventListener('submit',e=>{
+  // On the server (see server/) the page arrives with #invite-data: {mode:'guest',...} on a guest's own
+  // link, {mode:'general'} on the plain one, which has no one to reply as. Opened any other way -
+  // serve.py, the share link, the offline copy - there is none, and the reply goes to WhatsApp.
+  const invite=(()=>{try{return JSON.parse($('#invite-data')?.textContent||'null')}catch{return null}})();
+  if(invite?.mode==='general'){$('#rsvp').hidden=true;$('#reply-general').hidden=false;}
+  else if(invite?.mode==='guest')personal(invite);
+  else $('#rsvp').addEventListener('submit',e=>{
     e.preventDefault();
-    const name=$('[name=name]');name.setCustomValidity(name.value.trim()?'':'Please enter your name.');
+    const name=$('[name=name]');name.setCustomValidity(name.value.trim()?'':(say('nameMissing')||'Please enter your name.'));
     if(!e.target.reportValidity())return;
     const data=new FormData(e.target),note=(data.get('note')||'').trim();
-    const message=`Dear Naveen & Dulanjani,\n\n${data.get('name').trim()} — ${data.get('attendance')}.\nWedding: 4 December 2026, Avenra Gardens, Negombo${note?'\n\n'+note:''}`;
+    // The answer is quoted as the guest saw it, from its label, so a Sinhala reply stays Sinhala.
+    const answer=e.target.querySelector('[name=attendance]:checked')?.parentElement.textContent.trim()||data.get('attendance');
+    const message=say('message',data.get('name').trim(),answer,note)||`Dear Naveen & Dulanjani,\n\n${data.get('name').trim()} — ${data.get('attendance')}.\nWedding: 4 December 2026, Avenra Gardens, Negombo${note?'\n\n'+note:''}`;
     $('#reply-text').textContent=message;
     $('#send-whatsapp').href='https://wa.me/'+RSVP_WHATSAPP+'?text='+encodeURIComponent(message);
-    $('#send-email').href='mailto:'+RSVP_EMAIL+'?subject='+encodeURIComponent('RSVP — Naveen & Dulanjani, 4 December 2026')+'&body='+encodeURIComponent(message);
+    $('#send-email').href='mailto:'+RSVP_EMAIL+'?subject='+encodeURIComponent(say('subject')||'RSVP — Naveen & Dulanjani, 4 December 2026')+'&body='+encodeURIComponent(message);
     $('#prepared').hidden=false;
-    $('#reply-status').textContent='Your reply is ready. Choose how to send it.';
+    // The press is what lets the browser open WhatsApp, so it has to happen here and not later. The
+    // panel stays as the fallback: if the phone holds the new window back, the reply is still written
+    // out with a button to send it.
+    if(RSVP_WHATSAPP){
+      window.open($('#send-whatsapp').href,'_blank','noopener');
+      $('#reply-status').textContent=say('opening')||'WhatsApp is opening with your reply. If it does not, press Send on WhatsApp below.';
+    }else $('#reply-status').textContent=say('ready')||'Your reply is ready. Choose how to send it.';
     $('#prepared').scrollIntoView({block:'nearest',behavior:reduced.matches?'auto':'smooth'});
     $('#send-whatsapp').focus({preventScroll:true});
   });
   $('[name=name]').addEventListener('input',e=>e.target.setCustomValidity(''));
-  $('#rsvp').addEventListener('input',()=>{if(!$('#prepared').hidden){$('#prepared').hidden=true;$('#reply-status').textContent='Details changed. Prepare your updated RSVP.';}});
-  $('#copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('#reply-text').textContent);$('#reply-status').textContent='Copied. Paste your RSVP into a message to the couple.';}catch{const range=document.createRange();range.selectNodeContents($('#reply-text'));getSelection().removeAllRanges();getSelection().addRange(range);$('#reply-status').textContent='Select and copy the highlighted reply.';}});
+  // A change of language after the opening, from the footer. i18n.js has already swapped the markup's
+  // words; these are the ones this script wrote. A reply already prepared was written in the other
+  // language, so it is set aside to be prepared again rather than sent in the wrong one.
+  document.addEventListener('invitation:language',()=>{
+    Music.relabel();
+    replayLabel.textContent=say('replay')||'Replay the opening';
+    countdown();
+    if(revealed)$('#scratch-status').textContent=say('scratchDone')||'Friday, 4 December 2026. Find the details below.';
+    if(!$('#prepared').hidden){$('#prepared').hidden=true;$('#reply-status').textContent=say('changed')||'Details changed. Prepare your updated RSVP.';}
+  });
+  $('#rsvp').addEventListener('input',()=>{if(!$('#prepared').hidden){$('#prepared').hidden=true;$('#reply-status').textContent=say('changed')||'Details changed. Prepare your updated RSVP.';}});
+  $('#copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('#reply-text').textContent);$('#reply-status').textContent=say('copied')||'Copied. Paste your RSVP into a message to the couple.';}catch{const range=document.createRange();range.selectNodeContents($('#reply-text'));getSelection().removeAllRanges();getSelection().addRange(range);$('#reply-status').textContent=say('selectCopy')||'Select and copy the highlighted reply.';}});
+  // A guest's own link. They are already known, so the form asks only whether they are coming, how
+  // many of the seats kept for them will be used, and for a note. The reply is saved on the server
+  // and is there again whenever the link is opened.
+  function personal(me){
+    const form=$('#rsvp'),button=form.querySelector('button[type=submit]'),status=$('#reply-status');
+    const people=form.elements.namedItem('people'),field=form.querySelector('.people-field');
+    const choice=answer=>form.querySelector(`[data-reply="${answer}"]`);
+    const name=()=>window.invitationLanguage?.current==='si'&&me.nameSi||me.name;
+    form.elements.namedItem('name').value=me.name;
+    form.querySelector('.name-field').hidden=true;
+    $('#reply-whatsapp-note').hidden=true;$('#reply-saved-note').hidden=false;
+    // From here the button's words are this script's, so i18n.js stops swapping them.
+    button.removeAttribute('data-i18n-text');
+    for(let n=1;n<=me.seats;n++)people.add(new Option(n,n));
+    if(me.reply){choice(me.reply).checked=true;people.value=String(Math.max(1,me.people));form.elements.namedItem('note').value=me.message||'';}
+    const seats=()=>{field.hidden=me.seats<2||!choice('yes').checked};
+    const lock=()=>{if(!me.open)[...form.elements].forEach(el=>el.disabled=true)};
+    function paint(){
+      // The first words after the doors greet them by name. i18n.js has just set the plain line for
+      // the language; this replaces it, in the same frame, every time the language changes.
+      $('.welcome-wording').textContent=say('welcome',name());
+      $('#greeting').textContent=say('dear',name());$('#greeting').hidden=false;
+      const words=[...button.childNodes].find(node=>node.nodeType===3&&node.nodeValue.trim());
+      if(words)words.nodeValue=say(me.reply?'update':'send')+' ';
+      $('#people-hint').textContent=me.seats>1?say('seats',me.seats):'';
+      const saved=me.reply?say('already',choice(me.reply).parentElement.textContent.trim(),me.people):'';
+      status.textContent=me.open?saved:`${saved} ${say('closed')}`.trim();
+    }
+    seats();paint();lock();
+    form.addEventListener('change',seats);
+    document.addEventListener('invitation:language',paint);
+    // Reported once per visit, by the open page rather than when the link is fetched, so the preview
+    // WhatsApp makes of a link does not count as the guest opening it.
+    let told=null;try{told=sessionStorage.getItem('opened:'+me.code)}catch{}
+    if(!told){navigator.sendBeacon?.('/'+me.code+'/opened');try{sessionStorage.setItem('opened:'+me.code,'1')}catch{}}
+    form.addEventListener('submit',async e=>{
+      e.preventDefault();
+      if(!form.reportValidity())return;
+      const answer=form.querySelector('[name=attendance]:checked').dataset.reply;
+      button.disabled=true;status.textContent=say('sending');
+      try{
+        const sent=await fetch('/'+me.code+'/reply',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+          attendance:answer,people:answer==='yes'?+people.value||1:0,
+          note:form.elements.namedItem('note').value.trim(),lang:window.invitationLanguage?.current||'en'})});
+        if(sent.status===403){me.open=false;paint();lock();return;}
+        if(!sent.ok)throw new Error(sent.status);
+        Object.assign(me,await sent.json());paint();
+        status.textContent=say('thanks',name());
+      }catch{status.textContent=say('failed')}
+      finally{if(me.open)button.disabled=false}
+    });
+  }
 })();

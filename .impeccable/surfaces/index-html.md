@@ -2,58 +2,54 @@
 version: 1
 slug: "index-html"
 primary_target: "index.html"
-related_targets: ["invitation.css", "invitation.js", "venue-drawing.js"]
+related_targets: ["invitation.css","magnolia.css","language.css","i18n.js","invitation.js","venue-drawing.js"]
 ---
 
 # Wedding Invitation Surface
 
 ## Scope and mode
 
-Experience: one responsive champagne-gold and off-white invitation with continuous native scrolling. The latest user request replaces page flips and explicitly asks for a demo before final details arrive.
+Experience: one responsive champagne-gold and off-white invitation with continuous native scrolling, written in two complete languages, English and Sinhala. The Sinhala invitation is entirely Sinhala, names and monogram included; only the photographed wax seal keeps N&D. The latest user request (14 September 2026) asked for a same-theme language page before everything else, and for the translation to change words only, never imagery, animation or timing.
 
 ## Audience, job, action, content, constraints
 
-A wedding guest receives the invitation, checks when and where, explores the proposed programme, and prepares a reply. Naveen and Dulanjani, 4 December 2026, and Avenra Gardens Hotel in Negombo are confirmed. Exact times, final agenda, real photographs, and RSVP contact remain intentionally provisional. The date is real; calendars are all-day and the countdown targets midnight in Sri Lanka. RSVP is prepared and unsent.
+A wedding guest, often a Sinhala-reading family member on a phone, receives the invitation, chooses a language, checks when and where, explores the proposed programme, and prepares a reply. Naveen and Dulanjani (නවීන් සහ දුලාංජනී), 4 December 2026, and Avenra Gardens Hotel in Negombo are confirmed. Exact times, final agenda, real photographs, and RSVP contact remain intentionally provisional. The date is real; calendars are all-day and the countdown targets midnight in Sri Lanka. RSVP is prepared and unsent. The Sinhala spelling of the names and the venue transliteration (ඇවන්රා ගාඩන්ස්) should be confirmed by the couple before sending.
 
 ## Current direction and reference authority
 
-The Ivory Garden: floral courtyard welcome, centered names, off-white letters, champagne rules, and photographic storytelling in one long document. Latest user pins: .qa/inspiration-0068.jpg and .qa/inspiration-0071.jpg. No separate comp was approved for this request. The earlier .impeccable/mocks/champagne-ribbon-procession.png is historical, not current authority.
+The Ivory Garden: floral courtyard welcome, centered names, off-white letters, champagne rules, and photographic storytelling in one long document. Latest user pins: .qa/inspiration-0068.jpg and .qa/inspiration-0071.jpg. No separate comp was approved. This is an extension inside the established world, so no concept roll was run and no new FORM or seed key exists; it inherits the Ivory Garden's form (new-work: extend an existing surface). The language page was drafted on a design canvas (https://claude.ai/code/artifact/21b78956-641c-4fed-a419-4ed71cc55774) and built code-led inside the established world.
 
-The first viewport is a pair of sculpted ivory-and-gold doors with only Tap to open, no names or seal. Separate arched door panels hinge at the jambs while the floral surround stays stationary; the camera then advances through the doorway. The 4.8-second sequence reveals names only on arrival at the welcome. Skip is available during playback or keyboard focus; Escape, footer replay, focus containment, and instant reduced-motion opening are supported. The underlying six sections remain one naturally scrolling document. Without JavaScript the hidden entrance is bypassed. Scratch foil and automatically drawn Avenra architecture remain the other signature interactions.
+The first viewport is the language page: the compact crest, Welcome and ආයුබෝවන් held apart by the programme's diamond, the question asked once in each language, and two identical arched stationery panels (English / සිංහල) that echo the date card and the carved doors. It doubles as the loading screen with a hairline that fills as the door art, score and fonts arrive. Choosing warms that panel, switches every word immediately (the crest's initials become න ◇ දු under the finger), and dissolves into the doors. The doors, 4.8-second entrance, arrival figure and all timings are then identical in both languages. `?lang=si|en` skips the page; return visits are asked again with the last answer warmed; the footer switches language in place.
 
 ## Section inventory
 
 | Section | Current expression and behavior |
 | --- | --- |
-| Welcome | Full-height floral courtyard, calligraphic names, confirmed date and venue, native anchor cue. |
+| Language page | Two arched panels, bilingual greeting and question, load hairline, keyboard (Tab/arrows) contained, reduced motion instant, hidden without JavaScript. |
+| Welcome | Full-height floral courtyard, hand-inscribed names (Pinyon outlines in English, Gurulugomi calligraphic outlines in Sinhala), drawing medallion, native anchor cue. |
 | Invitation | Couple background with visible lead-in, outlined translucent invitation letter, three framed sample photographs and disclosure. |
-| Date | Scratch foil, keyboard/tap reveal, Google Calendar, downloaded iCalendar, countdown, pending ceremony time. |
+| Date | Scratch foil struck with the language's monogram, keyboard/tap reveal, Google Calendar, iCalendar (wedding-si.ics in Sinhala), countdown, pending ceremony time. |
 | Agenda | Five proposed acts, each with time to follow, and explicit proposed-programme disclosure. |
-| Venue | Automatic 6.5-second centerline drawing, finished engraving, replay, actual-photo toggle, Google Maps directions and place link. |
-| RSVP | Name, attendance, guest count, optional note, prepared reply, copy control, no-send/no-store disclosure. |
+| Venue | Automatic centerline drawing, finished engraving, replay, actual-photo toggle, Google Maps directions and place link. |
+| RSVP | Name, attendance, optional note; the button opens WhatsApp to the couple's number with the reply in the guest's language; prepared panel with WhatsApp, email and copy as fallbacks; no-store disclosure. |
+| Closing | Drawing medallion, names, replay, and the language switch offered in the other language. |
 
 ## Layout and behavior
 
-All six sections participate in ordinary document scrolling. No fixed book, wheel interception, page turn, or inactive hidden section exists. At 700px the agenda and calendar controls stack and spacing tightens. The gallery retains three columns with a taller center image. Reduced motion removes decoration and resolves venue drawing immediately. Without JavaScript the date, six sections, and directions remain readable; interaction-only controls are hidden.
+All six sections participate in ordinary document scrolling. At 700px the agenda and calendar controls stack and spacing tightens. Sinhala type pairs by role: UN-Gurulugomi (classic Sinhala calligraphy) wherever the English writes by hand (Pinyon Script names and monogram, Great Vibes headings); Noto Serif Sinhala Light wherever it sets Italiana; Noto Sans Sinhala Light wherever it sets Manrope; no capitals, no tracking, nothing under 12px. The language page compacts for phones held sideways and for short upright phones. Reduced motion removes decoration. Without JavaScript the language page is hidden and the English invitation reads in full.
 
 ## Shipping assets and provenance
 
-- assets/garden-interior.jpg and assets/garden-interior-mobile.jpg: reused floral courtyard artwork.
-- assets/gallery-garden.webp: sample background and center photograph.
-- assets/couple-portrait.png and assets/gallery-dance.png: flanking sample photographs.
-- assets/avenra-lineart-transparent.png: finished engraving; avenra-strokes.js supplies centerline paths.
-- assets/avenra-original.png: actual venue photograph supplied by the user.
-- assets/fonts/greatvibes.ttf, italiana-regular.ttf, and manrope-regular.ttf: local typography.
-- assets/materials/brass-seal-512.png: favicon only.
-
-Preserve original asset records, including assets/garden-art-provenance.json, .qa/pre-garden-DESIGN.md, and recoverable .impeccable/archive/superseded-assets history. No new generation or comp approval is implied by reuse. garden.css, grand.css, and garden.js are historical and are not loaded.
+- assets/magnolia-suite/: doors, garden, portrait and paper artwork (prompts in PROMPTS.md).
+- assets/gallery-garden.webp, couple-portrait.webp, gallery-dance.webp: disclosed sample photographs.
+- assets/avenra-lineart-transparent.webp and avenra-strokes.js: finished engraving and centerline paths; assets/avenra-original.webp: actual venue photograph supplied by the user.
+- assets/materials/brass-seal-monogram-512.webp: the wax seal (N&D struck in; unchanged in Sinhala).
+- assets/fonts/: Pinyon Script, Great Vibes, Italiana, Julius Sans One, Manrope; sinhala-script.woff, noto-serif-sinhala-light.woff and noto-sans-sinhala-light.woff are Sinhala-block subsets of UN-Gurulugomi (Pushpananda Ekanayaka, The FontMaster; free for personal use, see Gurulugomi-NOTICE.txt) and Google Fonts' OFL Noto Serif Sinhala and Noto Sans Sinhala (both instanced at wght 300), cut by build_sinhala.py.
 
 ## Validation and verdict
 
-.qa/scroll-check.cjs passed four viewport sizes without reported errors or horizontal overflow; offline, reduced-motion, and no-JavaScript checks retained all six visible sections. .qa/scroll-interactions.cjs passed scratch, venue drawing, and actual-photo toggle checks in Chrome and Edge. Independent review of six sampled screenshots reported no material visual finding and requested this stale surface brief be refreshed. Final reviewer verdict: ship the demo once documentation is updated; no implementation or timing changes required.
-
-Detector results were advisory champagne-shade findings in degraded regex mode, not a full parser verdict. No physical iOS/Android or Safari test was performed.
+.qa/language-check.cjs (headless Chrome, 1440x900, 390x844, 320x568, 844x390) walks the language page, the Sinhala doors and arrival, every section, the date reveal, the Sinhala reply and calendar file, the footer switch to English and back, ?lang=si, a return visit, reduced motion with a shared #venue link, keyboard choice, and no JavaScript: no page errors and no horizontal overflow. Sinhala name outlines were overlaid on Chrome's own shaping of the same words and match exactly. No physical iOS/Android or Safari test was performed.
 
 ## Remaining launch inputs
 
-Replace sample photographs, confirm ceremony time and final programme, and connect the RSVP delivery destination before using this as the final guest invitation. These are unsupplied future inputs, not omitted supplied facts.
+Replace sample photographs, confirm ceremony time and final programme, add the RSVP email address (WhatsApp is connected), and have a Sinhala reader confirm the names' spelling, the venue transliteration and the translation before sending.

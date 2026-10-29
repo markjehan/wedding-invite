@@ -1,0 +1,261 @@
+/* ---------- Two languages, one invitation ----------
+   The invitation is written twice, in English and in Sinhala, and nothing else about it changes:
+   the same doors, the same score, the same figure on arrival, the same timings. This file owns the
+   two things the second language needed of the design - the page that asks which one, and the
+   type that carries Sinhala in each role the English faces already fill.
+
+   Every English face has a Sinhala partner chosen for the part it plays, not for its script:
+     Pinyon Script and Great Vibes, the hand   ->  SinhalaScript (UN-Gurulugomi, classic calligraphy)
+     Italiana, the hairline literary serif     ->  SinhalaSerif (Noto Serif Sinhala Light)
+     Manrope, the quiet modern sans            ->  NotoSinhala (Noto Sans Sinhala Light)
+   All three are cut to the Sinhala block and declared with that unicode-range, so they are only
+   fetched once a Sinhala letter is actually on screen, and in every stack they sit beside the
+   English face without taking a single Latin glyph from it. Figures, brand names and punctuation
+   inside a Sinhala line keep the invitation's own faces. */
+@font-face{font-family:SinhalaScript;src:url('assets/fonts/sinhala-script.woff') format('woff');unicode-range:U+0D80-0DFF,U+200C-200D,U+25CC;font-display:swap}
+@font-face{font-family:SinhalaSerif;src:url('assets/fonts/noto-serif-sinhala-light.woff') format('woff');unicode-range:U+0D80-0DFF,U+200C-200D,U+25CC;font-display:swap}
+@font-face{font-family:NotoSinhala;src:url('assets/fonts/noto-sans-sinhala-light.woff') format('woff');unicode-range:U+0D80-0DFF,U+200C-200D,U+25CC;font-display:swap}
+
+/* ---------- The language page ----------
+   The first question is asked the way the invitation speaks: two lace-edged cameos, one for each
+   language, each named in its own script and equal in every dimension, so neither reads as the
+   default with the other as an accommodation. The cameo is the date card's die-cut, and its
+   scalloped rim is the wax seal's; the round-topped arch they replaced read as a headstone.
+
+   It is also the loading screen. The door art, the score and the fonts are fetched while the guest
+   reads it, and a hairline under the panels fills as they arrive. A guest who chooses before they
+   have is told so in their own language, and the page leaves the moment everything is ready.
+
+   It paints from the markup alone, before any script runs, and it deliberately loads nothing heavy:
+   everything on it is Italiana and its Sinhala partner, both preloaded, and the two background
+   images are the ones the doors preload anyway. */
+.language-gate{
+  position:fixed;inset:0;z-index:120;display:flex;overflow:auto;overscroll-behavior:contain;isolation:isolate;
+  padding:max(28px,env(safe-area-inset-top)) max(24px,env(safe-area-inset-right)) max(28px,env(safe-area-inset-bottom)) max(24px,env(safe-area-inset-left));
+  background:var(--paper) url('assets/magnolia-suite/garden.webp') center/cover;
+  color:var(--ink);text-align:center;
+}
+/* The garden stays at the edges and the middle is paper, so the panels sit on stationery rather
+   than on a photograph. */
+.language-gate::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 42% 64% at 50% 50%,#fffaf2f5 0%,#fffaf2d9 58%,#f7f2e866 100%)}
+/* The invitation's own frame line, which the page otherwise draws above everything but this. */
+.language-gate::after{content:'';position:fixed;inset:12px;border:1px solid #ac8b5155;pointer-events:none}
+/* margin:auto rather than place-items:center: centring that overflows a short screen clips its top
+   out of reach, while an auto margin collapses to zero and lets the page scroll instead. */
+.gate-inner{margin:auto;display:flex;flex-direction:column;align-items:center;width:min(100%,480px)}
+.gate-crest{width:clamp(56px,8.4svh,76px);height:auto;aspect-ratio:112/120;color:var(--gold);stroke-width:.8;overflow:visible;margin-bottom:clamp(12px,2.6svh,24px)}
+.gate-greeting{display:flex;flex-direction:column;align-items:center}
+.gate-welcome{font:400 clamp(40px,min(4.2vw,6.8svh),60px)/1.1 Italiana,serif;letter-spacing:.04em;color:var(--action)}
+.gate-welcome:lang(si){font:400 clamp(30px,min(3.1vw,5svh),44px)/1.5 SinhalaSerif,serif;letter-spacing:0}
+/* A diamond on a tapered rule - the programme's own node - holds the two greetings apart without
+   ranking them. */
+.gate-rule{display:flex;align-items:center;gap:10px;margin:clamp(8px,1.5svh,14px) 0 clamp(2px,.8svh,8px)}
+.gate-rule::before,.gate-rule::after{content:'';width:clamp(40px,4.4vw,64px);height:1px;background:linear-gradient(90deg,transparent,var(--line))}
+.gate-rule::after{background:linear-gradient(90deg,var(--line),transparent)}
+.gate-rule span{width:7px;height:7px;border:1px solid var(--gold);rotate:45deg;background:var(--paper)}
+.gate-question{margin:clamp(14px,3svh,26px) 0 clamp(20px,4svh,38px)}
+.gate-question p{font:400 clamp(16px,1.4vw,20px)/1.5 Italiana,serif;letter-spacing:.03em;color:var(--ink)}
+.gate-question p:lang(si){font-family:SinhalaSerif,serif;font-size:clamp(15px,1.3vw,19px);line-height:1.7;letter-spacing:0}
+
+/* The panels keep the cameo's own 0.84 : 1, so their width sets their height. The svh term keeps the
+   pair about a third of the screen tall on a short laptop, as the old fixed heights did. */
+.gate-choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(14px,2vw,28px);width:min(100%,460px,calc(52svh + 28px))}
+/* A clip cuts off borders and box-shadows along with everything else, so the cameo is built in
+   layers: the button's ::before is the die-cut edge in the rule colour, the plate is the paper laid
+   one pixel inside it, and the plate's ::before is the inner rule. The shadow is a drop-shadow on the
+   button, which follows the scallops where a box-shadow would draw a rectangle. The rounded corner
+   is for the focus ring only, which then rings the cameo instead of its box. */
+.gate-choice{
+  --edge:var(--line);
+  position:relative;isolation:isolate;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  aspect-ratio:.84;height:auto;min-height:0;padding:0 12%;
+  border-radius:50%;color:var(--action);
+  filter:drop-shadow(0 16px 20px #6751361f);
+  transition:translate .6s cubic-bezier(.16,1,.3,1),scale .6s cubic-bezier(.16,1,.3,1),filter .6s cubic-bezier(.16,1,.3,1),opacity .6s ease;
+}
+.gate-choice::before{content:'';position:absolute;inset:0;z-index:-1;background:var(--edge);clip-path:url(#cameo);transition:background-color .3s ease}
+.gate-plate{position:absolute;inset:1px;z-index:-1;clip-path:url(#cameo);pointer-events:none;background:linear-gradient(#fffaf2e6,#fffaf2e6),url('assets/magnolia-suite/paper.webp') center/cover}
+/* The inner rule is a plain oval a scallop's depth plus six pixels in, as the date card's is. */
+.gate-plate::before{content:'';position:absolute;inset:calc(3.05% + 6px) calc(3.63% + 6px);border:1px solid #c8b58f59;border-radius:50%;transition:border-color .3s ease}
+/* The names and the captions sit in line boxes of one fixed height in both panels. The two faces
+   have different metrics, and on their own line-heights the Sinhala stack stood about 5px higher
+   than the English, which is exactly the kind of inequality the pair exists to refuse. */
+.gate-name{display:block;font:400 clamp(28px,2.6vw,36px)/clamp(44px,3.5vw,52px) Italiana,serif;letter-spacing:.03em}
+.gate-name:lang(si){font-family:SinhalaSerif,serif;font-size:clamp(30px,2.7vw,38px);letter-spacing:0}
+/* The rule under each name is drawn at its longest and scaled back, so it lengthens on the compositor. */
+.gate-mark{width:46px;height:1px;background:var(--gold);margin:16px 0 12px;scale:.61 1;transition:scale .6s cubic-bezier(.16,1,.3,1)}
+.gate-go{display:block;font:400 10px/22px Manrope,sans-serif;letter-spacing:.26em;text-transform:uppercase;color:var(--muted)}
+.gate-go:lang(si){font-family:SinhalaSerif,serif;font-size:15px;letter-spacing:0;text-transform:none}
+/* Only a real pointer lifts a panel; on a phone a tap would otherwise leave it stuck in the air. */
+@media(hover:hover){
+  .gate-choice:hover{--edge:#b99f6a;translate:0 -5px;filter:drop-shadow(0 22px 26px #67513629)}
+  .gate-choice:hover .gate-plate::before{border-color:#ae8d55a6}
+  .gate-choice:hover .gate-mark{scale:.87 1}
+}
+.gate-choice:active{scale:.97;transition-duration:.15s}
+/* The language this guest chose last time is already warmed, so a return visit is one tap. */
+.gate-choice[data-last]{--edge:#b99f6a}
+.gate-choice[data-last] .gate-plate::before{border-color:#ae8d5580}
+
+/* Chosen: the panel takes the date card's warm bloom and the other steps back. Both the page and the
+   doors beneath it are already in the chosen language by now. The glow gathers towards the rim, where
+   the old panel carried it as an inset shadow; an inset shadow would draw the box, not the cameo. */
+.is-choosing .gate-choice{pointer-events:none}
+.is-choosing .gate-choice:not([data-chosen]){opacity:.36;scale:.97}
+.gate-choice[data-chosen]{--edge:var(--gold);translate:0 -6px;filter:drop-shadow(0 22px 26px #67513629)}
+.gate-choice[data-chosen] .gate-plate{background:radial-gradient(closest-side,#fff6dcf5,#fffaf2e6 66%,#e9cf9c85 100%),url('assets/magnolia-suite/paper.webp') center/cover}
+.gate-choice[data-chosen] .gate-plate::before{border-color:#ae8d55b3}
+.gate-choice[data-chosen] .gate-mark{scale:1 1}
+.gate-greeting,.gate-question,.gate-crest{transition:opacity .6s ease}
+.is-choosing :is(.gate-greeting,.gate-question){opacity:.5}
+
+/* Arrival of everything the doors need. Visible only while something is still on its way. */
+.gate-progress{width:120px;height:1px;margin-top:clamp(20px,3.6svh,30px);background:#c8b58f66;overflow:hidden;opacity:1;transition:opacity .6s ease}
+.gate-progress span{display:block;height:100%;background:var(--gold);transform-origin:left center;scale:var(--ready,0) 1;transition:scale .6s cubic-bezier(.16,1,.3,1)}
+.is-ready .gate-progress{opacity:0}
+.gate-status{min-height:1.7em;margin-top:10px;font:400 15px/1.6 Italiana,serif;letter-spacing:.02em;color:var(--muted)}
+.gate-status:lang(si){font-family:SinhalaSerif,serif;letter-spacing:0}
+
+/* Leaving: two beats, and the doors are pressable from the first of them. */
+.language-gate.is-leaving{opacity:0;pointer-events:none;transition:opacity 1.2s cubic-bezier(.4,0,.2,1)}
+.is-leaving .gate-inner{translate:0 -10px;filter:blur(2px);transition:translate 1.2s cubic-bezier(.16,1,.3,1),filter 1.2s ease}
+
+/* The page rises in on a sixteenth's stagger. It is written for the markup alone, so it plays
+   before any script has run, and reduced motion leaves it at rest. */
+@media(prefers-reduced-motion:no-preference){
+  .gate-inner>*{animation:gate-rise .9s cubic-bezier(.16,1,.3,1) calc(var(--n,0) * .15s) both}
+}
+@keyframes gate-rise{from{opacity:0;translate:0 14px;filter:blur(4px)}}
+
+@media(max-width:700px){
+  .language-gate{background-image:url('assets/magnolia-suite/portrait.webp')}
+  .language-gate::before{background:radial-gradient(ellipse 80% 58% at 50% 50%,#fffaf2f5 0%,#fffaf2e0 52%,#f7f2e880 100%)}
+  .language-gate::after{inset:6px}
+  .gate-welcome{font-size:clamp(36px,11vw,44px)}
+  .gate-welcome:lang(si){font-size:clamp(27px,8.2vw,33px)}
+  .gate-question p{font-size:16px}
+  .gate-question p:lang(si){font-size:15px}
+  .gate-name{font-size:clamp(25px,7.4vw,29px)}
+  .gate-name:lang(si){font-size:clamp(26px,7.8vw,31px)}
+}
+/* A phone on its side: the greetings share one line and the panels shorten, so the whole question
+   fits without scrolling. */
+@media(max-height:520px) and (orientation:landscape){
+  .gate-crest{width:44px;margin-bottom:8px}
+  .gate-greeting{flex-direction:row;gap:14px}
+  .gate-welcome{font-size:34px}
+  .gate-welcome:lang(si){font-size:26px}
+  .gate-rule{margin:0}
+  .gate-rule::before,.gate-rule::after{width:22px}
+  .gate-question{margin:8px 0 16px}
+  .gate-question p{font-size:15px;line-height:1.4}
+  .gate-choices{width:min(100%,290px)}
+  .gate-mark{margin:10px 0 8px}
+  .gate-progress{margin-top:14px}
+  .gate-status{margin-top:4px}
+}
+/* A short phone held upright (an iPhone SE, a 320px Android): everything tightens a step so the
+   question and both panels still fit the screen. */
+@media(max-height:640px) and (orientation:portrait){
+  .gate-crest{width:48px;margin-bottom:10px}
+  .gate-welcome{font-size:34px}
+  .gate-welcome:lang(si){font-size:25px}
+  .gate-rule{margin:6px 0 2px}
+  .gate-question{margin:12px 0 18px}
+  .gate-question p{font-size:15px;line-height:1.45}
+  .gate-mark{margin:12px 0 9px}
+  .gate-progress{margin-top:18px}
+}
+/* A link that already names its language (?lang=si) skips the question entirely; see the head. The
+   seal's caption is held back until the words under it have been swapped, so a Sinhala link never
+   shows English for a frame. */
+[data-language-skip] .language-gate{display:none}
+[data-language-skip=si]:not([lang=si]) .seal-word{visibility:hidden}
+
+/* ---------- Sinhala in the invitation's roles ----------
+   Every rule below is written html:lang(si) so it outranks the English rule for the same element,
+   including the ones inside the phone media queries, without needing to come after them.
+
+   The calligraphy goes wherever the English writes by hand: the names, the monogram's initials, the
+   section headings, the countdown's title and the reply card's title. The light serif goes wherever
+   the English sets Italiana: the welcome line, the letter's title and signature, the programme's
+   acts, the address, the quotation, the closing names, and the small ceremonial labels the English
+   sets in tracked capitals. The light sans goes wherever the English sets Manrope.
+
+   Three English habits do not carry over. Sinhala has no capitals, so nothing is uppercased.
+   Tracking breaks up its joined forms, so letter-spacing is zero throughout. And its letters
+   carry detail above and below the line that the tiny tracked labels of the English cannot hold,
+   so every size under 12px rises to one that can, with more line-height everywhere. */
+html:lang(si) body{font-family:Manrope,NotoSinhala,sans-serif}
+html:lang(si) .seal-word{font:400 clamp(17px,2.5svh,21px)/1.5 SinhalaSerif,serif;letter-spacing:.02em;text-transform:none}
+
+html:lang(si) .welcome-wording{font:400 22px/1.6 SinhalaSerif,serif;letter-spacing:0}
+html:lang(si) .welcome h1 .amp{font-family:SinhalaSerif,serif;font-size:.28em;line-height:1.3}
+html:lang(si) .scroll-cue{font-size:13px}
+/* The initials in both medallions are the calligraphy, and the small සහ that joins them is the serif, as
+   Pinyon's N and D are joined by Italiana's ampersand. The compact crests are <use> copies that
+   carry their faces as inline styles instead; see apply() in i18n.js. */
+html:lang(si) .wc-letter{font-family:SinhalaScript,serif}
+html:lang(si) .wc-letter.wc-amp{font-family:SinhalaSerif,serif}
+/* Between the Sinhala initials sits the invitation's gold diamond on a hairline, where the English
+   mark has its ampersand. It reveals under the ampersand's own ink front, so it arrives on the same
+   beat. These rules reach the two drawn medallions; the compact crests are <use> copies and are
+   switched by inline styles instead (i18n.js, crest.join.style). */
+.wc-join{display:none}
+.wc-join-frame{fill:none;stroke:var(--gold);stroke-width:.9}
+.wc-join-seed{fill:var(--gold);stroke:none}
+.wc-join-rule{fill:none;stroke:var(--line);stroke-width:.6}
+html:lang(si) :is(.welcome-crest,.closing-crest) .wc-join{display:inline}
+html:lang(si) :is(.welcome-crest,.closing-crest) .wc-amp{display:none}
+
+html:lang(si) .letter-label{font:400 15px/1.7 SinhalaSerif,serif;letter-spacing:0;text-transform:none}
+html:lang(si) .invitation-letter h2{font:400 clamp(27px,3.3vw,33px)/1.5 SinhalaSerif,serif;letter-spacing:0}
+/* The English breaks these two lines by hand. Sinhala runs longer, so it has no hand breaks and
+   balances its own lines instead of leaving one word on the last. */
+html:lang(si) .invitation-letter>p:not(.letter-label):not(.couple-names):not(.signature):not(.letter-greeting){font-size:14px;line-height:2;text-wrap:balance}
+html:lang(si) .invitation-letter .couple-names{font:400 clamp(42px,5.6vw,58px)/1.35 SinhalaScript,serif}
+html:lang(si) .couple-names span{font-family:SinhalaSerif,serif;font-size:.32em;margin:.2em 0 .1em}
+html:lang(si) .invitation-letter .signature,html:lang(si) .invitation-letter .letter-greeting{font:400 21px/1.75 SinhalaSerif,serif}
+html:lang(si) .disclosure{font-size:12.5px;line-height:1.85}
+html:lang(si) blockquote{font:400 25px/1.75 SinhalaSerif,serif}
+
+html:lang(si) .section>h2{font:400 clamp(32px,3.6vw,44px)/1.45 SinhalaScript,serif}
+html:lang(si) .section>h2+p{font-size:15px;line-height:1.95}
+html:lang(si) .date-reveal>span{font:400 15px/1.5 SinhalaSerif,serif;letter-spacing:0}
+html:lang(si) .date-reveal time>span{font-family:Figures,SinhalaSerif,serif;font-size:19px;letter-spacing:0;line-height:1.4}
+html:lang(si) .date-reveal p{font:400 13px/1.6 SinhalaSerif,serif;letter-spacing:0;text-transform:none}
+html:lang(si) .scratch-label p{font:400 17px/1.5 SinhalaSerif,serif;letter-spacing:0;text-transform:none}
+html:lang(si) .button{font-size:14px;line-height:1.55}
+html:lang(si) .countdown-title{font:400 31px/1.45 SinhalaScript,serif}
+html:lang(si) .countdown span{font-size:13px;letter-spacing:0}
+
+html:lang(si) .timeline time{font-size:13px;line-height:1.65}
+html:lang(si) .timeline h3{font:400 24px/1.55 SinhalaSerif,serif}
+html:lang(si) .timeline p{font-size:14px;line-height:1.95}
+
+html:lang(si) .text-button{font-size:13px}
+html:lang(si) .venue address{font:400 21px/1.85 SinhalaSerif,serif}
+
+html:lang(si) .reply-card h3{font:400 35px/1.45 SinhalaScript,serif}
+html:lang(si) .reply-card label,html:lang(si) .reply-card legend{font-size:14px;line-height:1.75}
+html:lang(si) #reply-status,html:lang(si) #reply-text{font-size:14px}
+
+html:lang(si) .closing-names{font:400 24px/1.6 SinhalaSerif,serif;letter-spacing:0;text-transform:none}
+html:lang(si) .closing>p:not(.closing-names){font-size:14px}
+html:lang(si) .closing .closing-action{font-size:13px;line-height:1.7;letter-spacing:0;text-transform:none}
+
+@media(max-width:700px){
+  html:lang(si) .welcome-wording{font-size:18px}
+  html:lang(si) .invitation-letter>p:not(.letter-label):not(.couple-names):not(.signature):not(.letter-greeting){font-size:13.5px}
+  html:lang(si) .invitation-letter .couple-names{font-size:clamp(36px,10.5vw,46px)}
+  html:lang(si) .invitation-letter .signature,html:lang(si) .invitation-letter .letter-greeting{font-size:18px}
+  html:lang(si) blockquote{font-size:21px}
+  html:lang(si) .section>h2{font-size:30px}
+  html:lang(si) .section>h2+p{font-size:14px}
+  html:lang(si) .date-reveal time>span{font-size:17px}
+  html:lang(si) .countdown-title{font-size:27px}
+  html:lang(si) .countdown span{font-size:12px}
+  html:lang(si) .timeline h3{font-size:21px}
+  html:lang(si) .reply-card h3{font-size:30px}
+  html:lang(si) .closing-names{font-size:22px}
+}

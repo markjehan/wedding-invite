@@ -36,3 +36,6 @@ dist/
 # Vercel's local settings and pulled secrets (DATABASE_URL, DJANGO_SECRET_KEY)
 .vercel/
 .env*
+
+# Quick-tunnel log from share.py links
+tunnel.log

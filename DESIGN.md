@@ -462,9 +462,175 @@ What differed, and what is done about it:
 Headless WebKit on Windows has no Web Audio, and no emulator has a ring switch, so the audio changes,
 and the calendar hand-off, can only be confirmed on a real iPhone.
 
+## Two languages
+
+The invitation exists in English and in Sinhala, and it is one invitation, not two. The choice is the
+first screen and nothing after it differs except words: the same doors, the same score, the same
+figure on arrival, cut to the same bars.
+
+### The language page
+
+The first question is asked the way the invitation speaks. Two lace-edged cameos, one per
+language, each named in its own script and identical in every dimension, so neither reads as the
+default with the other as an accommodation. The cameo is the date card's die-cut and its scalloped
+rim is the wax seal's; the round-topped arch both used before read as a headstone and was retired
+for that reason. Above them, *Welcome* in Italiana and *ආයුබෝවන්* in its
+Sinhala partner, Noto Serif Sinhala Light, are held apart by the programme's diamond on a tapered rule,
+and the question is asked once in each language. The compact crest crowns it.
+
+- **It paints from markup alone** and loads nothing heavy: Italiana and Noto Serif Sinhala Light (45KB)
+  are preloaded, and its two backgrounds are the images the doors preload anyway. The section headings'
+  Great Vibes (457KB) and the Sinhala calligraphy are deliberately not used here.
+- **It is the loading screen.** A hairline under the panels fills as the door art, the score and the
+  fonts arrive, and fades when they have. A guest who chooses first is told the invitation is being
+  prepared, in the language they chose, and the page leaves the moment it is ready. It is never held
+  more than four seconds past the press, and never let go in under a beat, so the choice is seen to land.
+- **The choice is felt at once.** The words change under the guest's finger: the crest's initials become න ◇ දු the instant සිංහල is pressed, the chosen panel takes the date card's warm bloom, the other steps
+  back, and the page dissolves into the doors over two beats. The doors are pressable from the first.
+- **Returning guests are asked again**, with their last answer already warmed. A link carrying
+  `?lang=si` or `?lang=en` skips the question from the first paint.
+- **Phones on their side** put the two greetings on one line and shorten the panels so the question fits
+  without scrolling.
+
+### Switching after the opening
+
+The foot of the invitation carries a two-language control: a paper pill holding *English* and *සිංහල*,
+each in its own script, with a gold fill that slides to the language being read. It sits beneath a pair of
+actions, *Back to the beginning* and *Replay the opening*. Each is a drawn icon in a paper roundel with its
+label beneath, and the programme's diamond holds the two apart. Before this they were three underlined links
+stacked in a column.
+
+A switch has to be instant, and three things once made it lag. All three were measured with
+`.qa/switch-check.cjs`:
+
+- **The names disappeared.** The inscribed names are traded for a second set of outlines, and new elements
+  start their CSS animations from zero, so every letter sat invisible for the nine seconds before its pen
+  was due, then wrote itself again. `catchUp()` in `invitation.js` now moves every animation on the incoming
+  letters to the point the arrival figure has already reached (`arrivedAt`, stamped when `arrived` lands).
+  The new names are simply there, or mid-stroke if the guest switched while the first pair was still being
+  written.
+- **The other language's fonts had never been fetched.** A page read in English never loads the Sinhala
+  faces, and a page read in Sinhala never loads Great Vibes. `warm()` in `i18n.js` loads a language's faces
+  on request. The footer asks for them once the control is within a screen and a half of view, and again on
+  hover or focus. On a click, the switch waits at most 450ms for them, so the page never redraws in a fallback
+  face first. The language page warms the chosen language's faces as part of its wait.
+- **The closing's mark redrew every time.** Reveals re-arm when they leave the screen, so returning to the
+  footer replayed the medallion's seven-second drawing, and a mark caught half drawn reads as one still
+  loading. The closing's mark is now exempt: it draws itself once per visit.
+
+### Sinhala type
+
+Every English face has a Sinhala partner chosen for the part it plays, not for its script.
+
+| English | Sinhala | Where |
+|---|---|---|
+| Pinyon Script, Great Vibes (the hand) | UN-Gurulugomi | names, monogram initials, section headings, countdown and reply titles |
+| Italiana (the hairline literary serif) | Noto Serif Sinhala Light | welcome line, letter title and signature, programme acts, address, quotation, closing names, the small ceremonial labels, the language page |
+| Manrope (the quiet modern sans) | Noto Sans Sinhala Light | body copy, buttons, the form, small print |
+| Julius Sans One (figures) | unchanged | the figures stay Julius; month names fall through to the light serif |
+
+The first pairing set almost everything in Abhaya Libre, a traditional letterpress Sinhala. It was
+correct but it read like a newspaper beside the English: no Sinhala role was written by hand, and every
+role had the same weight. The second pairing came from a rendered sheet of every open Sinhala face on
+Google Fonts and Mooniak's catalogue, plus Pushpananda Ekanayake's UN series, each set against the English
+roles (`.qa/sinhala-font-specimen.html`, `.qa/sinhala-font-proposal.html`), and the calligraphic finalists
+were then set on the invitation's first screen side by side (`.qa/sinhala-elegant-options.html`).
+
+- **UN-Gurulugomi** is Pushpananda Ekanayaka's classic calligraphic Sinhala, the lettering Sri Lankan
+  wedding cards are printed in: thick-and-thin strokes, open counters and a formal, flowing rhythm, which
+  is what Pinyon's copperplate and Great Vibes do in English. A handwriting face, Atlas Chirani (OFL), was
+  tried first and rejected on sight: beside the English it read as a casual hand, not an invitation. Of the
+  other calligraphic UN faces Alakamanda was the close second; Isiwara and Disapamok turn දුලාංජනී into
+  shapes that are hard to read. Gurulugomi carries no licence text of its own. FontMaster fonts are
+  distributed as free for personal use, which a personal wedding invitation is; commercial reuse would
+  need a FontMaster licence. `assets/fonts/Gurulugomi-NOTICE.txt` records its source and terms.
+- **Noto Serif Sinhala Light** is the nearest Sinhala to Italiana's airy, high-contrast hairline. Abhaya
+  Libre is a sturdier text face.
+- **Noto Sans Sinhala Light** sits with Manrope, where the Regular weight looked heavier than Manrope at
+  the same size.
+
+The two Noto families are OFL. All three are cut to the Sinhala block and declared with that `unicode-range`, so they sit in every
+stack beside the English face without taking a Latin glyph from it. A guest reading in English downloads
+only the 45KB serif that the language page uses.
+
+Three English habits do not carry over, and each is load-bearing. **No capitals**: Sinhala has none, so
+nothing is uppercased. **No tracking**: letter-spacing breaks up its joined forms. **Nothing under 12px**:
+its letters carry vowel signs above and below the line that the English's 9-11px tracked labels cannot
+hold, so every such label rises to 13-17px. Line-height rises throughout. Calligraphic headings are set about a third
+smaller than Great Vibes: at Great Vibes' size Gurulugomi's heavier strokes shout rather than flourish.
+
+The zero-width joiner is part of the spelling. Yansaya, rakaransaya and repaya (මංගල්‍යය, ශ්‍රී,
+ආශීර්වාදය) only form when the al-lakuna is followed by U+200D; without it the same word renders with an
+explicit al-lakuna, which reads as a typing error on an invitation. `i18n.js` writes the joiner as `J`
+so it is visible in the source.
+
+### The names and the mark
+
+The inscribed names are the font's outlines, so the Sinhala names are a second set of outlines rather
+than a second string, set in Gurulugomi's calligraphy. `build_sinhala.py` shapes them. The font has no
+positioning table; its vowel signs are glyphs of their own, drawn to sit against the letter before them.
+Its substitutions are single, multiple and ligature lookups, and coverage-based chaining rules that call
+them. They are applied in the Indic shaper's stage order, each position taking the first subtable that
+matches, and the result was checked glyph for glyph against Chrome's own rendering. The script
+scales them into Pinyon's 2048 units to the em, so the pen width stays one CSS pixel, and boxes each
+glyph 41 units clear of its ink, exactly as the English letters are. The pen traces the edge of every thick and thin stroke, and the ink fills behind it.
+
+Each name still takes one bar: the step between letters is recomputed from the letter count. නවීන් is
+four glyphs, because Gurulugomi draws its long al-lakuna as a glyph of its own;
+දුලාංජනී is six. They wait in
+`<template id="names-si">` and trade places with the English letters, so every pen and ink rule applies
+unchanged and `.given:last-child` still finds the second name.
+
+Each name's line box is cut to its own ink rather than the English 1.14em. Sinhala carries its vowel
+signs well above and below the letter body — the loop of ී, the tail of ු. In a copperplate-sized box
+they rose out of it, into the welcome line above and the සහ between the names below. Gurulugomi is set a fifth over the
+English em (`OPTICAL = 1.2`), because its letters are compact on their em.
+
+The mark keeps its geometry and changes only its initials, which are set large in the same calligraphy as
+the names, as Pinyon writes the English N and D. Where the English mark has its ampersand, the Sinhala mark
+has the invitation's own gold diamond on a hairline, the programme's node. Two joins were tried and
+dropped. The Latin ampersand, set small beside න, sat where Sinhala writes an al-lakuna (න්), and its curl
+passed for the vowel sign ෙ. A small සහ in the light serif then read as a caption squeezed between two
+letters rather than a monogram. Four finished versions were rendered side by side
+(`.qa/monogram-variants.html`): the light සහ, a calligraphic සහ, the diamond and a dot. The diamond is the one
+that reads as a crest. The English mark keeps its ampersand, which remains required there.
+
+The initials are placed by measured ink so the group sits on the medallion's axis, with the diamond centred
+on the letters' body. Their shared baseline is raised to 114 so the tail of ු clears the swash. The
+medallion's ink fronts are re-measured to match, and the diamond reveals under the ampersand's own front, so
+it arrives on the same beat. The initials are sized twice, once per form: 60 units in the medallion
+(176-214px) and 56 on the compact `#crest` over every section and the foil stamp struck from it (48-92px).
+That is optical sizing, not a second design. The medallion reads the `mono.*` keys and the symbol reads the
+`crest.*` keys, and `build_sinhala.py` prints both sets.
+
+The diamond lives in the markup of both forms. In the medallion, stylesheet rules show it only in Sinhala.
+In the `#crest` symbol, it and the ampersand are switched by inline `style` attributes instead
+(`crest.join.style`, `crest.amp.style`), for the same reason as the face below: a `<use>` copy honours an
+inline style where it would ignore a stylesheet. The scratch foil walks the symbol and skips any part
+whose inline style hides it, so it strikes exactly the mark the page shows.
+
+**Inside a `<use>` copy, Chrome ignores the Sinhala initials' `font-family` attribute.** Each small crest
+is a `<use>` copy of `#crest`. When this was first found, the letters' `font-family` attribute was correct
+on the symbol and the symbol's own text computed to that face. The copies still drew the initials in the
+page's Sinhala body face, which was heavier and wider, closed the space around සහ, and made the mark read
+නසහදු. The English initials were never affected, and neither was the foil,
+which reads the symbol's attributes directly. A probe rendered the copy five ways:
+- the attribute with or without `serif`: still wrong;
+- the face as an inline `style`: right;
+- the `wc-letter` class removed: right;
+- Noto Sans Sinhala taken out of the body stack: right.
+
+So in Sinhala the face also rides as an inline style (`style:crest.face`). The `font-family` attribute
+stays for the foil. `apply()` removes the style on the way back to English, because attributes the English
+markup does not set are recorded as empty and removed. It also replaces each `<use href="#crest">` with a
+fresh clone, so the copies are drawn from the symbol as it now is. `.qa/crest-probe.cjs` reruns the
+comparison. The scratch foil walks the
+`#crest` symbol, so it restrikes itself with the new initials once their face is loaded. The wax seal is
+a photograph with N&D struck into it and stays as it is.
+
 ## Layout
 
-Six sections occupy one ordinary document flow: welcome, invitation and three photographs, scratch date and calendars/countdown, agenda, venue, and RSVP. The welcome fills the small viewport height. Sections use 95px vertical and 7% side padding within 1600px; at 700px they use 65px and 24px. The agenda and calendar actions stack on phones; the three-photo gallery retains three columns and a taller center photograph. A fixed ivory masthead provides ordinary anchors and marks the section currently being read. Wide screens adjust at 1600px; desktop heights below 650px receive a taller welcome. No section is gated or independently paginated.
+Six sections occupy one ordinary document flow: welcome, invitation and a six-photograph gallery, scratch date and calendars/countdown, venue, agenda, and RSVP. The welcome fills the small viewport height. Sections use 95px vertical and 7% side padding within 1600px; at 700px they use 65px and 24px. The agenda and calendar actions stack on phones; the gallery is two columns on a phone (a tall arch-topped photograph beside two rounded ones, the arch changing sides each row) and one band of four from 760px, arches on the outside. A fixed ivory masthead provides ordinary anchors and marks the section currently being read. Wide screens adjust at 1600px; desktop heights below 650px receive a taller welcome. No section is gated or independently paginated.
 
 ## Elevation & Depth
 
@@ -479,14 +645,14 @@ An arched outline frames the welcome. Thin champagne outlines connect rectangula
 - Welcome: full-height floral courtyard, centered names, confirmed date and venue, and native scroll anchor. No opening ritual blocks reading.
 - Navigation: ordinary anchors in a fixed masthead. Mobile hides the first navigation item to preserve space. All sections remain visible in document flow.
 - Buttons: solid warm action fill or transparent secondary, 50px minimum height. Hover darkens the primary or tints the secondary. Focus uses a 2px action outline and 5px offset. Underlined text actions have 44px minimum height.
-- Invitation: a visible background-photo lead-in precedes the letter. The letter is pressed stationery — outline plus an inner hairline frame, a tracked small-caps opening line, the names set large in Symphonie with the ampersand as a centred ornament between them, a place line held between tapered gold rules, and the brass wax seal pressed at its foot. The date and ceremony time are deliberately absent: the foil card owns that reveal. Three framed sample photographs and a disclosure follow.
+- Invitation: the couple's photograph is a print in the suite, not a backdrop — handmade cotton paper with a torn deckle edge (the `#deckle` clip in index.html), a debossed plate mark around the image, and a warm grade in CSS that screens the blacks up to the ink's brown and lays the stationery's champagne light over it, so the couple's real photographs take the same finish when they arrive. On screens 1280px and wider it lies at -3° beside the letter, which rests over its right edge; narrower, it lies above the letter and the letter's top rests across its foot. Both pieces scale with the viewport because the embossed borders do. It is set down on reveal, settling from a few degrees further round, and the photograph drifts inside its window on scroll by `translate`. It replaced a full-width backdrop cropped to a round-topped arch that faded into the page at its foot, which read as a headstone — the same reason the language page retired its arch. Keep it rectangular and keep it from fading out. The letter is pressed stationery — outline plus an inner hairline frame, a tracked small-caps opening line, the names set large in Symphonie with the ampersand as a centred ornament between them, a place line held between tapered gold rules, and the brass wax seal pressed at its foot. The date and ceremony time are deliberately absent: the foil card owns that reveal. Three framed sample photographs and a disclosure follow.
 - Closing: two linked bands drawn as one open path — the left band breaks where the right passes in front, so they read as interlocked without relying on paint order. They draw themselves in on reveal, and the names sit small and tracked beneath them in Italiana.
-- Scratch date: an arched die-cut keepsake, not a gold slab. The card and its revealed face both carry the site's dome, echoing the welcome frame and the couple photograph. The foil is pale champagne on pearl, engraved with a fine guilloche lattice, ruled with two arched pressed lines that follow the die-cut, and struck with the house crest itself — the same magnolia, wreath and initials that mark every section, drawn from the symbol's own path geometry with `Path2D` rather than a bitmap, so it stays a hairline engraving at any card size and erodes with the leaf as it is scratched. A specular sheen sweeps the unscratched card and retires the moment a guest starts. Pointer scratching and a separate keyboard-accessible reveal both work; on reveal the date blooms once in warm gold. The date is also printed outside the interaction and remains readable without JavaScript.
+- Scratch date: a die-cut cameo keepsake, not a gold slab — an upright oval (0.84 : 1) with a lace edge of forty scallops, the same outline as the language panels. The outline is one `#cameo` clip path in the document's symbol sheet, drawn in the box's own units; CSS clips the paper and sheen to it and the foil script reads the same path, so there is one outline rather than copies that could drift. The revealed face is a plain oval window inside the scallops. The foil is pale champagne on pearl, engraved with a fine guilloche lattice, ruled with two oval pressed lines that sit exactly where the revealed face's border and inner rule do, and struck with the house crest itself — the same magnolia, wreath and initials that mark every section, drawn from the symbol's own path geometry with `Path2D` rather than a bitmap, so it stays a hairline engraving at any card size and erodes with the leaf as it is scratched. A specular sheen sweeps the unscratched card and retires the moment a guest starts. Pointer scratching and a separate keyboard-accessible reveal both work; on reveal the date blooms once in warm gold. The date is also printed outside the interaction and remains readable without JavaScript.
 - Calendar/countdown: Google Calendar and downloadable iCalendar save the confirmed date as an all-day event until time is confirmed. Four ruled numerals count down to midnight in Sri Lanka.
 - Agenda: five proposed acts with each time explicitly pending.
 - Venue: 6,118 centerline paths extracted from the existing Avenra engraving are rendered progressively to canvas over 6.5 seconds, then resolve to the detailed raster artwork. This is a traced engraving, not live tracing of the original photograph. Replay and original-photo toggle remain available. Reduced motion shows the finished image.
-- RSVP: full name, attendance choice, optional note. No guest count. Submitting composes the reply and offers it to WhatsApp and to the mail client as well as the clipboard. `RSVP_WHATSAPP` and `RSVP_EMAIL` at the top of that block in invitation.js are the only things to fill in when the couple supply a number and address; left blank the links still work, opening the app with the message written so the guest picks the recipient. Nothing is stored, and the copy says so.
-- Motion: restrained entrance animation, scroll cue, scratch fade, and venue drawing decorate visible content. Past the welcome, every section reveals on scroll — headings, letter lines, photographs, countdown numerals and form rise or settle into place, staggered within each group. The programme highlights the act nearest the middle of the viewport: its diamond fills and enlarges, its panel lifts onto a lighter ground, neighbouring acts soften, and the champagne connector draws downward as each act is passed. A hairline progress rule sits on the masthead edge and the invitation photograph pans gently inside its own frame. Timing is the load-bearing part. Reveals fire as an element's top reaches the lower edge of the viewport, resolve in about 0.7s, and stagger in steps of 55–90ms capped at the sixth item. An earlier build triggered at 88% of the viewport with up to 665ms of stagger on a 0.95s transition, which left half-empty cards on screen for well over a second at normal scroll speed and read as broken rather than graceful; if these numbers are ever lengthened again, re-test by scrolling at roughly 460px/s and confirming nothing above the middle of the viewport is still below full opacity. Reveals run in both directions: an element that has fully left the viewport is re-armed to return from whichever side it went out, carried by a `--dir` custom property that flips the sign of the travel and the card tilt. The reveal boundary pre-triggers on both edges (35% above, 4% below) because coming back up an element enters from the top and would otherwise only start once its foot cleared the edge; the re-arm boundary sits well outside both, since without that hysteresis it flickers at the threshold. `--dir` is read from a live `getBoundingClientRect`, not the observer entry's snapshot, which a fast jump can deliver stale. Text and cards resolve out of a soft focus — a blur that clears as they settle — while large media only scales, keeping the blur cheap. The three big cards (foil, venue drawing, reply) tilt up out of the page on a real `rotateX` under perspective. Each section divider draws its own hairlines in, the countdown rolls a numeral whenever it changes, and magnolia petals drift over the whole document once the doors are open, tying the sections into one garden. Reduced motion, or a browser without the individual `translate`/`scale` properties, receives the whole document at rest with nothing hidden, no petals and no sheen. Reveals use `translate`/`scale` so existing `transform` tilts survive. No wheel or page-flip controller is used.
+- RSVP: full name, attendance choice, optional note. No guest count. Submitting composes the reply and opens WhatsApp straight onto a message to `RSVP_WHATSAPP` (94771281561), written in the guest's language; the guest only presses send. The prepared panel stays beneath as the fallback, with WhatsApp again, the mail client and the clipboard. `RSVP_EMAIL` is still blank, so mail opens with the message written and the guest picks the recipient. Nothing is stored, and the copy says so.
+- Motion: restrained entrance animation, scroll cue, scratch fade, and venue drawing decorate visible content. Past the welcome, every section reveals on scroll — headings, letter lines, photographs, countdown numerals and form rise or settle into place, staggered within each group. The programme highlights the act nearest the middle of the viewport: its diamond fills and enlarges, its panel lifts onto a lighter ground, neighbouring acts soften, and the champagne connector draws downward as each act is passed. A hairline progress rule sits on the masthead edge and the couple's print drifts gently inside its own window. Timing is the load-bearing part. Reveals fire as an element's top reaches the lower edge of the viewport, resolve in about 0.7s, and stagger in steps of 55–90ms capped at the sixth item. An earlier build triggered at 88% of the viewport with up to 665ms of stagger on a 0.95s transition, which left half-empty cards on screen for well over a second at normal scroll speed and read as broken rather than graceful; if these numbers are ever lengthened again, re-test by scrolling at roughly 460px/s and confirming nothing above the middle of the viewport is still below full opacity. Reveals run in both directions: an element that has fully left the viewport is re-armed to return from whichever side it went out, carried by a `--dir` custom property that flips the sign of the travel and the card tilt. The reveal boundary pre-triggers on both edges (35% above, 4% below) because coming back up an element enters from the top and would otherwise only start once its foot cleared the edge; the re-arm boundary sits well outside both, since without that hysteresis it flickers at the threshold. `--dir` is read from a live `getBoundingClientRect`, not the observer entry's snapshot, which a fast jump can deliver stale. Text and cards resolve out of a soft focus — a blur that clears as they settle — while large media only scales, keeping the blur cheap. The three big cards (foil, venue drawing, reply) tilt up out of the page on a real `rotateX` under perspective. Each section divider draws its own hairlines in, the countdown rolls a numeral whenever it changes, and magnolia petals drift over the whole document once the doors are open, tying the sections into one garden. Reduced motion, or a browser without the individual `translate`/`scale` properties, receives the whole document at rest with nothing hidden, no petals and no sheen. Reveals use `translate`/`scale` so existing `transform` tilts survive. No wheel or page-flip controller is used.
 - Crest: one drawn mark carries the identity everywhere — a five-petal magnolia over an open wreath of leaves, with the initials engraved inside the wreath. It is the same `#crest` symbol in the masthead and above every section, only at two sizes; earlier the masthead and the divider were two different marks, which read as an inconsistency. Its hairlines draw themselves in on reveal. The two initials are positioned by measured ink, not advance width: Pinyon's N carries a trailing swash that runs to 1.39em against a 0.72em advance, so advance-based centring throws the pair off the wreath's axis and a tightly-set ampersand lands inside the swash. The gap between the initials is sized to hold the ampersand clear, and the ampersand is lifted above the baseline so the swash passes beneath it. The ampersand is required — do not remove it to solve a spacing problem; widen the gap instead.
 - Seam: the marble arrival dissolves into the stationery through a gradient at the foot of the welcome, and the invitation's botanical border eases in under a mask rather than starting at a hard edge. The closing does the same in reverse: its garden imagery sits on the pseudo-element so a mask can fade it up from the paper — masking `.closing` itself would fade the rings and the names with it — and the extra top padding keeps them clear of the fade.
 

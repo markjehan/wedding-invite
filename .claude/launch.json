@@ -7,6 +7,12 @@
       "runtimeArgs": ["serve.py"],
       "port": 4173,
       "autoPort": true
+    },
+    {
+      "name": "nw-server",
+      "runtimeExecutable": "server/.venv/Scripts/python.exe",
+      "runtimeArgs": ["server/manage.py", "runserver", "8000"],
+      "port": 8000
     }
   ]
 }
