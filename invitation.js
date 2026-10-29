@@ -729,7 +729,8 @@
   $('#copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('#reply-text').textContent);$('#reply-status').textContent=say('copied')||'Copied. Paste your RSVP into a message to the couple.';}catch{const range=document.createRange();range.selectNodeContents($('#reply-text'));getSelection().removeAllRanges();getSelection().addRange(range);$('#reply-status').textContent=say('selectCopy')||'Select and copy the highlighted reply.';}});
   // A guest's own link. They are already known, so the form asks only whether they are coming, how
   // many of the seats kept for them will be used, and for a note. The reply is saved on the server
-  // and is there again whenever the link is opened.
+  // and is there again whenever the link is opened, and it also opens in WhatsApp, written to the
+  // couple, as replies always did before there was a server.
   function personal(me){
     const form=$('#rsvp'),button=form.querySelector('button[type=submit]'),status=$('#reply-status');
     const people=form.elements.namedItem('people'),field=form.querySelector('.people-field');
@@ -765,16 +766,24 @@
     form.addEventListener('submit',async e=>{
       e.preventDefault();
       if(!form.reportValidity())return;
-      const answer=form.querySelector('[name=attendance]:checked').dataset.reply;
+      const picked=form.querySelector('[name=attendance]:checked'),answer=picked.dataset.reply;
+      const count=answer==='yes'?+people.value||1:0,note=form.elements.namedItem('note').value.trim();
+      // WhatsApp opens now, inside the press, or the phone holds it back; the panel stays as the
+      // fallback. It goes whether or not the save below works, so the couple hear either way.
+      const message=say('message',name(),say('party',picked.parentElement.textContent.trim(),count),note);
+      $('#reply-text').textContent=message;
+      $('#send-whatsapp').href='https://wa.me/'+RSVP_WHATSAPP+'?text='+encodeURIComponent(message);
+      $('#send-email').href='mailto:'+RSVP_EMAIL+'?subject='+encodeURIComponent(say('subject'))+'&body='+encodeURIComponent(message);
+      if(RSVP_WHATSAPP)window.open($('#send-whatsapp').href,'_blank','noopener');
+      $('#prepared').hidden=false;
       button.disabled=true;status.textContent=say('sending');
       try{
         const sent=await fetch('/'+me.code+'/reply',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-          attendance:answer,people:answer==='yes'?+people.value||1:0,
-          note:form.elements.namedItem('note').value.trim(),lang:window.invitationLanguage?.current||'en'})});
+          attendance:answer,people:count,note,lang:window.invitationLanguage?.current||'en'})});
         if(sent.status===403){me.open=false;paint();lock();return;}
         if(!sent.ok)throw new Error(sent.status);
         Object.assign(me,await sent.json());paint();
-        status.textContent=say('thanks',name());
+        status.textContent=`${say('thanks',name())} ${RSVP_WHATSAPP?say('opening'):say('ready')}`;
       }catch{status.textContent=say('failed')}
       finally{if(me.open)button.disabled=false}
     });
