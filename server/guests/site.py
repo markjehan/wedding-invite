@@ -6,6 +6,7 @@ project folder on the laptop, which also holds the git repository and the design
 outside that list is refused. share.py draws the same line for the quick tunnel.
 """
 import mimetypes
+import re
 from html.parser import HTMLParser
 from pathlib import Path, PurePosixPath
 from urllib.parse import urlsplit
@@ -20,6 +21,9 @@ for suffix, kind in {'.webp': 'image/webp', '.mp3': 'audio/mpeg', '.ttf': 'font/
     mimetypes.add_type(kind, suffix)
 
 _cache = {}
+# Google Search Console's proof that the site is ours: a file it names, like google1a2b3c4d5e6f7a8b.html,
+# placed at the top of the project. It is how a Safe Browsing warning gets reviewed and lifted.
+GOOGLE_PROOF = re.compile(r'google[0-9a-f]{16}\.html')
 
 
 def _index():
@@ -49,7 +53,8 @@ def public_file(name):
     if not parts or name.startswith('/') or '\\' in name or any(part in {'..', '.'} or part.startswith('.') for part in parts):
         return None
     _, linked = _index()
-    if not (name in linked or (len(parts) == 1 and name.endswith('.ics')) or parts[0] == 'assets'):
+    top = len(parts) == 1
+    if not (name in linked or (top and name.endswith('.ics')) or (top and GOOGLE_PROOF.fullmatch(name)) or parts[0] == 'assets'):
         return None
     root = Path(settings.SITE_DIR).resolve()
     path = (root / name).resolve()

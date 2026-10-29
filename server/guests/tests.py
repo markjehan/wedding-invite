@@ -1,7 +1,9 @@
 import json
+from pathlib import Path
 import re
 from datetime import timedelta
 
+from django.conf import settings
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
@@ -162,6 +164,15 @@ class FileTests(TestCase):
             self.assertEqual(response.status_code, 200, name)
             self.assertEqual(response['Content-Type'], kind, name)
             response.close()
+
+    def test_google_search_consoles_proof_is_served(self):
+        proof = Path(settings.SITE_DIR) / 'google0123456789abcdef.html'
+        proof.write_text('google-site-verification: google0123456789abcdef.html', encoding='utf-8')
+        try:
+            self.assertContains(self.client.get('/google0123456789abcdef.html'), 'google-site-verification')
+            self.assertEqual(self.client.get('/google-anything.html').status_code, 404)
+        finally:
+            proof.unlink()
 
     def test_nothing_else_in_the_project_folder_is(self):
         for name in ['.git/config', '.gitignore', 'DESIGN.md', 'README.md', 'share.py', 'server/manage.py',
