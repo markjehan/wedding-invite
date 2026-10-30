@@ -116,25 +116,22 @@ body{background:var(--paper)}
 .invitation-letter{position:relative;background:linear-gradient(#fffaf2cf,#fffaf2cf),url('assets/magnolia-suite/paper.webp') center/100% 100%;padding:52px 60px;outline-offset:-14px}
 
 /* ---------- The gallery ----------
-   On a phone, two columns: a tall photograph with an arched top beside two shorter ones with rounded
-   corners, the arch changing sides every row. From 760px the two rows sit side by side as one band of
-   four, arches on the outside. Six photographs fill either layout exactly. Every print is the same
-   ivory mat with a gilt hairline; only the 1st and 4th of each six are arches, so a photograph can go
-   in any tile. If a face falls outside its crop, --focus on the figure moves it back in (the same two
-   values as object-position). */
-.memory-gallery{--cols:2;--gap:12px;--edge:4px;--round:14px;display:grid;grid-template-columns:repeat(var(--cols),minmax(0,1fr));grid-auto-flow:row dense;gap:var(--gap);max-width:1000px;margin:38px auto 0;container-type:inline-size}
-.memory-gallery figure{position:relative;margin:0;padding:var(--edge);aspect-ratio:20/19;background:#fffaf2;border:1px solid #c9b183;border-radius:var(--round);box-shadow:0 12px 28px #67513614}
-.memory-gallery img{position:absolute;inset:var(--edge);width:calc(100% - 2 * var(--edge));height:calc(100% - 2 * var(--edge));object-fit:cover;object-position:var(--focus,50% 30%);border-radius:calc(var(--round) - var(--edge) - 1px)}
-/* The arch is a true semicircle: its radius is half a column, worked out from the gallery's width. */
-.memory-gallery figure:is(:nth-child(6n+1),:nth-child(6n+4)){--arch:calc((100cqw - (var(--cols) - 1) * var(--gap)) / var(--cols) / 2);grid-row:span 2;aspect-ratio:auto;border-radius:var(--arch) var(--arch) var(--round) var(--round)}
-.memory-gallery figure:is(:nth-child(6n+1),:nth-child(6n+4)) img{border-radius:calc(var(--arch) - var(--edge) - 1px) calc(var(--arch) - var(--edge) - 1px) calc(var(--round) - var(--edge) - 1px) calc(var(--round) - var(--edge) - 1px)}
-@supports not (width:1cqw){.memory-gallery figure:is(:nth-child(6n+1),:nth-child(6n+4)),.memory-gallery figure:is(:nth-child(6n+1),:nth-child(6n+4)) img{border-radius:999px 999px 0 0}}
-.memory-gallery figure:nth-child(6n+1),.memory-gallery figure:nth-child(6n+5),.memory-gallery figure:nth-child(6n+6){grid-column:1}
-.memory-gallery figure:nth-child(6n+2),.memory-gallery figure:nth-child(6n+3),.memory-gallery figure:nth-child(6n+4){grid-column:2}
+   Three prints laid on the table, like the one beside the letter: the two of them in the middle,
+   Naveen and Dulanjani to either side, each turned a little and tucked against it. Every print is the
+   same ivory mat with a gilt hairline and square corners, and every crop is on their faces. On a phone
+   the pair comes first and the two portraits overlap its foot; from 760px the three sit in a row. */
+.memory-gallery{display:grid;grid-template-columns:1fr 1fr;grid-template-areas:"main main" "left right";gap:0 16px;max-width:380px;margin:40px auto 16px;padding:0 8px}
+.memory-gallery figure{position:relative;margin:0;padding:8px 8px 11px;background:#fffaf2;border:1px solid #d9c49b;border-radius:3px;box-shadow:0 16px 32px -14px #6751364d}
+.memory-gallery img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:50% 22%;border-radius:1px}
+.memory-gallery .print-main{grid-area:main;z-index:2;rotate:-.7deg}
+.memory-gallery .print-left{grid-area:left;margin-top:-30px;rotate:-4deg;z-index:3}
+.memory-gallery .print-right{grid-area:right;margin-top:-16px;rotate:3.5deg;z-index:3}
 @media(min-width:760px){
-  .memory-gallery{--cols:4;--gap:22px;--edge:6px;--round:18px;margin-top:56px}
-  .memory-gallery figure:nth-child(6n+4){grid-column:4}
-  .memory-gallery figure:nth-child(6n+5),.memory-gallery figure:nth-child(6n+6){grid-column:3}
+  .memory-gallery{grid-template-columns:1fr 1.45fr 1fr;grid-template-areas:"left main right";align-items:center;gap:0;max-width:880px;margin-top:64px}
+  .memory-gallery figure{padding:12px 12px 16px}
+  .memory-gallery .print-left{margin:48px -28px 0 0;rotate:-5deg;z-index:1}
+  .memory-gallery .print-right{margin:-36px 0 0 -28px;rotate:4.5deg;z-index:3}
+}
 }
 blockquote{padding:30px 12px 0;font-size:32px;color:var(--action)}
 .scratch-card{height:280px;max-width:440px;background:var(--light) url('assets/magnolia-suite/paper.webp') center/100% 100%;border-radius:4px}
