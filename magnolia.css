@@ -116,21 +116,21 @@ body{background:var(--paper)}
 .invitation-letter{position:relative;background:linear-gradient(#fffaf2cf,#fffaf2cf),url('assets/magnolia-suite/paper.webp') center/100% 100%;padding:52px 60px;outline-offset:-14px}
 
 /* ---------- The gallery ----------
-   Three prints laid on the table, like the one beside the letter: the two of them in the middle,
-   Naveen and Dulanjani to either side, each turned a little and tucked against it. Every print is the
-   same ivory mat with a gilt hairline and square corners, and every crop is on their faces. On a phone
-   the pair comes first and the two portraits overlap its foot; from 760px the three sit in a row. */
-.memory-gallery{display:grid;grid-template-columns:1fr 1fr;grid-template-areas:"main main" "left right";gap:0 16px;max-width:380px;margin:40px auto 16px;padding:0 8px}
-.memory-gallery figure{position:relative;margin:0;padding:8px 8px 11px;background:#fffaf2;border:1px solid #d9c49b;border-radius:3px;box-shadow:0 16px 32px -14px #6751364d}
-.memory-gallery img{display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:50% 22%;border-radius:1px}
-.memory-gallery .print-main{grid-area:main;z-index:2;rotate:-.7deg}
-.memory-gallery .print-left{grid-area:left;margin-top:-30px;rotate:-4deg;z-index:3}
-.memory-gallery .print-right{grid-area:right;margin-top:-16px;rotate:3.5deg;z-index:3}
+   Prints laid out on the table, like the one beside the letter: each keeps its own shape, each is
+   turned a little, and they settle into staggered columns, two on a phone and four from 760px. Every
+   print is the same ivory mat with a gilt hairline and square corners. Six to eight fill it well. */
+.memory-gallery{columns:2;column-gap:16px;max-width:440px;margin:40px auto 12px;padding:0 6px}
+.memory-gallery figure{display:block;break-inside:avoid;margin:0 0 20px;padding:7px 7px 10px;background:#fffaf2;border:1px solid #d9c49b;
+  border-radius:3px;box-shadow:0 14px 28px -14px #6751364d;rotate:var(--tilt,0deg)}
+.memory-gallery img{display:block;width:100%;height:auto;border-radius:1px}
+.memory-gallery figure:nth-child(4n+1){--tilt:-2deg}
+.memory-gallery figure:nth-child(4n+2){--tilt:1.6deg}
+.memory-gallery figure:nth-child(4n+3){--tilt:-1.1deg}
+.memory-gallery figure:nth-child(4n+4){--tilt:2.2deg}
 @media(min-width:760px){
-  .memory-gallery{grid-template-columns:1fr 1.45fr 1fr;grid-template-areas:"left main right";align-items:center;gap:0;max-width:880px;margin-top:64px}
-  .memory-gallery figure{padding:12px 12px 16px}
-  .memory-gallery .print-left{margin:48px -28px 0 0;rotate:-5deg;z-index:1}
-  .memory-gallery .print-right{margin:-36px 0 0 -28px;rotate:4.5deg;z-index:3}
+  .memory-gallery{columns:4;column-gap:26px;max-width:960px;margin-top:60px}
+  .memory-gallery figure{margin-bottom:30px;padding:10px 10px 14px}
+}
 }
 }
 blockquote{padding:30px 12px 0;font-size:32px;color:var(--action)}
