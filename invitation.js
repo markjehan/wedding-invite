@@ -680,7 +680,6 @@
       if(intro.hidden)raise();
     }
   }
-  const guest=(new URLSearchParams(location.search).get('guest')||'').trim().slice(0,100);if(guest)$('[name=name]').value=guest;
   // Where replies go. With a WhatsApp number, sending the form opens WhatsApp straight onto a message to
   // it, already written. Left blank, WhatsApp and the mail client still open with the reply written and
   // let the guest pick the recipient.
@@ -692,7 +691,23 @@
   const invite=(()=>{try{return JSON.parse($('#invite-data')?.textContent||'null')}catch{return null}})();
   if(invite?.mode==='general'){$('#rsvp').hidden=true;$('#reply-general').hidden=false;}
   else if(invite?.mode==='guest')personal(invite);
-  else $('#rsvp').addEventListener('submit',e=>{
+  // A name in the link - naveenwedsdulanjani.com/?name=Chamini - greets that guest by it with no server
+  // at all: the welcome line, "Dear Chamini," on the letter, and the reply form already filled in. The
+  // page is the same file for everyone; only the link differs. ?guest= is the older spelling and still
+  // works. A name typed all in small letters is given its capitals; one with capitals is left as typed.
+  const linked=(()=>{
+    const q=new URLSearchParams(location.search),raw=(q.get('name')||q.get('guest')||'').replace(/\s+/g,' ').trim().slice(0,100);
+    return raw===raw.toLowerCase()?raw.replace(/(^|[\s'-])(\p{L})/gu,(_,before,letter)=>before+letter.toUpperCase()):raw;
+  })();
+  if(linked&&invite?.mode!=='guest'){
+    $('[name=name]').value=linked;
+    const greet=()=>{
+      $('.welcome-wording').textContent=say('welcome',linked)||`Welcome, ${linked}, to the wedding of`;
+      $('#greeting').textContent=say('dear',linked)||`Dear ${linked},`;$('#greeting').hidden=false;
+    };
+    greet();document.addEventListener('invitation:language',greet);
+  }
+  if(invite?.mode!=='general'&&invite?.mode!=='guest')$('#rsvp').addEventListener('submit',e=>{
     e.preventDefault();
     const name=$('[name=name]');name.setCustomValidity(name.value.trim()?'':(say('nameMissing')||'Please enter your name.'));
     if(!e.target.reportValidity())return;
