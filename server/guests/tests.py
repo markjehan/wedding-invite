@@ -39,6 +39,11 @@ class PageTests(TestCase):
         self.assertEqual(invite_data(response), {'mode': 'general'})
         self.assertEqual(response['Cache-Control'], 'no-store')
 
+    def test_name_in_the_link_can_reply(self):
+        for link in ('/?name=Chamini', '/?guest=Chamini+Perera'):
+            self.assertEqual(invite_data(self.client.get(link)), {'mode': 'named'})
+        self.assertEqual(invite_data(self.client.get('/?name=+')), {'mode': 'general'})
+
     def test_personal_page_knows_the_guest(self):
         response = self.client.get(f'/{self.guest.code}')
         self.assertEqual(response.status_code, 200)

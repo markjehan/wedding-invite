@@ -31,7 +31,13 @@ def _reply_of(guest):
 
 @require_GET
 def general(request):
-    """The invitation without a name: everything to read, nothing to reply with."""
+    """The invitation without a name: everything to read, nothing to reply with.
+
+    With a name in the link instead (/?name=Chamini) the page greets them by it and their reply opens in
+    WhatsApp, written to the couple; invitation.js reads the name from the address. Nothing is saved.
+    """
+    if (request.GET.get('name') or request.GET.get('guest') or '').strip():
+        return _page(request, {'mode': 'named'})
     return _page(request, {'mode': 'general'})
 
 
