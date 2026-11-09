@@ -599,10 +599,10 @@
     // subdivision makes each of them read as one figure played against the music underneath.
     const STEP=TEMPO.beat*1000/4;
     const plan=[
+      ['.invitation blockquote','up',0],
       ['.invitation-letter>*','up',STEP],
       ['.print-stack','lift',0],
       ['.invitation>.disclosure','fade',0],
-      ['.invitation blockquote','up',0],
       ['.date-section>.flourish,.date-section>h2,.date-section>h2+p','up',STEP],
       ['.scratch-card','lift',0],
       ['.calendar-actions>*','up',STEP],

@@ -123,6 +123,9 @@ body{background:var(--paper)}
 .stack-count span{color:var(--gold);margin:0 2px}
 @media(max-width:700px){.print-stack{--tall:80%;margin-top:34px}}
 blockquote{padding:30px 12px 0;font-size:32px;color:var(--action)}
+/* The couple's line opens the invitation, so its space falls below it, toward the letter. */
+.invitation>blockquote{margin:0 auto 56px;padding-top:0}
+@media(max-width:700px){.invitation>blockquote{margin-bottom:38px}}
 .scratch-card{height:280px;max-width:440px;background:var(--light) url('assets/magnolia-suite/paper.webp') center/100% 100%;border-radius:4px}
 .date-reveal{margin:10px;height:calc(100% - 20px)}
 .scratch-label span{font-family:Calligraphy,cursive;font-size:60px}
