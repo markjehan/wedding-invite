@@ -244,7 +244,7 @@
   function finishIntro(){clearTimeout(introTimer);beginArrival(0);intro.hidden=true;opening=false;intro.classList.remove('opening','pressed');document.body.classList.remove('intro-locked','intro-opening');outside.forEach(el=>el.inert=false);window.raisePetals?.();const target=document.getElementById(returnHash.slice(1))||$('#welcome');target.scrollIntoView({behavior:'instant',block:'start'});const heading=target.querySelector('h1,h2')||$('#welcome-title');heading.setAttribute('tabindex','-1');heading.focus({preventScroll:true});}
   // Decode the entrance art up front. The swing waits on this, so it can never start part-way
   // through a decode — that was the stall between pressing the seal and the doors moving.
-  const entranceArt=Promise.all(['assets/magnolia-suite/doors.webp','assets/magnolia-suite/portrait.webp','assets/magnolia-suite/garden.webp']
+  const entranceArt=Promise.all(['assets/magnolia-suite/doors.webp','assets/magnolia-suite/portrait.webp','assets/magnolia-suite/garden.webp','assets/materials/brass-seal-monogram-512.webp']
     .map(src=>{const img=new Image();img.src=src;return img.decode().catch(()=>{});}));
   // The language page shows these arriving, and lets the guest through once they have.
   window.invitationLanguage?.track(entranceArt);window.invitationLanguage?.track(Music.ready);
@@ -268,10 +268,11 @@
       requestAnimationFrame(()=>requestAnimationFrame(()=>{
         if(!opening)return;
         // Whatever the music has already played while the art decoded and this frame was scheduled
-        // is handed to the CSS as --sync, which starts every stage of the entrance that far in. A
-        // beat is the ceiling, so a slow start costs the swing a little of its length rather than
-        // most of it. Silence reports nothing, and the sequence simply runs from its own zero.
-        const shift=Math.min(Math.max(Music.position()||0,0),TEMPO.beat);
+        // is handed to the CSS as --sync, which starts every stage of the entrance that far in. It
+        // is capped at 0.15s, too little to see: a slow phone that let the music get further ahead
+        // used to have the doors jump part-way open on their first frame. Past that the doors keep
+        // their whole swing and land a little after the downbeat instead. Silence reports nothing.
+        const shift=Math.min(Math.max(Music.position()||0,0),.15);
         document.documentElement.style.setProperty('--sync',shift+'s');
         beginArrival(ARRIVE_LEAD-shift);
         intro.classList.add('opening');document.body.classList.add('intro-opening');

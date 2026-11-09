@@ -357,9 +357,10 @@
     // Nothing is said unless the wait is long enough to notice.
     const notice = setTimeout(() => { if (status) { status.lang = lang; status.textContent = say('preparing'); } }, BEAT * 1500);
     booted
-      // Never held for more than four seconds: past that the doors open with whatever has arrived,
-      // exactly as the seal already refuses to wait more than a beat for the music.
-      .then(() => Promise.race([Promise.all([warm(lang), ...pending.map(work => Promise.resolve(work).catch(() => {}))]), wait(4000)]))
+      // Held until everything has arrived, however long a slow phone takes: doors let through early
+      // swung with pieces of their art still missing. "Preparing your invitation" shows meanwhile.
+      // Twenty seconds is only the backstop for a file that never comes at all.
+      .then(() => Promise.race([Promise.all([warm(lang), ...pending.map(work => Promise.resolve(work).catch(() => {}))]), wait(20000)]))
       // And never let go in under a beat, so the choice is seen to land before the page leaves.
       .then(() => wait(Math.max(0, BEAT * 1000 - (performance.now() - pressed))))
       .then(() => { clearTimeout(notice); leave(lang); });
