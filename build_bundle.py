@@ -15,6 +15,7 @@ html = re.sub(r'<link rel="preload"[^>]+>', '', html)
 html = html.replace('<link rel="stylesheet" href="invitation.css">', '<style>' + css + '</style>')
 html = html.replace('<link rel="stylesheet" href="magnolia.css">', '<style>' + (root / 'magnolia.css').read_text(encoding='utf-8') + '</style>')
 html = html.replace('<link rel="stylesheet" href="language.css">', '<style>' + (root / 'language.css').read_text(encoding='utf-8') + '</style>')
+html = html.replace('<link rel="stylesheet" href="devices.css">', '<style>' + (root / 'devices.css').read_text(encoding='utf-8') + '</style>')
 html = html.replace('<script src="invitation.js" defer></script>', '<script>' + js + '</script>')
 FONT_MIME = {'.ttf': 'font/ttf', '.otf': 'font/otf', '.woff': 'font/woff', '.mp3': 'audio/mpeg'}
 paths = set(re.findall(r'assets/[\w./-]+\.(?:png|jpg|webp|ttf|otf|woff|mp3)', html))

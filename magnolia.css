@@ -122,9 +122,6 @@ body{background:var(--paper)}
 .stack-count b{font-weight:400;color:var(--action)}
 .stack-count span{color:var(--gold);margin:0 2px}
 @media(max-width:700px){.print-stack{--tall:80%;margin-top:34px}}
-}
-}
-}
 blockquote{padding:30px 12px 0;font-size:32px;color:var(--action)}
 .scratch-card{height:280px;max-width:440px;background:var(--light) url('assets/magnolia-suite/paper.webp') center/100% 100%;border-radius:4px}
 .date-reveal{margin:10px;height:calc(100% - 20px)}

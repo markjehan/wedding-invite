@@ -1,0 +1,188 @@
+/* ---------- One invitation, sized for the screen it is opened on ----------
+   The head of index.html names the kind of screen before the first paint: data-device on the root is
+   phone, tablet, laptop or desktop. Which way up it is held is read here from the window's shape. The
+   stylesheets before this one are written for a phone held upright (max-width:700px) and for a
+   laptop, and stretch between the two on the width of the window alone. That stretch went wrong in
+   four places, and each kind of screen is tuned here for its own:
+
+     a phone on its side was given the laptop layout on a screen 390px tall: the arrival twice the
+       height of the screen, the names cut off, the date card and the photographs taller than it;
+     a tablet held upright fell at the narrow end of the laptop layout, so the names and headings
+       came out smaller than on a large phone, in a screen twice the size, with a third of it bare;
+     a laptop's short window held the arrival at 760px and pushed the cue under the fold;
+     a desktop monitor drew the invitation in a column that left two thirds of the screen empty.
+
+   The shape is a ratio, not the orientation query, because on older Android browsers the keyboard
+   shrinks the window and a phone held upright then reads as landscape - halfway through typing a
+   reply. A phone is on its side from 13:9, a tablet from 13:10. Rules for a kind of screen are also
+   held to a window wide enough for them, so an iPad in Split View, a phone-wide window on a tablet,
+   keeps the phone layout.
+
+   Wherever language.css gives an element its own size in Sinhala, the rule here that resizes it in
+   English has a Sinhala partner beside it: these rules come later and outrank language.css, and
+   would otherwise hand the Sinhala lettering the English size. */
+
+/* ---------- Every screen ---------- */
+/* The arrival is sized from the height of the screen (magnolia.css), so it no longer needs the 760px
+   floor invitation.css gave short windows; on a laptop that floor only pushed the cue below the fold. */
+.welcome{min-height:100svh}
+/* Nothing meant to be seen whole is taller than the screen it is on: the pile of prints, the foil card
+   and the venue drawing are held to the height of the screen as well as its width. On a laptop a tall
+   print used to run off the foot of the window with the arrows under it. */
+.print-stack{--table:min(520px,88vw,calc(100svh - 150px))}
+.scratch-card{width:min(100%,360px,calc((100svh - 110px) * .84))}
+.architecture{max-width:min(100vw,1000px,calc((100svh - 110px) * 1100 / 709))}
+
+/* ---------- A phone on its side ----------
+   The screen is wide and very short, 320 to 430px, less the browser's bars. The arrival is one screen
+   as it is held upright, the sections close up, and everything meant to be seen whole is sized to the
+   height rather than the width. */
+@media(min-aspect-ratio:13/9){
+  :root[data-device=phone] .welcome{padding-block:max(16px,env(safe-area-inset-top)) 14px}
+  :root[data-device=phone] .welcome-content{padding:0}
+  :root[data-device=phone] .welcome-wording{font-size:16px;margin-bottom:4px}
+  :root[data-device=phone]:lang(si) .welcome-wording{font-size:17px}
+  :root[data-device=phone] .welcome h1{font-size:clamp(32px,12svh,50px)}
+  :root[data-device=phone] .welcome-crest{width:min(130px,26svh);margin:2px auto 4px}
+  :root[data-device=phone] .scroll-cue{margin-top:6px;gap:8px}
+  :root[data-device=phone] .scroll-cue span{height:30px}
+  :root[data-device=phone] .welcome::after{height:min(26vh,120px)}
+
+  :root[data-device=phone] .section{padding-block:60px}
+  :root[data-device=phone] .invitation{padding-top:56px}
+  :root[data-device=phone] .couple-drawing{--tall:min(300px,68svh)}
+  /* A tall print takes 62% of the table and stands half again as tall as it is wide, so a table this
+     high leaves the whole print and the arrows beneath it on one screen. */
+  :root[data-device=phone] .print-stack{--table:min(440px,calc(100svh - 96px));--tall:62%;margin-top:30px}
+  :root[data-device=phone] .countdown-title{margin-top:40px}
+  :root[data-device=phone] .closing{padding-top:96px}
+  :root[data-device=phone] .closing-crest{width:min(130px,30svh)}
+}
+
+/* ---------- A tablet held upright ----------
+   768 to 1024px across and up to 1366 tall. The names, the headings and the pieces of the suite take a
+   step up from the laptop's, and the arrival fills the screen it used to sit in the top half of. */
+@media(min-width:701px) and (max-aspect-ratio:13/10){
+  :root[data-device=tablet] .welcome h1{font-size:clamp(76px,min(11vw,8.4svh),116px)}
+  :root[data-device=tablet] .welcome-crest{width:min(250px,30vw,20svh)}
+  :root[data-device=tablet] .welcome-wording{font-size:25px}
+  :root[data-device=tablet]:lang(si) .welcome-wording{font-size:24px}
+  :root[data-device=tablet] .scroll-cue span{height:72px}
+
+  :root[data-device=tablet] .section>h2{font-size:clamp(52px,7vw,68px)}
+  :root[data-device=tablet]:lang(si) .section>h2{font-size:clamp(38px,5vw,48px)}
+  :root[data-device=tablet] .invitation-letter{max-width:660px}
+  :root[data-device=tablet] .invitation-letter h2{font-size:clamp(31px,4.2vw,38px)}
+  :root[data-device=tablet]:lang(si) .invitation-letter h2{font-size:clamp(29px,3.9vw,35px)}
+  :root[data-device=tablet] .invitation-letter .couple-names{font-size:clamp(58px,8vw,72px)}
+  :root[data-device=tablet]:lang(si) .invitation-letter .couple-names{font-size:clamp(50px,6.8vw,62px)}
+  :root[data-device=tablet] .print-stack{--table:min(620px,80vw,calc(100svh - 170px))}
+  :root[data-device=tablet] .scratch-card{width:min(100%,400px,calc((100svh - 110px) * .84))}
+  :root[data-device=tablet] .countdown{max-width:620px}
+
+  /* The language page asks its question at the size the rest of the tablet speaks at. */
+  :root[data-device=tablet] .gate-inner{width:min(100%,540px)}
+  :root[data-device=tablet] .gate-welcome{font-size:clamp(48px,6.6vw,64px)}
+  :root[data-device=tablet] .gate-welcome:lang(si){font-size:clamp(36px,4.9vw,47px)}
+  :root[data-device=tablet] .gate-question p{font-size:19px}
+  :root[data-device=tablet] .gate-question p:lang(si){font-size:18px}
+  :root[data-device=tablet] .gate-choices{width:min(100%,520px,calc(52svh + 28px))}
+  :root[data-device=tablet] .gate-name{font-size:34px}
+  :root[data-device=tablet] .gate-name:lang(si){font-size:36px}
+}
+
+/* ---------- A tablet on its side ----------
+   Laptop-wide but shorter than a laptop once Safari's bars are drawn (an iPad shows about 690px of a
+   768px screen), so the arrival is drawn from the height of the screen, a size down. */
+@media(min-width:960px) and (min-aspect-ratio:13/10){
+  :root[data-device=tablet] .welcome{padding-block:clamp(56px,8svh,96px)}
+  :root[data-device=tablet] .welcome h1{font-size:clamp(60px,min(7.4vw,10.6svh),104px)}
+  :root[data-device=tablet] .welcome-crest{width:min(214px,22svh)}
+}
+
+/* ---------- A laptop ----------
+   Its window is the shortest of any large screen: a 1366 by 768 screen leaves about 650px under the
+   browser's bars. The arrival's spacing and type come down with the height so the cue stays on the
+   first screen; on a 900px screen they are where they were. */
+@media(min-width:701px){
+  :root[data-device=laptop] .welcome{padding-block:clamp(52px,9svh,118px)}
+  :root[data-device=laptop] .welcome h1{font-size:clamp(56px,min(7.6vw,11svh),100px)}
+  :root[data-device=laptop] .welcome-crest{width:min(214px,29vw,21svh)}
+  :root[data-device=laptop] .scroll-cue span{height:clamp(40px,7svh,62px)}
+}
+
+/* ---------- A desktop monitor ----------
+   1920px across and more, at arm's length. The laptop's sizes left the invitation a narrow column in the
+   middle of the screen; here every piece of the suite and the type in it take a step up, and grow with
+   the screen to a limit, so a 27-inch monitor gets a larger invitation rather than wider margins. */
+@media(min-width:1600px){
+  :root[data-device=desktop] .welcome h1{font-size:clamp(58px,min(6.4vw,11.4svh),124px)}
+  :root[data-device=desktop] .welcome-crest{width:min(250px,21svh)}
+  :root[data-device=desktop] .welcome-wording{font-size:25px}
+  :root[data-device=desktop]:lang(si) .welcome-wording{font-size:25px}
+  :root[data-device=desktop] .flourish{width:104px}
+
+  :root[data-device=desktop] .section>h2{font-size:clamp(66px,3.9vw,84px);max-width:900px}
+  :root[data-device=desktop]:lang(si) .section>h2{font-size:clamp(44px,2.6vw,56px)}
+  :root[data-device=desktop] .section>h2+p{font-size:17px}
+  :root[data-device=desktop] .section>p:not(.disclosure){max-width:640px}
+
+  :root[data-device=desktop] .invitation-letter{max-width:clamp(628px,36vw,760px);padding:clamp(70px,4.4vw,92px) clamp(62px,3.8vw,84px) clamp(86px,5.2vw,108px)}
+  :root[data-device=desktop] .invitation-letter h2{font-size:clamp(35px,2.1vw,44px)}
+  :root[data-device=desktop]:lang(si) .invitation-letter h2{font-size:clamp(33px,1.95vw,40px)}
+  :root[data-device=desktop] .invitation-letter>p:not(.letter-label):not(.couple-names):not(.signature):not(.letter-place):not(.letter-greeting){font-size:clamp(13px,.78vw,16px)}
+  :root[data-device=desktop]:lang(si) .invitation-letter>p:not(.letter-label):not(.couple-names):not(.signature):not(.letter-place):not(.letter-greeting){font-size:clamp(14px,.82vw,17px)}
+  :root[data-device=desktop] .invitation-letter .couple-names{font-size:clamp(68px,4.1vw,86px)}
+  :root[data-device=desktop]:lang(si) .invitation-letter .couple-names{font-size:clamp(58px,3.5vw,74px)}
+  :root[data-device=desktop] .invitation-letter .signature,
+  :root[data-device=desktop] .invitation-letter .letter-greeting{font-size:clamp(24px,1.45vw,30px)}
+  :root[data-device=desktop]:lang(si) .invitation-letter .signature,
+  :root[data-device=desktop]:lang(si) .invitation-letter .letter-greeting{font-size:clamp(21px,1.25vw,26px)}
+  :root[data-device=desktop] .letter-label{font-size:11px}
+  :root[data-device=desktop]:lang(si) .letter-label{font-size:16px}
+  :root[data-device=desktop] .letter-place{font-size:15px;max-width:380px}
+  :root[data-device=desktop] .letter-seal{width:88px;height:88px;margin-bottom:-74px}
+  :root[data-device=desktop] blockquote{font-size:clamp(32px,1.9vw,40px);max-width:clamp(660px,40vw,860px)}
+  :root[data-device=desktop]:lang(si) blockquote{font-size:clamp(25px,1.5vw,31px)}
+  :root[data-device=desktop] .print-stack{--table:min(clamp(520px,31vw,700px),calc(100svh - 150px))}
+
+  :root[data-device=desktop] .scratch-card{width:min(100%,clamp(360px,21vw,450px),calc((100svh - 110px) * .84))}
+  :root[data-device=desktop] .date-reveal b{font-size:clamp(78px,4.6vw,96px)}
+  :root[data-device=desktop] .reveal-crest{width:66px}
+  :root[data-device=desktop] .countdown-title{font-size:clamp(38px,2.3vw,48px)}
+  :root[data-device=desktop]:lang(si) .countdown-title{font-size:clamp(31px,1.9vw,40px)}
+  :root[data-device=desktop] .countdown{max-width:clamp(560px,33vw,720px)}
+  :root[data-device=desktop] .countdown b{font-size:clamp(60px,3.5vw,76px)}
+  :root[data-device=desktop] .countdown span{font-size:13px}
+  :root[data-device=desktop]:lang(si) .countdown span{font-size:14px}
+
+  :root[data-device=desktop] .architecture{width:100%;max-width:min(clamp(1000px,62vw,1320px),calc((100svh - 110px) * 1100 / 709))}
+  :root[data-device=desktop] .venue address{font-size:clamp(25px,1.5vw,30px)}
+  :root[data-device=desktop]:lang(si) .venue address{font-size:clamp(21px,1.25vw,25px)}
+
+  :root[data-device=desktop] .timeline{max-width:clamp(720px,43vw,900px)}
+  :root[data-device=desktop] .timeline h3{font-size:clamp(31px,1.85vw,38px)}
+  :root[data-device=desktop]:lang(si) .timeline h3{font-size:clamp(24px,1.45vw,30px)}
+  :root[data-device=desktop] .timeline p{font-size:clamp(14px,.82vw,16px)}
+  :root[data-device=desktop] .timeline time{font-size:13px}
+
+  :root[data-device=desktop] .reply-card{max-width:clamp(600px,35vw,720px)}
+  :root[data-device=desktop] .reply-card h3{font-size:clamp(49px,2.9vw,58px)}
+  :root[data-device=desktop]:lang(si) .reply-card h3{font-size:clamp(35px,2.1vw,42px)}
+  :root[data-device=desktop] .reply-card label,
+  :root[data-device=desktop] .reply-card legend{font-size:14px}
+  :root[data-device=desktop]:lang(si) .reply-card label,
+  :root[data-device=desktop]:lang(si) .reply-card legend{font-size:15px}
+
+  :root[data-device=desktop] .closing-crest{width:clamp(158px,9.4vw,200px)}
+  :root[data-device=desktop] .closing-names{font-size:clamp(19px,1.15vw,23px)}
+  :root[data-device=desktop]:lang(si) .closing-names{font-size:clamp(24px,1.4vw,28px)}
+
+  :root[data-device=desktop] .gate-inner{width:min(100%,560px)}
+  :root[data-device=desktop] .gate-choices{width:min(100%,540px,calc(52svh + 28px))}
+}
+/* A 27-inch monitor and up: the arrival is allowed one size further. */
+@media(min-width:2200px){
+  :root[data-device=desktop] .welcome h1{font-size:clamp(58px,min(6.4vw,11.4svh),140px)}
+  :root[data-device=desktop] .welcome-crest{width:min(280px,21svh)}
+}

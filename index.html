@@ -41,10 +41,34 @@
   <link rel="stylesheet" href="invitation.css">
   <link rel="stylesheet" href="magnolia.css">
   <link rel="stylesheet" href="language.css">
+  <link rel="stylesheet" href="devices.css">
 
   <!-- A link can name its language (?lang=si or ?lang=en), to send a family the Sinhala invitation
        directly. It is read here, before the first paint, so the language page never flashes up. -->
   <script>try{var l=new URLSearchParams(location.search).get('lang');if(l==='si'||l==='en')document.documentElement.setAttribute('data-language-skip',l)}catch(e){}</script>
+  <!-- Which kind of screen this is - a phone, a tablet, a laptop or a desktop monitor - read before
+       the first paint so the first layout drawn is the right one (devices.css, which reads which way
+       up it is held from the window's shape). The window's width alone cannot tell a phone on its
+       side from a short laptop window, or a tablet from a narrow desktop one, and each wants its own
+       sizes. The screen's shortest side and whether it is worked by touch tell them apart; iPadOS
+       calls itself a Mac, so its touch screen is what gives it away. Old JavaScript on purpose, like
+       the safety net at the foot of the page. -->
+  <script>(function(){
+    var root=document.documentElement,nav=navigator,ua=nav.userAgent||'',touches=nav.maxTouchPoints||0;
+    function sense(){
+      // A screen that reports no size (some embedded and privacy browsers) is measured by its window.
+      var w=screen.width||innerWidth,h=screen.height||innerHeight,
+          short=Math.min(w,h),long=Math.max(w,h,innerWidth),
+          coarse=!!(window.matchMedia&&matchMedia('(pointer:coarse)').matches),
+          ipad=/iPad/.test(ua)||(/Macintosh/.test(ua)&&touches>1),
+          phone=!ipad&&short<600&&(coarse||/Mobi|iPhone|iPod|Android/.test(ua)),
+          tablet=!phone&&(ipad||(coarse&&short<1200)||(/Android|Tablet|Silk|Kindle/.test(ua)&&touches>0)),
+          kind=phone?'phone':tablet?'tablet':long>=1800?'desktop':'laptop';
+      if(root.getAttribute('data-device')!==kind)root.setAttribute('data-device',kind);
+    }
+    // Again on resize: a window dragged to another monitor, or a phone that has unfolded, is a new screen.
+    try{sense();addEventListener('resize',sense)}catch(e){}
+  })();</script>
 </head>
 <body class="intro-locked">
 
