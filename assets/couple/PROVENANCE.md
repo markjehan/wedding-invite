@@ -27,6 +27,18 @@ the number being the photographer's own: tall ones 880 wide and wide ones 1200 w
 
     ffmpeg -i BSD_9123.jpg -vf "scale=880:-2" -quality 80 shoot-9123.webp
 
-`shoot-8248.webp` is the print beside the letter; the other fourteen are the stack of prints under it.
+`shoot-8248.webp` is the print beside the letter; the others are the stack of prints under it.
+
+The shoot has three outfits: red, blue and white. On 9 November 2026 the user asked for the gallery to
+follow a colour pattern, so five more were saved the same way from the folder (0001, 0095, 0111, 9423,
+9924) and the stack became fifteen prints dealt red, blue, white five times round:
+
+    red    9474  9375  9456  9423  9560
+    blue   9942  0001  0111  0095  9924
+    white  9017  9123  8803  8817  8329
+
+8250, 8576, 9165 and 9946 dropped out of the stack (8250 is nearly the print beside the letter, 9946
+nearly 9942) and stay only as spares.
+
 The gallery no longer uses the seven crops above, which stay only because the link card still uses
 `naveen-dulanjani-preview.jpg`.

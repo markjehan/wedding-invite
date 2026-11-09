@@ -135,7 +135,7 @@ body{background:var(--paper)}
 .stack-print:nth-child(4){--tilt:3.6deg}.stack-print:nth-child(5){--tilt:-2.6deg}.stack-print:nth-child(6){--tilt:1.6deg}
 .stack-print:nth-child(7){--tilt:-4deg}.stack-print:nth-child(8){--tilt:3deg}.stack-print:nth-child(9){--tilt:-2deg}
 .stack-print:nth-child(10){--tilt:4deg}.stack-print:nth-child(11){--tilt:-3.4deg}.stack-print:nth-child(12){--tilt:2deg}
-.stack-print:nth-child(13){--tilt:-1.2deg}.stack-print:nth-child(14){--tilt:3.2deg}
+.stack-print:nth-child(13){--tilt:-1.2deg}.stack-print:nth-child(14){--tilt:3.2deg}.stack-print:nth-child(15){--tilt:-2.4deg}
 /* Set aside: carried off past the table's edge on the side it was pushed, turning as it goes. */
 .stack-print.is-thrown{z-index:30;opacity:0;translate:calc(var(--throw,-1) * 118%) -6%;rotate:calc(var(--throw,-1) * 18deg);
   transition:translate .75s cubic-bezier(.3,.6,.3,1),rotate .75s cubic-bezier(.3,.6,.3,1),opacity .4s ease .3s}
