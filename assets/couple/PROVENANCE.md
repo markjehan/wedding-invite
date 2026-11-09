@@ -27,7 +27,8 @@ the number being the photographer's own: tall ones 880 wide and wide ones 1200 w
 
     ffmpeg -i BSD_9123.jpg -vf "scale=880:-2" -quality 80 shoot-9123.webp
 
-`shoot-8248.webp` is the print beside the letter; the others are the stack of prints under it.
+`shoot-8248.webp` was the print beside the letter, which has gone (see the engraving below), and stays
+as a spare; the others are the stack of prints under the letter.
 
 The shoot has three outfits: red, blue and white. On 9 November 2026 the user asked for the gallery to
 follow a colour pattern, so five more were saved the same way from the folder (0001, 0095, 0111, 9423,
@@ -37,8 +38,18 @@ follow a colour pattern, so five more were saved the same way from the folder (0
     blue   9942  0001  0111  0095  9924
     white  9017  9123  8803  8817  8329
 
-8250, 8576, 9165 and 9946 dropped out of the stack (8250 is nearly the print beside the letter, 9946
+8250, 8576, 9165 and 9946 dropped out of the stack (8250 is nearly 8248, 9946
 nearly 9942) and stay only as spares.
+
+## The engraving at the head of the letter
+
+On 9 November 2026 the user shared, in chat, a 1765 by 1175 copy of the shoot's red-outfit photograph
+under the white bell arch, and asked for the two of them alone, sketched live at the top of the
+invitation like the venue drawing. `couple-strokes.js` in the site's root is that engraving as pen
+strokes: the couple cut out of the arch and garden with GrabCut, then outlined, their faces and hands
+lined, and their shading hatched. It was made on this computer alone; no photograph is stored for it:
+
+    python -I build_assets/engrave_couple.py <the photograph> couple-strokes.js
 
 The gallery no longer uses the seven crops above, which stay only because the link card still uses
 `naveen-dulanjani-preview.jpg`.

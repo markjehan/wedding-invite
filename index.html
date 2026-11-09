@@ -299,15 +299,15 @@
     
     <section class="invitation section" id="invitation" aria-labelledby="invitation-title">
       <div class="photo-invitation">
-        <!-- The couple's photograph is a piece of the suite, not a backdrop: a print on handmade
-             cotton paper laid beside the letter, which rests over its edge. It used to fill the
-             section, cropped to a round-topped arch that faded out at its foot, and that silhouette
-             read as a headstone. -->
-        <figure class="couple-print" aria-hidden="true">
-          <span class="print-paper"><span class="print-photo"><img src="assets/couple/shoot/shoot-8248.webp" alt="" width="880" height="1322" loading="lazy" decoding="async"></span></span>
-        </figure>
         <article class="invitation-letter">
-          <svg class="flourish" aria-hidden="true"><use href="#crest"/></svg>
+          <!-- The two of them head the letter, engraved in gold from their photograph under the bell
+               arch and drawn live the way the venue is, stroke by stroke, when the letter comes into
+               view. Only the couple are kept; the arch and the garden are left out. The stack of
+               prints below keeps the photographs themselves. -->
+          <figure class="couple-drawing" id="couple-drawing" aria-hidden="true">
+            <canvas id="couple-canvas"></canvas>
+            <span class="couple-nib"></span>
+          </figure>
           <p class="letter-greeting" id="greeting" hidden></p>
           <p class="letter-label" data-i18n="letter.label">Together with our families</p>
           <h2 id="invitation-title" data-i18n="letter.title">With joyful hearts</h2>
@@ -322,7 +322,7 @@
       <!-- A stack of prints from the couple's pre-wedding shoot, to leaf through as you would a pile of
            photographs handed across a table: the top one is set aside and the next lies beneath it.
            It turns over on its own while it is on screen; a swipe, a tap, the arrows or the arrow keys
-           turn it by hand. The prints are made like the one beside the letter, tall and wide ones
+           turn it by hand. The prints are made of the letter's own cotton paper, tall and wide ones
            mixed as they came from the photographer. The shoot has three outfits - red, blue and white -
            and the pile deals them in that order, five times round, so leafing through it (and round
            from the last print to the first) the colours keep their rhythm. -->
@@ -568,6 +568,8 @@
   <script src="invitation.js" defer></script>
   <script src="avenra-strokes.js" defer></script>
   <script src="venue-drawing.js" defer></script>
+  <script src="couple-strokes.js" defer></script>
+  <script src="couple-drawing.js" defer></script>
 
   <!-- A safety net for any browser too old to run the script above. The doors stay locked until
        that script opens them, so a browser that cannot parse it would sit at a closed door for good.

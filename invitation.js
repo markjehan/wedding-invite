@@ -599,7 +599,6 @@
     // subdivision makes each of them read as one figure played against the music underneath.
     const STEP=TEMPO.beat*1000/4;
     const plan=[
-      ['.couple-print','scale',0],
       ['.invitation-letter>*','up',STEP],
       ['.print-stack','lift',0],
       ['.invitation>.disclosure','fade',0],
@@ -708,7 +707,7 @@
     setPen();addEventListener('resize',setPen);
 
     const progress=document.createElement('span');progress.className='scroll-progress';$('.masthead').append(progress);
-    const acts=[...document.querySelectorAll('.timeline li')],pan=$('.print-photo img'),panFrame=$('.couple-print');
+    const acts=[...document.querySelectorAll('.timeline li')];
     let queued=false;
     function paintScroll(){
       queued=false;
@@ -720,10 +719,6 @@
       acts.forEach(act=>{const box=act.getBoundingClientRect();
         act.classList.toggle('is-active',act===nearest);
         act.classList.toggle('is-passed',box.top+box.height/2<middle);});
-      const frame=panFrame.getBoundingClientRect();
-      // The photograph drifts inside its window as the print crosses the screen. It moves by translate,
-      // which the compositor can do alone; moving object-position repainted the graded image every frame.
-      if(frame.bottom>0&&frame.top<view)pan.style.translate='0 '+(3.5-(view-frame.top)/(view+frame.height)*7).toFixed(2)+'%';
       // Anything resting in the last screenful can sit below the reveal boundary; show what is
       // actually on screen rather than the whole document, so re-arming still works above.
       if(scrollY>=travel-2)document.querySelectorAll('[data-reveal]:not(.shown)').forEach(el=>{

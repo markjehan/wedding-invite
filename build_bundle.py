@@ -8,7 +8,7 @@ root = Path(__file__).resolve().parent
 html = (root / 'index.html').read_text(encoding='utf-8')
 css = (root / 'invitation.css').read_text(encoding='utf-8')
 js = (root / 'invitation.js').read_text(encoding='utf-8')
-for script in ['i18n.js', 'avenra-strokes.js', 'venue-drawing.js']:
+for script in ['i18n.js', 'avenra-strokes.js', 'venue-drawing.js', 'couple-strokes.js', 'couple-drawing.js']:
     content = (root / script).read_text(encoding='utf-8')
     html = html.replace(f'<script src="{script}" defer></script>', '<script>' + content + '</script>')
 html = re.sub(r'<link rel="preload"[^>]+>', '', html)
