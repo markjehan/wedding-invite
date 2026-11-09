@@ -389,9 +389,18 @@
     ctx.save();
     ctx.scale(w, h); ctx.clip(cameo); ctx.setTransform(dpr,0,0,dpr,0,0);
     // Pale champagne leaf on pearl, guilloche lattice, oval pressed rules, a small stamped monogram.
+    // Satin rather than mirror: the bands are close in tone, light pools at the upper left where it
+    // falls from across the suite, and the leaf deepens a little towards its scalloped edge, as foil
+    // pressed over a raised plate does.
     const gold = ctx.createLinearGradient(0,0,w,h);
-    [[0,'#bf9f61'],[.14,'#e4d3ab'],[.27,'#fcf6e9'],[.41,'#d3b77f'],[.55,'#c7a76a'],[.69,'#f5ecd6'],[.83,'#d9bf8d'],[1,'#b8965a']].forEach(([at,tone]) => gold.addColorStop(at,tone));
+    [[0,'#cdb07a'],[.18,'#e6d5ae'],[.32,'#f6eedb'],[.48,'#dcc496'],[.62,'#d4b985'],[.76,'#eee1c3'],[.9,'#dcc496'],[1,'#c6a670']].forEach(([at,tone]) => gold.addColorStop(at,tone));
     ctx.fillStyle = gold; ctx.fillRect(0,0,w,h);
+    const pool = ctx.createRadialGradient(w*.34,h*.26,0,w*.34,h*.26,w*.72);
+    pool.addColorStop(0,'#fffaeb73'); pool.addColorStop(1,'#fffaeb00');
+    ctx.fillStyle = pool; ctx.fillRect(0,0,w,h);
+    const rim = ctx.createRadialGradient(w/2,h/2,Math.min(w,h)*.3,w/2,h/2,Math.max(w,h)*.56);
+    rim.addColorStop(0,'#7a5a2600'); rim.addColorStop(1,'#7a5a263d');
+    ctx.fillStyle = rim; ctx.fillRect(0,0,w,h);
     ctx.save(); ctx.globalAlpha = .05; ctx.strokeStyle = '#6a4e22'; ctx.lineWidth = .6;
     for (let i = -h; i < w + h; i += 9) {
       ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i+h,h); ctx.stroke();
@@ -459,6 +468,45 @@
       ctx.restore();
     };
     strike(1.2, 1.2, '#fff8e4b8'); strike(0, 0, '#7d5f2b8f');
+    // The invitation to scratch, pressed into the leaf like the mark above it, so it goes with the foil
+    // rather than floating over it. In English it follows the foot of the oval just inside the inner
+    // rule, with a small diamond at each end; Sinhala's joined letters cannot be set a glyph at a time
+    // round a curve, so they run straight across the same place.
+    const words = ($('#scratch-label p')?.textContent || '').trim();
+    const sinhala = /[඀-෿]/.test(words);
+    const a = w/2 - w*.0363 - 31, b = h/2 - h*.0305 - 31, cx = w/2, cy = h/2;
+    const press = (draw) => { ctx.fillStyle = '#fff8e4c4'; draw(.9); ctx.fillStyle = '#6b4f22b8'; draw(0); };
+    const diamond = (x, y, turn) => press(d => { ctx.save(); ctx.translate(x+d, y+d); ctx.rotate(turn); ctx.beginPath(); ctx.moveTo(0,-2.6); ctx.lineTo(2.6,0); ctx.lineTo(0,2.6); ctx.lineTo(-2.6,0); ctx.closePath(); ctx.fill(); ctx.restore(); });
+    if (words && sinhala) {
+      // Set where the oval is still wide enough, and made smaller until it fits there with room for the diamonds.
+      const y = cy + b * .76, room = 2 * a * Math.sqrt(1 - .76 * .76) - 40;
+      let size = 15;
+      do { ctx.font = '400 ' + size + 'px SinhalaSerif, serif'; size -= .5; } while (size > 10 && ctx.measureText(words).width > room);
+      ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+      const half = ctx.measureText(words).width / 2;
+      press(d => ctx.fillText(words, cx + d, y + d));
+      diamond(cx - half - 12, y - 5, 0); diamond(cx + half + 12, y - 5, 0);
+    } else if (words) {
+      const text = words.toUpperCase(), track = 1.9, size = Math.max(9.5, Math.min(10.5, w / 34));
+      ctx.font = '500 ' + size + 'px Manrope, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+      // Walk the ellipse by arc length: each letter takes the angle its own width (and the tracking)
+      // spans at that point, so the spacing stays even where the oval flattens towards its foot.
+      const speed = t => Math.hypot(a * Math.sin(t), b * Math.cos(t));
+      const advances = [...text].map(ch => ctx.measureText(ch).width + track);
+      const span = advances.reduce((sum, adv) => sum + adv, 0) - track + 22;
+      let t = Math.PI / 2, run = 0;
+      while (run < span / 2) { run += speed(t) * .002; t += .002; }
+      const at = (theta) => ({x: cx + a * Math.cos(theta), y: cy + b * Math.sin(theta), turn: Math.atan2(-b * Math.cos(theta), a * Math.sin(theta))});
+      const step = (theta, length) => { let moved = 0; while (moved < length) { moved += speed(theta) * .002; theta -= .002; } return theta; };
+      let p = at(t); diamond(p.x + 3.5 * Math.sin(p.turn), p.y - 3.5 * Math.cos(p.turn), p.turn);
+      t = step(t, 11);
+      for (let i = 0; i < text.length; i++) {
+        const mid = step(t, (advances[i] - track) / 2); p = at(mid);
+        press(d => { ctx.save(); ctx.translate(p.x + d, p.y + d); ctx.rotate(p.turn); ctx.fillText(text[i], 0, 0); ctx.restore(); });
+        t = step(t, advances[i]);
+      }
+      t = step(t, 11 - track); p = at(t); diamond(p.x + 3.5 * Math.sin(p.turn), p.y - 3.5 * Math.cos(p.turn), p.turn);
+    }
     // A darker line just inside the scallops, as the edge of cut foil catches it. Stroked in the
     // outline's own units under the clip, so only its inner half shows: about one pixel.
     ctx.scale(w, h); ctx.lineWidth = 2.4 / ((w + h) / 2); ctx.strokeStyle = '#8a6b3399'; ctx.stroke(cameo);
@@ -495,6 +543,54 @@
   function startVenue(){if(venueStarted)return;venueStarted=true;if(window.playVenueDrawing)window.playVenueDrawing();else window.venueRequested=true;}
   if('IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){startVenue();observer.disconnect();}},{threshold:.2});observer.observe($('#architecture'));}else startVenue();
   $('#redraw').addEventListener('click',()=>window.playVenueDrawing?.());
+  // The stack of prints. Each print's depth in the pile is written on it and the stylesheet lays it
+  // there; turning one over throws the top print aside and moves every other one up a place. Leafing
+  // back brings the last one in from the side it went out. It turns on its own every few seconds while
+  // most of it is on screen, never while a pointer rests on it or it has focus, and waits a while
+  // after the guest has turned it by hand.
+  (()=>{
+    const stack=$('#print-stack'); if(!stack)return;
+    const table=stack.querySelector('.stack-table'),prints=[...table.children],count=stack.querySelector('.stack-count b'),n=prints.length;
+    let top=0,timer=0,inView=false,held=false;
+    const lay=()=>{prints.forEach((print,i)=>{const depth=(i-top+n)%n;print.dataset.depth=depth;print.style.setProperty('--depth',depth)});count.textContent=top+1};
+    function turn(step,side=-1){
+      if(step>0){
+        const leaving=prints[top];leaving.style.setProperty('--throw',side);leaving.classList.add('is-thrown');
+        top=(top+1)%n;lay();setTimeout(()=>leaving.classList.remove('is-thrown'),800);
+      }else{
+        top=(top-1+n)%n;const arriving=prints[top];arriving.style.setProperty('--throw',-1);
+        arriving.classList.add('is-thrown','is-still');lay();void arriving.offsetWidth;
+        arriving.classList.remove('is-still');requestAnimationFrame(()=>arriving.classList.remove('is-thrown'));
+      }
+    }
+    function later(wait=4600){clearTimeout(timer);if(canMove&&inView&&!held&&!document.hidden)timer=setTimeout(()=>{turn(1);later()},wait)}
+    const byHand=(step,side)=>{turn(step,side);later(9000)};
+    lay();
+    stack.querySelectorAll('.stack-turn').forEach(button=>button.addEventListener('click',()=>byHand(+button.dataset.turn)));
+    table.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();byHand(e.key==='ArrowRight'?1:-1)}});
+    // A swipe carries the top print with the finger; let go far enough and it is thrown the way it was
+    // going, otherwise it slips back. A tap that hardly moves turns the next one over.
+    let start=null,dx=0;
+    table.addEventListener('pointerdown',e=>{if(e.button)return;start=e.clientX;dx=0;table.setPointerCapture(e.pointerId)});
+    table.addEventListener('pointermove',e=>{
+      if(start===null)return;dx=e.clientX-start;if(Math.abs(dx)<5)return;
+      const print=prints[top];print.classList.add('is-dragging');
+      print.style.translate=dx+'px '+(-Math.abs(dx)*.04)+'px';print.style.rotate='calc(var(--tilt) * .3 + '+(dx/28)+'deg)';
+    });
+    const release=e=>{
+      if(start===null)return;start=null;const print=prints[top];
+      print.style.translate=print.style.rotate='';print.classList.remove('is-dragging');
+      if(e.type==='pointercancel')return;
+      if(Math.abs(dx)>60)byHand(1,Math.sign(dx));else if(Math.abs(dx)<6)byHand(1);
+    };
+    table.addEventListener('pointerup',release);table.addEventListener('pointercancel',release);
+    table.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'){held=true;clearTimeout(timer)}});
+    table.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'){held=false;later()}});
+    stack.addEventListener('focusin',()=>{held=true;clearTimeout(timer)});
+    stack.addEventListener('focusout',()=>{held=false;later()});
+    document.addEventListener('visibilitychange',()=>later());
+    if('IntersectionObserver' in window)new IntersectionObserver(([entry])=>{inView=entry.isIntersecting;later()},{threshold:.5}).observe(table);
+  })();
   // Motion decorates visible content; it never gates reading or intercepts native scrolling.
   if('IntersectionObserver' in window && canMove){
     // One sixteenth of a beat between siblings. Every staggered group used to pick its own interval,
@@ -504,7 +600,7 @@
     const plan=[
       ['.couple-print','scale',0],
       ['.invitation-letter>*','up',STEP],
-      ['.memory-gallery figure','scale',STEP],
+      ['.print-stack','lift',0],
       ['.invitation>.disclosure','fade',0],
       ['.invitation blockquote','up',0],
       ['.date-section>.flourish,.date-section>h2,.date-section>h2+p','up',STEP],
@@ -677,6 +773,9 @@
   // let the guest pick the recipient.
   const RSVP_WHATSAPP='94771281561';   // digits only, with country code and without the leading 0
   const RSVP_EMAIL='';      // e.g. 'naveen.and.dulanjani@example.com'
+  // api.whatsapp.com rather than wa.me: wa.me's redirect turns every character outside plain ASCII into
+  // a "?" box, so a Sinhala reply arrived unreadable and even the dash in an English one was lost.
+  const whatsappLink=(to,text)=>'https://api.whatsapp.com/send?'+(to?'phone='+to+'&':'')+'text='+encodeURIComponent(text);
   // On the server (see server/) the page arrives with #invite-data: {mode:'guest',...} on a guest's own
   // link, {mode:'general'} on the plain one, which has no one to reply as. Opened any other way -
   // serve.py, the share link, the offline copy - there is none, and the reply goes to WhatsApp.
@@ -710,7 +809,7 @@
     const answer=e.target.querySelector('[name=attendance]:checked')?.parentElement.textContent.trim()||data.get('attendance');
     const message=say('message',data.get('name').trim(),answer,note)||`Dear Naveen & Dulanjani,\n\n${data.get('name').trim()} — ${data.get('attendance')}.\nWedding: 7 December 2026, Avenra Gardens, Negombo${note?'\n\n'+note:''}`;
     $('#reply-text').textContent=message;
-    $('#send-whatsapp').href='https://wa.me/'+RSVP_WHATSAPP+'?text='+encodeURIComponent(message);
+    $('#send-whatsapp').href=whatsappLink(RSVP_WHATSAPP,message);
     $('#send-email').href='mailto:'+RSVP_EMAIL+'?subject='+encodeURIComponent(say('subject')||'RSVP — Naveen & Dulanjani, 7 December 2026')+'&body='+encodeURIComponent(message);
     $('#prepared').hidden=false;
     // The press is what lets the browser open WhatsApp, so it has to happen here and not later. The
@@ -782,7 +881,7 @@
       // The server says whose WhatsApp it goes to: the bride's for her side, the groom's for his.
       const message=say('message',name(),say('party',picked.parentElement.textContent.trim(),count),note),to=me.whatsapp||RSVP_WHATSAPP;
       $('#reply-text').textContent=message;
-      $('#send-whatsapp').href='https://wa.me/'+to+'?text='+encodeURIComponent(message);
+      $('#send-whatsapp').href=whatsappLink(to,message);
       $('#send-email').href='mailto:'+RSVP_EMAIL+'?subject='+encodeURIComponent(say('subject'))+'&body='+encodeURIComponent(message);
       if(to)window.open($('#send-whatsapp').href,'_blank','noopener');
       $('#prepared').hidden=false;

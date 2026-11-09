@@ -44,5 +44,9 @@ def message(guest, link, reminder=False):
 
 
 def chat_url(guest, link, reminder=False):
-    """WhatsApp, open on a chat with the guest and the message already written."""
-    return f'https://wa.me/{guest.phone}?text={quote(message(guest, link, reminder))}'
+    """WhatsApp, open on a chat with the guest and the message already written.
+
+    api.whatsapp.com rather than the shorter wa.me: wa.me redirects there, and on the way it replaces
+    every emoji with a "?" box, so the guest received the message without a single one of them.
+    """
+    return f'https://api.whatsapp.com/send?phone={guest.phone}&text={quote(message(guest, link, reminder))}'

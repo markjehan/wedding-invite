@@ -212,9 +212,10 @@ class GuestListTests(TestCase):
         url = reverse('couple:send', args=[self.guest.pk])
         self.assertEqual(self.client.get(url).status_code, 405)
         response = self.client.post(url)
-        self.assertTrue(response['Location'].startswith('https://wa.me/94770000001?text='))
+        self.assertTrue(response['Location'].startswith('https://api.whatsapp.com/send?phone=94770000001&text='))
         text = unquote(response['Location'])
-        self.assertIn('Dear Nimal,', text)
+        self.assertIn('💌 Dear Nimal,', text)
+        self.assertIn('💍✨', text)
         self.assertIn('http://testserver/?name=Nimal', text)
         self.guest.refresh_from_db()
         first = self.guest.sent_at
@@ -243,7 +244,7 @@ class GuestListTests(TestCase):
         guest.save()
         self.assertContains(self.client.get(reverse('couple:guest', args=[guest.pk])), 'Send the invitation again')
         response = self.client.post(reverse('couple:send', args=[guest.pk]))
-        self.assertTrue(response['Location'].startswith('https://wa.me/94770000007?text='))
+        self.assertTrue(response['Location'].startswith('https://api.whatsapp.com/send?phone=94770000007&text='))
         guest.refresh_from_db()
         self.assertEqual((guest.stage, guest.people), ('coming', 2))
 
