@@ -1,13 +1,14 @@
 import json
 
 from django.conf import settings
+from django.core.handlers.wsgi import get_str_from_wsgi
 from django.db.models import F
 from django.http import FileResponse, Http404, HttpResponse, JsonResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-from . import site
+from . import names, site
 from .models import Guest, ReplyTo
 
 
@@ -33,12 +34,16 @@ def _reply_of(guest):
 def general(request):
     """The invitation without a name: everything to read, nothing to reply with.
 
-    With a name in the link instead (/?name=Chamini) the page greets them by it and their reply opens in
-    WhatsApp, written to the couple; invitation.js reads the name from the address. Nothing is saved.
+    With a name in the link instead (/?name=Chamini) that is on the guest list, it is their own
+    invitation, the same as their code link (see names.py). A name that is not on the list is still
+    greeted, and their reply opens in WhatsApp, written to the couple, but nothing is saved.
     """
-    if (request.GET.get('name') or request.GET.get('guest') or '').strip():
-        return _page(request, {'mode': 'named'})
-    return _page(request, {'mode': 'general'})
+    # Read as UTF-8, as Django reads its own form data, so a Sinhala name typed straight into a link works.
+    name = names.from_query(get_str_from_wsgi(request.environ, 'QUERY_STRING', ''))
+    if not name:
+        return _page(request, {'mode': 'general'})
+    guest = names.find(name)
+    return _guest_page(request, guest) if guest else _page(request, {'mode': 'named', 'name': name})
 
 
 @require_GET
@@ -47,6 +52,10 @@ def personal(request, code):
     # A mistyped or retired link still shows the invitation, just not anyone's details.
     if guest is None:
         return _page(request, {'mode': 'general'}, status=404)
+    return _guest_page(request, guest)
+
+
+def _guest_page(request, guest):
     return _page(request, {
         'mode': 'guest',
         'code': guest.code,

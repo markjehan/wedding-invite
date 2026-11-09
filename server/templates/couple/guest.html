@@ -34,10 +34,10 @@
 
       <div class="link-box">
         <p class="link-label">Their link</p>
-        <a class="guest-link" href="/{{ guest.code }}" target="_blank" rel="noopener">{{ link }}</a>
+        <a class="guest-link" href="{{ path }}" target="_blank" rel="noopener">{{ link }}</a>
         <div class="link-actions">
-          <button type="button" class="button is-quiet is-small copy-link" data-link="/{{ guest.code }}"><svg class="icon"><use href="#i-copy"/></svg><span>Copy link</span></button>
-          <a class="button is-quiet is-small" href="/{{ guest.code }}" target="_blank" rel="noopener"><svg class="icon"><use href="#i-open"/></svg><span>See what they see</span></a>
+          <button type="button" class="button is-quiet is-small copy-link" data-link="{{ path }}"><svg class="icon"><use href="#i-copy"/></svg><span>Copy link</span></button>
+          <a class="button is-quiet is-small" href="{{ path }}" target="_blank" rel="noopener"><svg class="icon"><use href="#i-open"/></svg><span>See what they see</span></a>
         </div>
       </div>
       <p class="help">Copy the link to send it some other way, like SMS or email. Looking at it here does not count as them opening it.</p>

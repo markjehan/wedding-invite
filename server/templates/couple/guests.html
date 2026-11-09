@@ -65,7 +65,7 @@
           <td class="note">{% if guest.message %}<q>{{ guest.message|truncatechars:90 }}</q>{% endif %}</td>
           <td class="actions">
             {% include "couple/_send.html" %}
-            <button type="button" class="button is-quiet copy-link" data-link="/{{ guest.code }}" aria-label="Copy the link for {{ guest.name }}">
+            <button type="button" class="button is-quiet copy-link" data-link="{{ guest.path }}" aria-label="Copy the link for {{ guest.name }}">
               <svg class="icon"><use href="#i-copy"/></svg><span>Copy link</span>
             </button>
             <a class="button is-quiet is-open" href="{% url 'couple:guest' guest.pk %}" aria-label="Open {{ guest.name }}"><span>Open</span></a>

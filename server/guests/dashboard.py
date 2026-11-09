@@ -18,7 +18,7 @@ from django.utils import timezone
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_POST
 
-from . import spreadsheet, whatsapp
+from . import names, spreadsheet, whatsapp
 from .middleware import has_two_step
 from .models import Guest, ReplyTo
 
@@ -62,9 +62,10 @@ def couple_only(view):
     return wrapped
 
 
-def link_of(request, guest):
-    """The guest's link as they receive it."""
-    return f'{settings.SITE_URL or request.build_absolute_uri("/").rstrip("/")}/{guest.code}'
+def link_of(request, guest, path_of=None):
+    """The guest's link as they receive it: their name after the site's address (see names.paths).
+    Pass path_of from names.paths() when making many, so the guest list is read once."""
+    return f'{settings.SITE_URL or request.build_absolute_uri("/").rstrip("/")}{(path_of or names.paths())(guest)}'
 
 
 def _counts(guests):
@@ -160,10 +161,14 @@ def guest_list(request):
     counts['waiting'] = counts['sent'] + counts['opened']
     if show in SHOWS:
         guests = guests.filter(SHOWS[show])
+    path_of = names.paths()
+    guests = list(guests.order_by('name'))
+    for guest in guests:
+        guest.path = path_of(guest)
     tabs = [{'key': '', 'label': 'Everyone', 'count': counts['invited']}] + [
         {'key': key, 'label': label, 'count': counts[key]} for key, label in TABS]
     return render(request, 'couple/guests.html', {
-        'section': 'guests', 'guests': guests.order_by('name'), 'tabs': tabs, 'show': show if show in SHOWS else '',
+        'section': 'guests', 'guests': guests, 'tabs': tabs, 'show': show if show in SHOWS else '',
         # ?show=sent or ?show=opened (from the home page) has no tab of its own, so the page says it.
         'show_label': STAGE[show][0] if show in ('sent', 'opened') else '',
         'side': side if side in dict(SIDES) else '', 'sides': SIDES, 'query': query, 'counts': counts,
@@ -202,7 +207,7 @@ def guest_page(request, pk):
         messages.success(request, 'Saved.')
         return redirect('couple:guest', guest.pk)
     return render(request, 'couple/guest.html', {'section': 'guests', 'form': form, 'guest': guest,
-                                                 'link': link_of(request, guest), 'stage': STAGE[guest.stage][0],
+                                                 'link': link_of(request, guest), 'path': names.paths()(guest), 'stage': STAGE[guest.stage][0],
                                                  'seat_choices': range(1, guest.seats + 1)})
 
 
@@ -323,7 +328,8 @@ def blank_sheet(request):
 
 @couple_only
 def export_sheet(request):
-    sheet = spreadsheet.write(Guest.objects.all(), lambda guest: link_of(request, guest))
+    path_of = names.paths()
+    sheet = spreadsheet.write(Guest.objects.all(), lambda guest: link_of(request, guest, path_of))
     return _download(sheet, f'guests-{timezone.localdate():%Y-%m-%d}.xlsx')
 
 

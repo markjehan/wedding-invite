@@ -14,6 +14,7 @@ from django.utils import timezone
 from django.utils.html import escape
 from openpyxl import Workbook, load_workbook
 
+from . import names
 from .dashboard import STAGES
 from .models import Guest, ReplyTo
 from .phones import normalise_phone
@@ -160,9 +161,10 @@ class GuestListTests(TestCase):
 
     def test_the_list_shows_each_guest_with_what_to_do(self):
         response = self.client.get('/admin/guests/')
+        path_of = names.paths()
         for guest in self.guests.values():
             self.assertContains(response, escape(guest.name))
-            self.assertContains(response, f'data-link="/{guest.code}"')
+            self.assertContains(response, f'data-link="{path_of(guest)}"')
         self.assertContains(response, reverse('couple:send', args=[self.guest.pk]))
 
     def test_the_steps_filter_the_list(self):
@@ -195,7 +197,7 @@ class GuestListTests(TestCase):
 
     def test_changing_a_guest(self):
         url = reverse('couple:guest', args=[self.guest.pk])
-        self.assertContains(self.client.get(url), f'/{self.guest.code}')
+        self.assertContains(self.client.get(url), '/?name=Nimal')
         self.client.post(url, {'name': 'Nimal Perera', 'name_si': 'නිමල්', 'phone': '0770000001', 'seats': 2, 'side': 'groom', 'notes': ''})
         self.guest.refresh_from_db()
         self.assertEqual((self.guest.name, self.guest.name_si, self.guest.seats), ('Nimal Perera', 'නිමල්', 2))
@@ -213,7 +215,7 @@ class GuestListTests(TestCase):
         self.assertTrue(response['Location'].startswith('https://wa.me/94770000001?text='))
         text = unquote(response['Location'])
         self.assertIn('Dear Nimal,', text)
-        self.assertIn(f'http://testserver/{self.guest.code}', text)
+        self.assertIn('http://testserver/?name=Nimal', text)
         self.guest.refresh_from_db()
         first = self.guest.sent_at
         self.assertIsNotNone(first)
@@ -233,7 +235,7 @@ class GuestListTests(TestCase):
     @override_settings(SITE_URL='https://naveenanddulanjani.com')
     def test_links_use_the_real_address_once_it_is_set(self):
         response = self.client.post(reverse('couple:send', args=[self.guest.pk]))
-        self.assertIn(f'https://naveenanddulanjani.com/{self.guest.code}', unquote(response['Location']))
+        self.assertIn('https://naveenanddulanjani.com/?name=Nimal', unquote(response['Location']))
 
     def test_sending_again_after_they_replied(self):
         guest = self.guests['coming']
@@ -386,7 +388,7 @@ class ExcelTests(TestCase):
         rows = list(load_workbook(BytesIO(response.content)).active.iter_rows(values_only=True))
         self.assertEqual(rows[0][:9], ('Name', 'Sinhala name', 'Phone', 'Seats', 'Side', 'Notes', 'Link', 'Sent', 'Last reminded'))
         self.assertEqual(rows[1][0], 'Nimal')
-        self.assertEqual(rows[1][6], f'http://testserver/{guest.code}')
+        self.assertEqual(rows[1][6], 'http://testserver/?name=Nimal')
         self.assertEqual(rows[1][11], 'Coming')
 
     def test_the_empty_list_to_fill_in(self):

@@ -695,8 +695,10 @@
   // at all: the welcome line, "Dear Chamini," on the letter, and the reply form already filled in. The
   // page is the same file for everyone; only the link differs. ?guest= is the older spelling and still
   // works. A name typed all in small letters is given its capitals; one with capitals is left as typed.
+  // The server has already read the name (and mended one cut short by a bare &), so its reading is used;
+  // a name on the guest list comes as their own invitation instead, through personal() above.
   const linked=(()=>{
-    const q=new URLSearchParams(location.search),raw=(q.get('name')||q.get('guest')||'').replace(/\s+/g,' ').trim().slice(0,100);
+    const q=new URLSearchParams(location.search),raw=(invite?.name||q.get('name')||q.get('guest')||'').replace(/\s+/g,' ').trim().slice(0,100);
     return raw===raw.toLowerCase()?raw.replace(/(^|[\s'-])(\p{L})/gu,(_,before,letter)=>before+letter.toUpperCase()):raw;
   })();
   if(linked&&invite?.mode!=='guest'){

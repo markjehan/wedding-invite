@@ -7,6 +7,7 @@ from django.conf import settings
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
+from . import names
 from .codes import ALPHABET, LENGTH, new_code
 from .models import Guest, ReplyTo
 
@@ -39,10 +40,32 @@ class PageTests(TestCase):
         self.assertEqual(invite_data(response), {'mode': 'general'})
         self.assertEqual(response['Cache-Control'], 'no-store')
 
-    def test_name_in_the_link_can_reply(self):
-        for link in ('/?name=Chamini', '/?guest=Chamini+Perera'):
-            self.assertEqual(invite_data(self.client.get(link)), {'mode': 'named'})
+    def test_a_name_not_on_the_list_is_greeted_and_replies_by_whatsapp(self):
+        self.assertEqual(invite_data(self.client.get('/?name=Chamini')), {'mode': 'named', 'name': 'Chamini'})
+        self.assertEqual(invite_data(self.client.get('/?guest=Chamini+Perera')), {'mode': 'named', 'name': 'Chamini Perera'})
         self.assertEqual(invite_data(self.client.get('/?name=+')), {'mode': 'general'})
+
+    def test_a_name_on_the_list_is_their_own_invitation(self):
+        # Capitals, "and" for "&", spaces and a bare & cut out of a hand-typed link all find them.
+        for link in ('/?name=Sunil+and+Kamala', '/?name=sunil+%26+kamala', '/?name=Sunil+&+Kamala',
+                     '/?name=Sunil%20%20and%20Kamala&fbclid=x', '/?name=සුනිල්+සහ+කමලා'):
+            data = invite_data(self.client.get(link))
+            self.assertEqual((data['mode'], data['code'], data['name'], data['seats']),
+                             ('guest', self.guest.code, 'Sunil & Kamala', 2), link)
+
+    def test_two_guests_with_one_name_are_each_sent_their_code(self):
+        twin = Guest.objects.create(name='Sunil and Kamala')
+        self.assertEqual(invite_data(self.client.get('/?name=Sunil+and+Kamala'))['mode'], 'named')
+        path_of = names.paths()
+        self.assertEqual(path_of(self.guest), f'/{self.guest.code}')
+        self.assertEqual(path_of(twin), f'/{twin.code}')
+        self.assertEqual(path_of(Guest.objects.create(name="Nimal D'Silva")), "/?name=Nimal+D%27Silva")
+
+    def test_a_reply_through_a_name_link_is_saved(self):
+        code = invite_data(self.client.get('/?name=Sunil+and+Kamala'))['code']
+        self.client.post(f'/{code}/reply', {'attendance': 'yes', 'people': 2}, content_type='application/json')
+        self.guest.refresh_from_db()
+        self.assertEqual((self.guest.reply, self.guest.people), ('yes', 2))
 
     def test_personal_page_knows_the_guest(self):
         response = self.client.get(f'/{self.guest.code}')
