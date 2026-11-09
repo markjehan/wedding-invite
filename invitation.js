@@ -135,8 +135,7 @@
       if(next)halt();else if(armed)play();else reflect();
     }
     if(toggle)toggle.addEventListener('click',()=>setMuted(!muted));
-    // A shared section link and reduced motion both skip the seal, so there is no press to ride in
-    // on. Wait for whatever the guest does first rather than trying -- and failing -- to autoplay.
+    // For a page that never passes through the seal there is no press to ride in on. Wait for whatever the guest does first rather than trying -- and failing -- to autoplay.
     function onFirstGesture(){
       ['pointerdown','keydown'].forEach(t=>removeEventListener(t,onFirstGesture));
       // Wake the output device on the first touch anywhere, including the touch that lands on the
@@ -239,8 +238,8 @@
   const intro=$('#door-intro'),openButton=$('#open-doors');
   // The language page is left out: it stands over the doors and has to stay answerable.
   const outside=[...document.body.children].filter(el=>el!==intro&&el.id!=='language-gate'&&!['SCRIPT','STYLE','NOSCRIPT','TEMPLATE'].includes(el.tagName));
-  let introTimer,opening=false,returnHash=location.hash;
-  // Called on the paths that skip the entrance, and at the end of the entrance itself. The document
+  let introTimer,opening=false,returnHash='#welcome';
+  // Called at the end of the entrance. The document
   // underneath has been painted and locked since the first frame; this is what unlocks it.
   function finishIntro(){clearTimeout(introTimer);beginArrival(0);intro.hidden=true;opening=false;intro.classList.remove('opening','pressed');document.body.classList.remove('intro-locked','intro-opening');outside.forEach(el=>el.inert=false);window.raisePetals?.();const target=document.getElementById(returnHash.slice(1))||$('#welcome');target.scrollIntoView({behavior:'instant',block:'start'});const heading=target.querySelector('h1,h2')||$('#welcome-title');heading.setAttribute('tabindex','-1');heading.focus({preventScroll:true});}
   // Decode the entrance art up front. The swing waits on this, so it can never start part-way
@@ -249,8 +248,7 @@
     .map(src=>{const img=new Image();img.src=src;return img.decode().catch(()=>{});}));
   // The language page shows these arriving, and lets the guest through once they have.
   window.invitationLanguage?.track(entranceArt);window.invitationLanguage?.track(Music.ready);
-  function openIntro(skip=false){
-    if(skip||reduced.matches){Music.begin();finishIntro();return}
+  function openIntro(){
     if(opening)return;
     opening=true;
     intro.classList.add('pressed');
@@ -284,10 +282,10 @@
   }
   // Replay puts the entrance back; on first load the markup already has it, so nothing here moves.
   function showIntro(){clearTimeout(introTimer);Music.halt();document.body.classList.remove('arrived');arrivedAt=null;document.documentElement.style.setProperty('--sync','0s');document.documentElement.style.setProperty('--arrive','0s');opening=false;intro.classList.remove('opening','pressed');document.body.classList.remove('intro-opening');window.scrollTo({top:0,behavior:'instant'});intro.hidden=false;outside.forEach(el=>el.inert=true);document.body.classList.add('intro-locked');openButton.focus({preventScroll:true});}
-  // Pressing the seal opens it; anywhere on the doors works too, and Escape skips straight through.
+  // Pressing the seal opens it; anywhere on the doors works too, and so does Escape. Nothing skips them.
   openButton.addEventListener('click',()=>openIntro());
   intro.addEventListener('click',e=>{if(e.target!==openButton)openIntro()});
-  intro.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();openIntro(true)}if(e.key==='Tab'){e.preventDefault();openButton.focus()}});
+  intro.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();openIntro()}if(e.key==='Tab'){e.preventDefault();openButton.focus()}});
   // The foot of the invitation offers three things: back to the beginning, the doors again, and the other
   // language. The first two are a pair beside the programme's diamond, each a small drawn icon over its
   // label; the language is a control of its own beneath them (see magnolia.css).
@@ -323,19 +321,13 @@
     reflect();$('.closing').append(toggle);
     document.addEventListener('invitation:language',()=>{reflect();if(near)warm()});
   }
-  // A shared section link opens straight to that section. Reduced motion bypasses the intro.
-  // Neither route passes through the seal, so neither has a gesture to start the score on; arming
-  // it hands that job to the guest's first touch instead of losing the music altogether.
-  // The language page, when there is one, stands over all of this. The doors are set up beneath it at
-  // once, so they are already painted when it dissolves. The routes that skip the doors still arm the
-  // score now, so the press that answers the page is the gesture that starts it, and they only wait
-  // for the answer before opening the invitation.
+  // After the language page, every guest comes through the doors and arrives at the welcome: a phone
+  // asking for less motion, and a link to one section of the page, included. The language page stands
+  // over them, and they are set up beneath it at once, so they are already painted when it dissolves.
   const languageChosen=window.invitationLanguage?.chosen||Promise.resolve();
-  if(reduced.matches || returnHash){Music.arm();languageChosen.then(()=>finishIntro())}
-  else{showIntro();languageChosen.then(()=>{if(!intro.hidden&&!opening)openButton.focus({preventScroll:true})})}
+  showIntro();languageChosen.then(()=>{if(!intro.hidden&&!opening)openButton.focus({preventScroll:true})});
   // Tells the safety net at the foot of index.html that the doors are in working order.
   window.invitationBooted=true;
-  reduced.addEventListener('change',()=>{if(reduced.matches&&!intro.hidden)finishIntro()});
   // Only the date is confirmed. Calendar entries remain all-day until timing is supplied.
   const weddingDay = new Date('2026-12-07T00:00:00+05:30').getTime();
   function countdown() {
@@ -397,9 +389,18 @@
     ctx.save();
     ctx.scale(w, h); ctx.clip(cameo); ctx.setTransform(dpr,0,0,dpr,0,0);
     // Pale champagne leaf on pearl, guilloche lattice, oval pressed rules, a small stamped monogram.
+    // Satin rather than mirror: the bands are close in tone, light pools at the upper left where it
+    // falls from across the suite, and the leaf deepens a little towards its scalloped edge, as foil
+    // pressed over a raised plate does.
     const gold = ctx.createLinearGradient(0,0,w,h);
-    [[0,'#bf9f61'],[.14,'#e4d3ab'],[.27,'#fcf6e9'],[.41,'#d3b77f'],[.55,'#c7a76a'],[.69,'#f5ecd6'],[.83,'#d9bf8d'],[1,'#b8965a']].forEach(([at,tone]) => gold.addColorStop(at,tone));
+    [[0,'#cdb07a'],[.18,'#e6d5ae'],[.32,'#f6eedb'],[.48,'#dcc496'],[.62,'#d4b985'],[.76,'#eee1c3'],[.9,'#dcc496'],[1,'#c6a670']].forEach(([at,tone]) => gold.addColorStop(at,tone));
     ctx.fillStyle = gold; ctx.fillRect(0,0,w,h);
+    const pool = ctx.createRadialGradient(w*.34,h*.26,0,w*.34,h*.26,w*.72);
+    pool.addColorStop(0,'#fffaeb73'); pool.addColorStop(1,'#fffaeb00');
+    ctx.fillStyle = pool; ctx.fillRect(0,0,w,h);
+    const rim = ctx.createRadialGradient(w/2,h/2,Math.min(w,h)*.3,w/2,h/2,Math.max(w,h)*.56);
+    rim.addColorStop(0,'#7a5a2600'); rim.addColorStop(1,'#7a5a263d');
+    ctx.fillStyle = rim; ctx.fillRect(0,0,w,h);
     ctx.save(); ctx.globalAlpha = .05; ctx.strokeStyle = '#6a4e22'; ctx.lineWidth = .6;
     for (let i = -h; i < w + h; i += 9) {
       ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i+h,h); ctx.stroke();
@@ -467,6 +468,41 @@
       ctx.restore();
     };
     strike(1.2, 1.2, '#fff8e4b8'); strike(0, 0, '#7d5f2b8f');
+    // The invitation to scratch, pressed into the leaf like the mark above it, so it goes with the foil
+    // rather than floating over it. In English it follows the foot of the oval just inside the inner
+    // rule, with a small diamond at each end; Sinhala's joined letters cannot be set a glyph at a time
+    // round a curve, so they run straight across the same place.
+    const words = ($('#scratch-label p')?.textContent || '').trim();
+    const sinhala = /[඀-෿]/.test(words);
+    const a = w/2 - w*.0363 - 31, b = h/2 - h*.0305 - 31, cx = w/2, cy = h/2;
+    const press = (draw) => { ctx.fillStyle = '#fff8e4c4'; draw(.9); ctx.fillStyle = '#6b4f22b8'; draw(0); };
+    const diamond = (x, y, turn) => press(d => { ctx.save(); ctx.translate(x+d, y+d); ctx.rotate(turn); ctx.beginPath(); ctx.moveTo(0,-2.6); ctx.lineTo(2.6,0); ctx.lineTo(0,2.6); ctx.lineTo(-2.6,0); ctx.closePath(); ctx.fill(); ctx.restore(); });
+    if (words && sinhala) {
+      ctx.font = '400 15px SinhalaSerif, serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+      const y = cy + b * .93, half = ctx.measureText(words).width / 2;
+      press(d => ctx.fillText(words, cx + d, y + d));
+      diamond(cx - half - 12, y - 5, 0); diamond(cx + half + 12, y - 5, 0);
+    } else if (words) {
+      const text = words.toUpperCase(), track = 1.9, size = Math.max(9.5, Math.min(10.5, w / 34));
+      ctx.font = '500 ' + size + 'px Manrope, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+      // Walk the ellipse by arc length: each letter takes the angle its own width (and the tracking)
+      // spans at that point, so the spacing stays even where the oval flattens towards its foot.
+      const speed = t => Math.hypot(a * Math.sin(t), b * Math.cos(t));
+      const advances = [...text].map(ch => ctx.measureText(ch).width + track);
+      const span = advances.reduce((sum, adv) => sum + adv, 0) - track + 22;
+      let t = Math.PI / 2, run = 0;
+      while (run < span / 2) { run += speed(t) * .002; t += .002; }
+      const at = (theta) => ({x: cx + a * Math.cos(theta), y: cy + b * Math.sin(theta), turn: Math.atan2(-b * Math.cos(theta), a * Math.sin(theta))});
+      const step = (theta, length) => { let moved = 0; while (moved < length) { moved += speed(theta) * .002; theta -= .002; } return theta; };
+      let p = at(t); diamond(p.x + 3.5 * Math.sin(p.turn), p.y - 3.5 * Math.cos(p.turn), p.turn);
+      t = step(t, 11);
+      for (let i = 0; i < text.length; i++) {
+        const mid = step(t, (advances[i] - track) / 2); p = at(mid);
+        press(d => { ctx.save(); ctx.translate(p.x + d, p.y + d); ctx.rotate(p.turn); ctx.fillText(text[i], 0, 0); ctx.restore(); });
+        t = step(t, advances[i]);
+      }
+      t = step(t, 11 - track); p = at(t); diamond(p.x + 3.5 * Math.sin(p.turn), p.y - 3.5 * Math.cos(p.turn), p.turn);
+    }
     // A darker line just inside the scallops, as the edge of cut foil catches it. Stroked in the
     // outline's own units under the clip, so only its inner half shows: about one pixel.
     ctx.scale(w, h); ctx.lineWidth = 2.4 / ((w + h) / 2); ctx.strokeStyle = '#8a6b3399'; ctx.stroke(cameo);
@@ -796,8 +832,26 @@
       $('#prepared').hidden=false;
       button.disabled=true;status.textContent=say('sending');
       try{
-        const sent=await fetch('/'+me.code+'/reply',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-          attendance:answer,people:count,note,lang:window.invitationLanguage?.current||'en'})});
+        // On a phone WhatsApp takes the screen the moment it opens, and the phone puts this page to
+        // sleep with the save still on its way; cut off, it used to come back as "could not be sent".
+        // keepalive lets the save finish regardless. One that still fails - no signal, or the server
+        // waking up - is tried again a little later, and once the guest is back on the page. Saving
+        // the same reply twice only sets it again.
+        const body=JSON.stringify({attendance:answer,people:count,note,lang:window.invitationLanguage?.current||'en'});
+        const save=async()=>{
+          const sent=await fetch('/'+me.code+'/reply',{method:'POST',keepalive:true,headers:{'Content-Type':'application/json'},body});
+          if(sent.status>=500)throw new Error(sent.status);
+          return sent;
+        };
+        let sent;
+        for(let attempt=1;;attempt++){
+          try{sent=await save();break}
+          catch(error){
+            if(attempt===4)throw error;
+            await new Promise(later=>setTimeout(later,1500*attempt));
+            if(document.hidden)await new Promise(back=>document.addEventListener('visibilitychange',back,{once:true}));
+          }
+        }
         if(sent.status===403){me.open=false;paint();lock();return;}
         if(!sent.ok)throw new Error(sent.status);
         Object.assign(me,await sent.json());paint();
