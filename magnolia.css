@@ -35,7 +35,12 @@ body{background:var(--paper)}
 .sound-toggle::after{width:44px;height:44px;border-color:var(--gold)}
 @keyframes sound-pulse{0%{opacity:.32;scale:.86}70%,100%{opacity:0;scale:1.5}}
 .section{isolation:isolate;max-width:none;padding:110px max(9%,24px)}
-.section::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:url('assets/magnolia-suite/paper.webp') center/100% 100% no-repeat;opacity:.76}
+/* The paper's flowers run down both edges at their own proportions, however long the section. They used
+   to be one sheet stretched to the section's box, which on a phone - where a section is several screens
+   tall - pulled every flower long. Each edge is now its own strip, a sixth of the width, repeated down
+   the page; the strip is followed by its own mirror image, so the vine meets itself at every join rather
+   than breaking off. The plain paper between them is cut from the same sheet. */
+.section::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:url('assets/magnolia-suite/paper-flora-left.webp') left top/18.55% auto repeat-y,url('assets/magnolia-suite/paper-flora-right.webp') right top/18.55% auto repeat-y,url('assets/magnolia-suite/paper-plain.webp') center/cover;opacity:.76}
 .section:not(.invitation)::after{width:100px;left:calc(50% - 50px);background:var(--line)}
 .section>h2{max-width:780px}
 .section>p:not(.disclosure){max-width:580px}
@@ -102,7 +107,7 @@ body{background:var(--paper)}
 @media(max-width:700px){
   .couple-print{--tilt:-2deg;width:min(300px,78vw);margin:0 0 -46px}
 }
-.invitation-letter{position:relative;background:linear-gradient(#fffaf2cf,#fffaf2cf),url('assets/magnolia-suite/paper.webp') center/100% 100%;padding:52px 60px;outline-offset:-14px}
+.invitation-letter{position:relative;background:linear-gradient(#fffaf2cf,#fffaf2cf),url('assets/magnolia-suite/paper-flora-left.webp') left top/18.55% auto repeat-y,url('assets/magnolia-suite/paper-flora-right.webp') right top/18.55% auto repeat-y,url('assets/magnolia-suite/paper-plain.webp') center/cover;padding:52px 60px;outline-offset:-14px}
 
 /* ---------- The gallery: a stack of prints ----------
    The same prints as the one beside the letter - deckled cotton paper, the pressed plate mark, the pair
@@ -164,13 +169,13 @@ blockquote{padding:30px 12px 0;font-size:32px;color:var(--action)}
 .timeline-mark{background:var(--paper);border:1px solid var(--gold);width:11px;height:11px;left:202px}
 .architecture{max-width:1000px;margin-top:45px}
 .venue address{font-size:25px}
-.reply-card{background:linear-gradient(#fffaf2d9,#fffaf2d9),url('assets/magnolia-suite/paper.webp') center/100% 100%;max-width:600px;padding:48px 58px;outline-offset:-14px}
+.reply-card{background:linear-gradient(#fffaf2d9,#fffaf2d9),url('assets/magnolia-suite/paper-flora-left.webp') left top/18.55% auto repeat-y,url('assets/magnolia-suite/paper-flora-right.webp') right top/18.55% auto repeat-y,url('assets/magnolia-suite/paper-plain.webp') center/cover;max-width:600px;padding:48px 58px;outline-offset:-14px}
 .reply-card h3{font-size:49px}
 .reply-card label,.reply-card legend{font-size:13px}
 .closing{position:relative;isolation:isolate;padding:90px 24px 65px;background:url('assets/magnolia-suite/garden.webp') center 68%/cover}
 .closing::before{content:'';position:absolute;inset:0;background:#fffaf2b8;z-index:-1}
 .closing>p:not(.closing-names){font-size:13px}
-@media(min-width:1000px){.date-section,.agenda,.venue,.response{padding-inline:18%}.section::before{background-size:100% auto;background-repeat:repeat-y}.response::before{opacity:.85}}
+@media(min-width:1000px){.date-section,.agenda,.venue,.response{padding-inline:18%}.response::before{opacity:.85}}
 @media(max-width:700px){
  .welcome{background-position:center;min-height:100svh;padding:140px 26px 100px}
  .welcome-content{padding:0}
@@ -178,10 +183,10 @@ blockquote{padding:30px 12px 0;font-size:32px;color:var(--action)}
  .welcome-wording{font-size:18px;margin-bottom:25px}
 
  .section{padding:78px 26px}
- .section::before{opacity:.48;background-size:100% 100%}
+ .section::before{opacity:.48}
  .section>h2{font-size:44px}
  .photo-invitation{padding-bottom:25px}
- .invitation-letter{padding:38px 26px;background:linear-gradient(#fffaf2e6,#fffaf2e6),url('assets/magnolia-suite/paper.webp') center/100% 100%}
+ .invitation-letter{padding:38px 26px;background:linear-gradient(#fffaf2e6,#fffaf2e6),url('assets/magnolia-suite/paper-flora-left.webp') left top/18.55% auto repeat-y,url('assets/magnolia-suite/paper-flora-right.webp') right top/18.55% auto repeat-y,url('assets/magnolia-suite/paper-plain.webp') center/cover}
  .invitation-letter h2{font-size:40px}
  .invitation-letter .couple-names{font-size:32px}
  blockquote{font-size:26px;padding:8px 0 0}
@@ -192,7 +197,7 @@ blockquote{padding:30px 12px 0;font-size:32px;color:var(--action)}
  .timeline-mark{left:-1px}
  .timeline h3{font-size:27px}.timeline p{font-size:14px}
  .architecture{margin-top:32px}
- .reply-card{padding:38px 30px;background:linear-gradient(#fffaf2e8,#fffaf2e8),url('assets/magnolia-suite/paper.webp') center/100% 100%}
+ .reply-card{padding:38px 30px;background:linear-gradient(#fffaf2e8,#fffaf2e8),url('assets/magnolia-suite/paper-flora-left.webp') left top/18.55% auto repeat-y,url('assets/magnolia-suite/paper-flora-right.webp') right top/18.55% auto repeat-y,url('assets/magnolia-suite/paper-plain.webp') center/cover}
  .reply-card h3{font-size:44px}
  .closing{padding-block:112px 50px}
  .closing::before{background-image:linear-gradient(#fffaf2bd,#fffaf2bd),url('assets/magnolia-suite/portrait.webp');-webkit-mask-image:linear-gradient(to bottom,transparent,#000 170px);mask-image:linear-gradient(to bottom,transparent,#000 170px)}
