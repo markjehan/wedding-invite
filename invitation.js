@@ -389,18 +389,9 @@
     ctx.save();
     ctx.scale(w, h); ctx.clip(cameo); ctx.setTransform(dpr,0,0,dpr,0,0);
     // Pale champagne leaf on pearl, guilloche lattice, oval pressed rules, a small stamped monogram.
-    // Satin rather than mirror: the bands are close in tone, light pools at the upper left where it
-    // falls from across the suite, and the leaf deepens a little towards its scalloped edge, as foil
-    // pressed over a raised plate does.
     const gold = ctx.createLinearGradient(0,0,w,h);
-    [[0,'#cdb07a'],[.18,'#e6d5ae'],[.32,'#f6eedb'],[.48,'#dcc496'],[.62,'#d4b985'],[.76,'#eee1c3'],[.9,'#dcc496'],[1,'#c6a670']].forEach(([at,tone]) => gold.addColorStop(at,tone));
+    [[0,'#bf9f61'],[.14,'#e4d3ab'],[.27,'#fcf6e9'],[.41,'#d3b77f'],[.55,'#c7a76a'],[.69,'#f5ecd6'],[.83,'#d9bf8d'],[1,'#b8965a']].forEach(([at,tone]) => gold.addColorStop(at,tone));
     ctx.fillStyle = gold; ctx.fillRect(0,0,w,h);
-    const pool = ctx.createRadialGradient(w*.34,h*.26,0,w*.34,h*.26,w*.72);
-    pool.addColorStop(0,'#fffaeb73'); pool.addColorStop(1,'#fffaeb00');
-    ctx.fillStyle = pool; ctx.fillRect(0,0,w,h);
-    const rim = ctx.createRadialGradient(w/2,h/2,Math.min(w,h)*.3,w/2,h/2,Math.max(w,h)*.56);
-    rim.addColorStop(0,'#7a5a2600'); rim.addColorStop(1,'#7a5a263d');
-    ctx.fillStyle = rim; ctx.fillRect(0,0,w,h);
     ctx.save(); ctx.globalAlpha = .05; ctx.strokeStyle = '#6a4e22'; ctx.lineWidth = .6;
     for (let i = -h; i < w + h; i += 9) {
       ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i+h,h); ctx.stroke();
@@ -468,41 +459,6 @@
       ctx.restore();
     };
     strike(1.2, 1.2, '#fff8e4b8'); strike(0, 0, '#7d5f2b8f');
-    // The invitation to scratch, pressed into the leaf like the mark above it, so it goes with the foil
-    // rather than floating over it. In English it follows the foot of the oval just inside the inner
-    // rule, with a small diamond at each end; Sinhala's joined letters cannot be set a glyph at a time
-    // round a curve, so they run straight across the same place.
-    const words = ($('#scratch-label p')?.textContent || '').trim();
-    const sinhala = /[඀-෿]/.test(words);
-    const a = w/2 - w*.0363 - 31, b = h/2 - h*.0305 - 31, cx = w/2, cy = h/2;
-    const press = (draw) => { ctx.fillStyle = '#fff8e4c4'; draw(.9); ctx.fillStyle = '#6b4f22b8'; draw(0); };
-    const diamond = (x, y, turn) => press(d => { ctx.save(); ctx.translate(x+d, y+d); ctx.rotate(turn); ctx.beginPath(); ctx.moveTo(0,-2.6); ctx.lineTo(2.6,0); ctx.lineTo(0,2.6); ctx.lineTo(-2.6,0); ctx.closePath(); ctx.fill(); ctx.restore(); });
-    if (words && sinhala) {
-      ctx.font = '400 15px SinhalaSerif, serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
-      const y = cy + b * .93, half = ctx.measureText(words).width / 2;
-      press(d => ctx.fillText(words, cx + d, y + d));
-      diamond(cx - half - 12, y - 5, 0); diamond(cx + half + 12, y - 5, 0);
-    } else if (words) {
-      const text = words.toUpperCase(), track = 1.9, size = Math.max(9.5, Math.min(10.5, w / 34));
-      ctx.font = '500 ' + size + 'px Manrope, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
-      // Walk the ellipse by arc length: each letter takes the angle its own width (and the tracking)
-      // spans at that point, so the spacing stays even where the oval flattens towards its foot.
-      const speed = t => Math.hypot(a * Math.sin(t), b * Math.cos(t));
-      const advances = [...text].map(ch => ctx.measureText(ch).width + track);
-      const span = advances.reduce((sum, adv) => sum + adv, 0) - track + 22;
-      let t = Math.PI / 2, run = 0;
-      while (run < span / 2) { run += speed(t) * .002; t += .002; }
-      const at = (theta) => ({x: cx + a * Math.cos(theta), y: cy + b * Math.sin(theta), turn: Math.atan2(-b * Math.cos(theta), a * Math.sin(theta))});
-      const step = (theta, length) => { let moved = 0; while (moved < length) { moved += speed(theta) * .002; theta -= .002; } return theta; };
-      let p = at(t); diamond(p.x + 3.5 * Math.sin(p.turn), p.y - 3.5 * Math.cos(p.turn), p.turn);
-      t = step(t, 11);
-      for (let i = 0; i < text.length; i++) {
-        const mid = step(t, (advances[i] - track) / 2); p = at(mid);
-        press(d => { ctx.save(); ctx.translate(p.x + d, p.y + d); ctx.rotate(p.turn); ctx.fillText(text[i], 0, 0); ctx.restore(); });
-        t = step(t, advances[i]);
-      }
-      t = step(t, 11 - track); p = at(t); diamond(p.x + 3.5 * Math.sin(p.turn), p.y - 3.5 * Math.cos(p.turn), p.turn);
-    }
     // A darker line just inside the scallops, as the edge of cut foil catches it. Stroked in the
     // outline's own units under the clip, so only its inner half shows: about one pixel.
     ctx.scale(w, h); ctx.lineWidth = 2.4 / ((w + h) / 2); ctx.strokeStyle = '#8a6b3399'; ctx.stroke(cameo);
