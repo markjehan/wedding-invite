@@ -45,11 +45,16 @@ nearly 9942) and stay only as spares.
 
 On 9 November 2026 the user shared, in chat, a 1765 by 1175 copy of the shoot's red-outfit photograph
 under the white bell arch, and asked for the two of them alone, sketched live at the top of the
-invitation like the venue drawing. `couple-strokes.js` in the site's root is that engraving as pen
-strokes: the couple cut out of the arch and garden with GrabCut, then outlined, their faces and hands
-lined, and their shading hatched. It was made on this computer alone; no photograph is stored for it:
+invitation like the venue drawing, then for more detail and more realism. `couple-strokes.js` in the
+site's root is that drawing as pen strokes. The couple are cut out of the arch, the garden and the wall
+(GrabCut, then closed-form matting for a soft, exact edge, with any green of the garden or grey of the
+wall at their edge counted as background) and split into their parts. Their hair is drawn in strands,
+their skin in dots, their clothes in even lines that thicken in shadow, and over that go the outline,
+the edges between the parts, and their features, each looked for in its own small box on the face. It
+was made on this computer alone; no photograph is stored for it:
 
     python -I build_assets/engrave_couple.py <the photograph> couple-strokes.js
+    python -I build_assets/cutout_couple.py <the photograph> build_assets/couple-cutout.png
 
 The gallery no longer uses the seven crops above, which stay only because the link card still uses
 `naveen-dulanjani-preview.jpg`.

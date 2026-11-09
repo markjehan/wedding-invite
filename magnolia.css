@@ -51,14 +51,15 @@ body{background:var(--paper)}
    Engraved in the venue drawing's gold from their photograph under the bell arch, with the arch and
    the garden left out, and drawn live when the letter comes into view (couple-drawing.js). It stands
    where the house crest stood: the letter is from the two of them, so they head it. The figure is the
-   drawing's own shape, 490 by 746, sized by its height so the faces stay large enough to know. The
-   pen's nib is a point of light that rides the end of the line while it draws, and leaves with it. */
-.couple-drawing{--tall:clamp(330px,36vw,470px);position:relative;margin:-14px auto 22px;width:min(100%,calc(var(--tall) * 490 / 746));aspect-ratio:490/746;cursor:pointer;-webkit-tap-highlight-color:transparent}
+   drawing's own shape, 490 by 746, sized by its height and as large as the letter allows, because the
+   detail is in their faces. The pen's nib is a point of light that rides the end of the line while it
+   draws, and leaves with it. */
+.couple-drawing{--tall:clamp(380px,40vw,560px);position:relative;margin:-14px auto 22px;width:min(100%,calc(var(--tall) * 490 / 746));aspect-ratio:490/746;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .couple-drawing canvas{position:absolute;inset:0;width:100%;height:100%}
 .couple-nib{position:absolute;left:0;top:0;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;pointer-events:none;opacity:0;transition:opacity .5s;
   background:radial-gradient(circle,#fffbe9 0 14%,#e8c77fcc 34%,#d9b46a00 70%);will-change:transform}
 .couple-drawing.is-drawing .couple-nib{opacity:1}
-@media(max-width:700px){.couple-drawing{--tall:clamp(300px,92vw,360px);margin:-6px auto 16px}}
+@media(max-width:700px){.couple-drawing{--tall:clamp(320px,110vw,440px);margin:-6px auto 16px}}
 
 /* ---------- The prints ----------
    The photographs are cards in the suite: printed on handmade cotton paper with a torn deckle edge,
