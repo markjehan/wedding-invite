@@ -27,19 +27,22 @@ body.intro-locked{overflow:hidden}
 /* will-change is set up front, not on .opening: promoting these layers at the moment the animation
    starts costs the first few frames, which is exactly where the hitch was visible. */
 .door-camera{position:absolute;top:50%;left:50%;height:100vh;height:100svh;width:66.6667vh;width:66.6667svh;transform:translate(-50%,-50%);transform-origin:50% 58%;perspective:950px;perspective-origin:50% 56%;transform-style:preserve-3d;will-change:transform;background:url('assets/magnolia-suite/doors.webp') center/100% 100%}
-/* The vista sits BEHIND the leaves, so it is the thing that shows whenever a leaf does not paint -
-   it is what flashed when the leaves used to tilt behind it. It now stays hidden until the hinge is
-   actually in motion, so during the closed hold what lies behind the doors is the camera's own
-   closed-door art in exact registration: anything that goes wrong with a leaf while the doors are
-   shut reads as a closed door, never as the invitation already open. */
-.door-room{position:absolute;left:21.45%;top:30.34%;width:57.1%;height:55.25%;visibility:hidden;background:#f7f2e8 url('assets/magnolia-suite/portrait.webp') center/cover;box-shadow:inset 0 0 25px #49341e80}
-/* transform:rotateY(0) declares the identity rotation up front so a leaf never takes its first
+/* The vista behind the leaves - the garden through the open arch - is drawn and on its own layer
+   from the first frame, under the closed doors, so it is ready the instant they part. It used to be
+   hidden until the swing began, and a browser does not draw what is hidden: on a phone it was only
+   being drawn as the doors moved. Its depth is set, not left to chance: the camera's own picture -
+   which has closed doors painted in it - is at 0, the vista half a pixel in front of it, the leaves a
+   pixel in front of both (see .door-leaf). Level with the camera's picture, the browser was free to
+   draw that picture over the vista, and through the parting doors the guest saw a second pair of
+   closed doors instead of the garden. A leaf whose image fails shows its pale backstop colour. */
+.door-room{position:absolute;left:21.45%;top:30.34%;width:57.1%;height:55.25%;transform:translateZ(.5px);will-change:transform;background:#f7f2e8 url('assets/magnolia-suite/portrait.webp') center/cover;box-shadow:inset 0 0 25px #49341e80}
+/* transform:translateZ(1px) rotateY(0) declares the rotation up front so a leaf never takes its first
    transform matrix on the same class change that starts the hinge; both layers are built and
    rastered while the visitor is still looking at the closed doors instead of at press time. The
    opaque background-color is a backstop: a leaf that loses only its image still reads as a pale
    panel rather than as an opening. Neither of these is what cured the vanishing leaves - that was
    the rotation direction, see the note on the hinge keyframes below. */
-.door-leaf{position:absolute;top:30.34%;width:28.55%;height:55.25%;background-color:#f2ebdd;background-image:url('assets/magnolia-suite/doors.webp');background-size:350.262697% 180.995475%;background-repeat:no-repeat;transform:rotateY(0deg);transform-style:preserve-3d;backface-visibility:hidden;will-change:transform,opacity}
+.door-leaf{position:absolute;top:30.34%;width:28.55%;height:55.25%;background-color:#f2ebdd;background-image:url('assets/magnolia-suite/doors.webp');background-size:350.262697% 180.995475%;background-repeat:no-repeat;transform:translateZ(1px) rotateY(0deg);transform-style:preserve-3d;backface-visibility:hidden;will-change:transform,opacity}
 .leaf-left{left:21.45%;background-position:30.020994% 67.798883%;transform-origin:left center}
 .leaf-right{left:50%;background-position:69.979006% 67.798883%;transform-origin:right center}
 /* A carved leaf has thickness: a perpendicular strip at the free edge shows it as the door turns,
@@ -80,7 +83,6 @@ body.intro-locked{overflow:hidden}
 .opening .leaf-left{animation:hinge-left 1.8s cubic-bezier(.34,0,.24,1) calc(-1 * var(--sync,0s)) both}
 .opening .leaf-right{animation:hinge-right 1.8s cubic-bezier(.34,0,.24,1) calc(-1 * var(--sync,0s)) both}
 .opening .door-leaf::before{animation:leaf-shade 1.8s cubic-bezier(.34,0,.24,1) calc(-1 * var(--sync,0s)) both}
-.opening .door-room{animation:room-reveal 1.8s steps(1,end) calc(-1 * var(--sync,0s)) both}
 .opening .door-camera{animation:walk-through 3s cubic-bezier(.42,0,.32,1) calc(1.8s - var(--sync,0s)) both}
 .opening.door-intro{animation:entrance-dissolve 3s linear calc(1.8s - var(--sync,0s)) both}
 /* The document is NOT hidden behind the entrance. It used to be visibility:hidden until the doors
@@ -92,10 +94,9 @@ body.intro-locked{overflow:hidden}
    An inward nudge puts the leaves behind the room's z=0 plane in this preserve-3d scene: the
    garden covers both doors until they rotate forwards again, causing the open/shut flash.
    The last 10% fades the remaining slivers before the camera starts its separate move. */
-@keyframes hinge-left{0%,6%{transform:rotateY(0);opacity:1}90%{transform:rotateY(-81deg);opacity:1}100%{transform:rotateY(-81deg);opacity:0;visibility:hidden}}
-@keyframes hinge-right{0%,6%{transform:rotateY(0);opacity:1}90%{transform:rotateY(81deg);opacity:1}100%{transform:rotateY(81deg);opacity:0;visibility:hidden}}
+@keyframes hinge-left{0%,6%{transform:translateZ(1px) rotateY(0);opacity:1}90%{transform:translateZ(1px) rotateY(-81deg);opacity:1}100%{transform:translateZ(1px) rotateY(-81deg);opacity:0;visibility:hidden}}
+@keyframes hinge-right{0%,6%{transform:translateZ(1px) rotateY(0);opacity:1}90%{transform:translateZ(1px) rotateY(81deg);opacity:1}100%{transform:translateZ(1px) rotateY(81deg);opacity:0;visibility:hidden}}
 @keyframes leaf-shade{0%,6%{opacity:0}90%,100%{opacity:1}}
-@keyframes room-reveal{0%,5%{visibility:hidden}6%,100%{visibility:visible}}
 @keyframes walk-through{0%{transform:translate(-50%,-50%) scale(1)}100%{transform:translate(-50%,-50%) scale(4.8)}}
 @keyframes entrance-dissolve{0%,45%{opacity:1}90%,100%{opacity:0}}
 @keyframes names-after-entry{0%,75%{opacity:0;transform:translateY(12px)}100%{opacity:1;transform:translateY(0)}}
