@@ -96,15 +96,16 @@ body{background:var(--paper)}
    same element with it: a broad one lifts the sheet off the page and a tight one puts it down on it.
    The top one lies nearly square to the guest; the two beneath it
    are turned further, each its own way, so their edges show and the pile reads as a pile. Turning one
-   over throws it aside the way a hand would and the next settles up into its place. Tall prints take
+   over throws it aside the way a hand would and the next settles up into its place; leafing back
+   brings it in again on the same path and at the same pace, so the two read as one motion. Tall prints take
    most of the table's width and wide ones all of it, so both feel the same size in the hand. */
-.print-stack{--table:min(520px,88vw);--tall:70%;margin:46px auto 8px;width:var(--table)}
+.print-stack{--table:min(520px,88vw);--tall:70%;--fly:.9s;--glide:cubic-bezier(.25,.8,.25,1);margin:46px auto 8px;width:var(--table)}
 .stack-table{display:grid;place-items:center;padding:18px 0 26px;touch-action:pan-y;user-select:none;-webkit-user-select:none;cursor:grab;outline-offset:6px;border-radius:6px}
 .stack-table:focus-visible{outline:2px solid var(--action)}
 .stack-table:active{cursor:grabbing}
 .stack-print{--pad:clamp(9px,1.6vw,15px);grid-area:1/1;position:relative;z-index:calc(20 - var(--depth,0));width:var(--tall);margin:0;opacity:0;
   rotate:var(--tilt);translate:calc(var(--depth,0) * 3px) calc(var(--depth,0) * 4px);
-  transition:rotate .9s cubic-bezier(.16,1,.3,1),translate .9s cubic-bezier(.16,1,.3,1),scale .9s cubic-bezier(.16,1,.3,1),opacity .45s ease}
+  transition:rotate var(--fly) var(--glide),translate var(--fly) var(--glide),scale var(--fly) var(--glide),opacity .3s ease}
 .stack-print.is-wide{width:100%}
 .stack-print::before,.stack-print::after{content:'';position:absolute;z-index:-1;pointer-events:none;background:#4b371c;border-radius:8px}
 .stack-print::before{inset:8% 5% 0;translate:0 18px;filter:blur(20px);opacity:.2}
@@ -121,7 +122,7 @@ body{background:var(--paper)}
 .stack-print:nth-child(13){--tilt:-1.2deg}.stack-print:nth-child(14){--tilt:3.2deg}.stack-print:nth-child(15){--tilt:-2.4deg}
 /* Set aside: carried off past the table's edge on the side it was pushed, turning as it goes. */
 .stack-print.is-thrown{z-index:30;opacity:0;translate:calc(var(--throw,-1) * 118%) -6%;rotate:calc(var(--throw,-1) * 18deg);
-  transition:translate .75s cubic-bezier(.3,.6,.3,1),rotate .75s cubic-bezier(.3,.6,.3,1),opacity .4s ease .3s}
+  transition:translate var(--fly) var(--glide),rotate var(--fly) var(--glide),opacity .35s ease .25s}
 .stack-print.is-still,.stack-print.is-dragging{transition:none}
 .stack-controls{display:flex;align-items:center;justify-content:center;gap:22px;margin-top:4px}
 .stack-turn{display:grid;place-items:center;width:46px;height:46px;border:1px solid #cbb68e;border-radius:50%;color:var(--action);background:#fffaf2b3;transition:background .2s,border-color .2s}

@@ -74,9 +74,18 @@
 
   <div class="door-intro" id="door-intro" data-i18n-attr="aria-label:door.label" role="dialog" aria-modal="true" aria-label="Wedding invitation entrance">
     <div class="door-camera" aria-hidden="true">
-      <div class="door-room"></div>
-      <div class="door-leaf leaf-left"><span class="seal-half"></span></div>
-      <div class="door-leaf leaf-right"><span class="seal-half"></span></div>
+      <!-- A small stage set rather than one flat picture: the garden stands well behind the wall, the
+           wall has a real opening cut in it, and the leaves swing inwards into the space between. -->
+      <div class="door-world">
+        <div class="door-room"></div>
+        <div class="door-haze"></div>
+        <div class="door-reveal reveal-head"></div>
+        <div class="door-reveal reveal-sill"></div>
+        <div class="door-wall"></div>
+        <div class="door-leaf leaf-left"><span class="seal-half"></span></div>
+        <div class="door-leaf leaf-right"><span class="seal-half"></span></div>
+        <div class="door-spill"></div>
+      </div>
     </div>
     <button id="open-doors" class="seal-press"><span class="sr-only" data-i18n="door.seal">Break the seal and open the invitation. Press Escape to skip the opening.</span></button>
     <p class="seal-word" data-i18n="door.press" aria-hidden="true">Touch the seal to step inside</p>
@@ -369,25 +378,24 @@
            from the last print to the first) the colours keep their rhythm. -->
       <div class="print-stack" id="print-stack" role="group" aria-roledescription="carousel" data-i18n-attr="aria-label:photos.label" aria-label="Photographs of Naveen and Dulanjani">
         <div class="stack-table" tabindex="0">
-          <figure class="stack-print is-wide"><span class="print-paper"><span class="print-photo"><img src="assets/couple/shoot/shoot-9474.webp" alt="" loading="eager" decoding="async" width="1200" height="799"></span></span></figure>
-          <figure class="stack-print"><span class="print-paper"><span class="print-photo"><img src="assets/couple/shoot/shoot-9942.webp" alt="" loading="eager" decoding="async" width="880" height="1322"></span></span></figure>
-          <figure class="stack-print is-wide"><span class="print-paper"><span class="print-photo"><img src="assets/couple/shoot/shoot-9017.webp" alt="" loading="eager" decoding="async" width="1200" height="799"></span></span></figure>
-          <figure class="stack-print"><span class="print-paper"><span class="print-photo"><img src="assets/couple/shoot/shoot-9375.webp" alt="" loading="lazy" decoding="async" width="880" height="1322"></span></span></figure>
-          <figure class="stack-print is-wide"><span class="print-paper"><span class="print-photo"><img src="assets/couple/shoot/shoot-0001.webp" alt="" loading="lazy" decoding="async" width="1200" height="798"></span></span></figure>
-          <figure class="stack-print"><span class="print-paper"><span class="print-photo"><img src="assets/couple/shoot/shoot-9123.webp" alt="" loading="lazy" decoding="async" width="880" height="1322"></span></span></figure>
-          <figure class="stack-print"><span class="print-paper"><span class="print-photo"><img src="assets/couple/shoot/shoot-9456.webp" alt="" loading="lazy" decoding="async" width="880" height="1322"></span></span></figure>
-          <figure class="stack-print"><span class="print-paper"><span class="print-photo"><img src="assets/couple/shoot/shoot-0111.webp" alt="" loading="lazy" decoding="async" width="880" height="1322"></span></span></figure>
-          <figure class="stack-print is-wide"><span class="print-paper"><span class="print-photo"><img src="assets/couple/shoot/shoot-8803.webp" alt="" loading="lazy" decoding="async" width="1200" height="799"></span></span></figure>
-          <figure class="stack-print"><span class="print-paper"><span class="print-photo"><img src="assets/couple/shoot/shoot-9423.webp" alt="" loading="lazy" decoding="async" width="880" height="1322"></span></span></figure>
-          <figure class="stack-print"><span class="print-paper"><span class="print-photo"><img src="assets/couple/shoot/shoot-0095.webp" alt="" loading="lazy" decoding="async" width="880" height="1322"></span></span></figure>
-          <figure class="stack-print"><span class="print-paper"><span class="print-photo"><img src="assets/couple/shoot/shoot-8817.webp" alt="" loading="lazy" decoding="async" width="880" height="1322"></span></span></figure>
-          <figure class="stack-print is-wide"><span class="print-paper"><span class="print-photo"><img src="assets/couple/shoot/shoot-9560.webp" alt="" loading="lazy" decoding="async" width="1200" height="799"></span></span></figure>
-          <figure class="stack-print"><span class="print-paper"><span class="print-photo"><img src="assets/couple/shoot/shoot-9924.webp" alt="" loading="lazy" decoding="async" width="880" height="1322"></span></span></figure>
-          <figure class="stack-print"><span class="print-paper"><span class="print-photo"><img src="assets/couple/shoot/shoot-8329.webp" alt="" loading="lazy" decoding="async" width="880" height="1322"></span></span></figure>
+          <figure class="stack-print"><span class="print-paper"><span class="print-photo"><img src="assets/couple/album/album-01.webp" alt="" loading="eager" decoding="async" width="880" height="1323"></span></span></figure>
+          <figure class="stack-print"><span class="print-paper"><span class="print-photo"><img src="assets/couple/album/album-02.webp" alt="" loading="eager" decoding="async" width="880" height="1323"></span></span></figure>
+          <figure class="stack-print"><span class="print-paper"><span class="print-photo"><img src="assets/couple/album/album-03.webp" alt="" loading="lazy" decoding="async" width="880" height="1323"></span></span></figure>
+          <figure class="stack-print"><span class="print-paper"><span class="print-photo"><img src="assets/couple/album/album-04.webp" alt="" loading="lazy" decoding="async" width="880" height="1323"></span></span></figure>
+          <figure class="stack-print"><span class="print-paper"><span class="print-photo"><img src="assets/couple/album/album-05.webp" alt="" loading="lazy" decoding="async" width="880" height="1323"></span></span></figure>
+          <figure class="stack-print"><span class="print-paper"><span class="print-photo"><img src="assets/couple/album/album-06.webp" alt="" loading="lazy" decoding="async" width="880" height="1323"></span></span></figure>
+          <figure class="stack-print"><span class="print-paper"><span class="print-photo"><img src="assets/couple/album/album-07.webp" alt="" loading="lazy" decoding="async" width="880" height="1323"></span></span></figure>
+          <figure class="stack-print"><span class="print-paper"><span class="print-photo"><img src="assets/couple/album/album-08.webp" alt="" loading="lazy" decoding="async" width="880" height="1323"></span></span></figure>
+          <figure class="stack-print is-wide"><span class="print-paper"><span class="print-photo"><img src="assets/couple/album/album-09.webp" alt="" loading="lazy" decoding="async" width="1200" height="798"></span></span></figure>
+          <figure class="stack-print is-wide"><span class="print-paper"><span class="print-photo"><img src="assets/couple/album/album-10.webp" alt="" loading="lazy" decoding="async" width="1200" height="798"></span></span></figure>
+          <figure class="stack-print is-wide"><span class="print-paper"><span class="print-photo"><img src="assets/couple/album/album-11.webp" alt="" loading="lazy" decoding="async" width="1200" height="798"></span></span></figure>
+          <figure class="stack-print"><span class="print-paper"><span class="print-photo"><img src="assets/couple/album/album-12.webp" alt="" loading="lazy" decoding="async" width="880" height="1323"></span></span></figure>
+          <figure class="stack-print"><span class="print-paper"><span class="print-photo"><img src="assets/couple/album/album-13.webp" alt="" loading="lazy" decoding="async" width="880" height="1323"></span></span></figure>
+          <figure class="stack-print is-wide"><span class="print-paper"><span class="print-photo"><img src="assets/couple/album/album-14.webp" alt="" loading="lazy" decoding="async" width="1200" height="798"></span></span></figure>
         </div>
         <div class="stack-controls">
           <button type="button" class="stack-turn" data-turn="-1" data-i18n-attr="aria-label:photos.prev" aria-label="Previous photograph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
-          <p class="stack-count" aria-live="polite"><b>1</b> <span>/</span> 15</p>
+          <p class="stack-count" aria-live="polite"><b>1</b> <span>/</span> 14</p>
           <button type="button" class="stack-turn" data-turn="1" data-i18n-attr="aria-label:photos.next" aria-label="Next photograph"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
         </div>
       </div>
