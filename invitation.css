@@ -31,7 +31,7 @@ body.intro-locked{overflow:hidden}
 /* The camera is the fixed frame the set is seen through: it holds the lens (perspective) and never
    moves. The eye is level with the middle of the doorway, so the doorway is what everything recedes
    towards. What moves is the world inside it. */
-.door-camera{--dh:100vh;position:absolute;top:50%;left:50%;height:var(--dh);width:calc(var(--dh)*.666667);transform:translate(-50%,-50%);perspective:calc(var(--dh)*1.1);perspective-origin:50% 58%}
+.door-camera{--dh:100vh;--lt:calc(var(--dh)*.018);position:absolute;top:50%;left:50%;height:var(--dh);width:calc(var(--dh)*.666667);transform:translate(-50%,-50%);perspective:calc(var(--dh)*1.1);perspective-origin:50% 58%}
 @supports(height:1svh){.door-camera{--dh:100svh}}
 /* will-change is set up front, not on .opening: promoting these layers at the moment the animation
    starts costs the first few frames, which is exactly where the hitch was visible. */
@@ -59,11 +59,23 @@ body.intro-locked{overflow:hidden}
    built and rastered while the visitor is still looking at the closed doors instead of at press
    time. The opaque background-color is a backstop: a leaf that loses only its image still reads as
    a pale panel rather than as an opening. */
-.door-leaf{position:absolute;top:30.34%;width:28.55%;height:55.25%;background-color:#f2ebdd;background-image:url('assets/magnolia-suite/doors.webp');background-size:350.262697% 180.995475%;background-repeat:no-repeat;transform:translateZ(1px) rotateY(0deg);backface-visibility:hidden;will-change:transform}
+.door-leaf{position:absolute;top:30.34%;width:28.55%;height:55.25%;background-color:#f2ebdd;background-image:url('assets/magnolia-suite/doors.webp');background-size:350.262697% 180.995475%;background-repeat:no-repeat;transform:translateZ(1px) rotateY(0deg);transform-style:preserve-3d;backface-visibility:hidden;will-change:transform}
 .leaf-left{left:21.45%;background-position:30.020994% 67.798883%;transform-origin:left center}
 .leaf-right{left:50%;background-position:69.979006% 67.798883%;transform-origin:right center}
-/* A shading plane darkens each face as it turns side-on to the light, deepest at the hinge. */
-.door-leaf::before{content:'';position:absolute;inset:0;opacity:0;will-change:opacity;background:linear-gradient(90deg,#4a3212b8,#5c401940 60%,#5c40190a)}
+/* Each leaf is a solid slab, not a sheet: a carved front, a carved back set one thickness (--lt)
+   behind it, and a gilded stile closing the free edge between them. Swinging towards the guest, the
+   stile is the face that catches the light, and past eighty degrees it is the back of the leaf that
+   shows. Without the back and the stile a leaf thins to nothing as it turns, which is what made the
+   doors read as flat cards. A leaf's top and bottom are never seen from the threshold. */
+.leaf-back{position:absolute;inset:0;background:inherit;background-color:#efe6d4;transform:rotateY(180deg) translateZ(var(--lt));backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:inset 0 0 0 100vmax #6b4e2224,inset 0 0 calc(var(--dh)*.03) #4a321252}
+.door-leaf::after{content:'';position:absolute;top:0;bottom:0;width:var(--lt);background:linear-gradient(90deg,#fffaf0,#f1e6cd 20%,#b98f45 27%,#d9b56c 31%,#f4ead4 37%,#e6d9bc 63%,#b98f45 69%,#d9b56c 73%,#d8c8a4 80%,#a8905f)}
+.leaf-left::after{left:100%;transform-origin:0 50%;transform:rotateY(90deg)}
+.leaf-right::after{right:100%;transform-origin:100% 50%;transform:rotateY(-90deg)}
+/* The shadow a standing leaf lays on the marble behind it. It lies flat on the floor and turns
+   with the leaf, so it is hidden under the doors while they are shut. */
+.leaf-shadow{position:absolute;left:0;right:0;bottom:0;height:calc(var(--dh)*.07);transform-origin:50% 100%;transform:rotateX(90deg);background:linear-gradient(0deg,#3a2a1270,#3a2a1226 45%,#3a2a1200)}
+/* A shading plane darkens each front as it turns side-on to the light, deepest at the hinge. */
+.door-leaf::before{content:'';position:absolute;inset:0;opacity:0;will-change:opacity;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:linear-gradient(90deg,#4a3212b8,#5c401940 60%,#5c40190a)}
 .leaf-right::before{background:linear-gradient(270deg,#4a3212b8,#5c401940 60%,#5c40190a)}
 /* Daylight falling out across the floor in front of the doorway, widening with the gap. */
 .door-spill{position:absolute;left:8%;width:84%;top:85.59%;height:14.41%;transform-origin:50% 0;transform:translateZ(2px) scaleX(.05);opacity:0;will-change:transform,opacity;background:radial-gradient(ellipse 62% 105% at 50% 0,#fffef8f0,#fff6dc8c 50%,#fff6dc00);-webkit-clip-path:polygon(16% 0,84% 0,100% 100%,0 100%);clip-path:polygon(16% 0,84% 0,100% 100%,0 100%)}
@@ -107,19 +119,18 @@ body.intro-locked{overflow:hidden}
    people saw before the doors moved. The entrance is opaque and covers the viewport, so the page
    can paint underneath it at load instead, off the interaction path. `inert` still holds a11y. */
 .intro-opening .masthead{animation:names-after-entry 4.8s ease calc(-1 * var(--sync,0s)) both}
-/* Hold shut for 6% (108ms) so the pressed seal registers, then swing inwards, away from the guest,
-   the way the doors of a hall open to let someone in. They carry a couple of degrees past their
-   rest and ease back, as a heavy leaf does. Swinging inwards is safe only because the garden stands
-   far behind the wall: when it sat a hair behind the leaves, a leaf turning inwards passed through
-   it and vanished. The leaves stay where they come to rest - the camera then walks between them. */
-@keyframes hinge-left{0%,6%{transform:translateZ(1px) rotateY(0)}88%{transform:translateZ(1px) rotateY(82.5deg)}100%{transform:translateZ(1px) rotateY(80deg)}}
-@keyframes hinge-right{0%,6%{transform:translateZ(1px) rotateY(0)}88%{transform:translateZ(1px) rotateY(-82.5deg)}100%{transform:translateZ(1px) rotateY(-80deg)}}
+/* Hold shut for 6% (108ms) so the pressed seal registers, then swing only outwards, towards the
+   guest, to 81deg. The leaves stay where they come to rest, standing open - the camera then walks
+   out between them, past the stiles and the backs of the leaves. */
+@keyframes hinge-left{0%,6%{transform:translateZ(1px) rotateY(0)}90%,100%{transform:translateZ(1px) rotateY(-81deg)}}
+@keyframes hinge-right{0%,6%{transform:translateZ(1px) rotateY(0)}90%,100%{transform:translateZ(1px) rotateY(81deg)}}
 @keyframes leaf-shade{0%,6%{opacity:0}88%,100%{opacity:1}}
 @keyframes haze-bloom{0%,6%{opacity:0}55%{opacity:.85}100%{opacity:.4}}
 @keyframes light-spill{0%,6%{opacity:0;transform:translateZ(2px) scaleX(.05)}88%,100%{opacity:1;transform:translateZ(2px) scaleX(1)}}
-/* The camera stops just short of the wall's own plane, so nothing is ever asked to pass through
-   the lens; by then the entrance has dissolved. */
-@keyframes walk-through{0%{transform:translateZ(0)}100%{transform:translateZ(calc(var(--dh)*.96))}}
+/* The open leaves stand about a fifth of --dh in front of the wall and the lens is 1.1 away, so
+   the camera stops at .85: nothing is ever asked to pass through the lens, and by then the
+   entrance has dissolved. */
+@keyframes walk-through{0%{transform:translateZ(0)}100%{transform:translateZ(calc(var(--dh)*.85))}}
 @keyframes entrance-dissolve{0%,45%{opacity:1}90%,100%{opacity:0}}
 @keyframes names-after-entry{0%,75%{opacity:0;transform:translateY(12px)}100%{opacity:1;transform:translateY(0)}}
 .intro-replay{display:block;margin:8px auto;font-size:12px;text-decoration:underline;text-underline-offset:5px;padding:10px 15px}
