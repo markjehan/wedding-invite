@@ -2,14 +2,27 @@
 
 On 10 November 2026 the couple asked for the message to say nothing but whose wedding it is: with the
 date and place written out, a guest has no reason to open the link, and the link is where they see
-their invitation and reply. The reminder says the same. {link} is the guest's own invitation.
+their invitation and reply. On 11 November 2026 the couple gave the final wording below, greeting each
+guest by the name on their invitation. The reminder says the same. {link} is the guest's own invitation.
 """
 from urllib.parse import quote
 
 INVITATION = (
-    'The Wedding of Naveen & Dulanjani\n'
+    'Dear {name},\n'
     '\n'
-    '{link}'
+    'With joyful hearts, we invite you to celebrate one of the most cherished moments of our lives '
+    'as we begin our forever together. ✨💍\n'
+    '\n'
+    'Your personal invitation is waiting for you below. We would be delighted for you to open it, '
+    "explore all the details, and let us know if you'll be joining us on our special day.\n"
+    '\n'
+    'Your invitation 👇\n'
+    '{link}\n'
+    '\n'
+    'Your presence would mean more to us than words can express. 🤍\n'
+    '\n'
+    'With love and excitement,\n'
+    'Naveen & Dulanjani 🌸'
 )
 
 REMINDER = INVITATION
