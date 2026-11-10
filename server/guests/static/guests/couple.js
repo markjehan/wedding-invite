@@ -60,6 +60,62 @@
     }, 0);
   });
 
+  // The guest list's "Select": tick guests, then delete them, mark them or download them together.
+  const bulk = document.getElementById('bulk');
+  const toggle = document.querySelector('.select-toggle');
+  const table = document.querySelector('.guest-table');
+  if (bulk && toggle && table) {
+    const boxes = [...table.querySelectorAll('tbody .pick input')];
+    const all = table.querySelector('.pick-all');
+    const plural = n => `${n} guest${n === 1 ? '' : 's'}`;
+    const update = () => {
+      const n = boxes.filter(box => box.checked).length;
+      boxes.forEach(box => box.closest('tr').classList.toggle('is-chosen', box.checked));
+      bulk.querySelector('[data-chosen]').textContent = n;
+      bulk.querySelector('[data-chosen-word]').textContent = n === 1 ? 'guest' : 'guests';
+      bulk.classList.toggle('is-empty', !n);
+      all.checked = n === boxes.length;
+      all.indeterminate = n > 0 && n < boxes.length;
+    };
+    const selecting = on => {
+      table.classList.toggle('is-selecting', on);
+      bulk.classList.toggle('is-open', on);
+      toggle.setAttribute('aria-pressed', on);
+      toggle.querySelector('span').textContent = on ? 'Done' : 'Select';
+      if (!on) boxes.forEach(box => { box.checked = false; });
+      update();
+    };
+    toggle.hidden = false;
+    toggle.addEventListener('click', () => selecting(!table.classList.contains('is-selecting')));
+    table.addEventListener('change', event => {
+      if (event.target === all) boxes.forEach(box => { box.checked = all.checked; });
+      update();
+    });
+    // While selecting, a tap anywhere on a guest's row ticks them, rather than opening their page.
+    table.addEventListener('click', event => {
+      if (!table.classList.contains('is-selecting')) return;
+      const row = event.target.closest('tbody tr');
+      if (!row || event.target.closest('.tick')) return;
+      event.preventDefault();
+      const box = row.querySelector('.pick input');
+      box.checked = !box.checked;
+      update();
+    });
+    bulk.querySelector('.bulk-all').addEventListener('click', () => { boxes.forEach(box => { box.checked = true; }); update(); });
+    bulk.querySelector('.bulk-none').addEventListener('click', () => { boxes.forEach(box => { box.checked = false; }); update(); });
+    bulk.addEventListener('submit', event => {
+      const ask = event.submitter?.dataset.confirm;
+      const n = boxes.filter(box => box.checked).length;
+      if (!n) { event.preventDefault(); return; }
+      if (ask && !confirm(ask.replace('{n}', plural(n)))) event.preventDefault();
+      bulk.querySelector('.bulk-menu')?.removeAttribute('open');
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && table.classList.contains('is-selecting')) selecting(false);
+    });
+    update();
+  }
+
   // The Excel picker shows which file was chosen.
   const sheet = document.querySelector('.drop-zone input[type=file]');
   if (sheet) sheet.addEventListener('change', () => {

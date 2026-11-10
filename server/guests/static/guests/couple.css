@@ -402,6 +402,43 @@ a.side-name:hover{text-decoration:underline}
 .preview-table tr.is-update .what{color:var(--ink-soft)}
 .preview-table tr.is-add .what{color:var(--coming);font-weight:600}
 
+/* ---------- Choosing many guests at once ---------- */
+/* Without the script the tick boxes and the bar are always there. With it, "Select" brings them in. */
+.guest-table .pick{width:52px;padding-right:0}
+.js .guest-table:not(.is-selecting) .pick{display:none}
+.guest-table.is-selecting .actions > *{visibility:hidden}
+.guest-table.is-selecting tbody tr{cursor:pointer}
+.guest-table tbody tr.is-chosen{background:var(--waiting-wash)}
+.tick{position:relative;display:inline-grid;place-items:center;width:44px;height:44px;margin:-10px -6px;cursor:pointer}
+.tick input{position:absolute;inset:0;margin:0;opacity:0;cursor:pointer}
+.tick span{width:22px;height:22px;border:1.5px solid var(--line);border-radius:6px;background:#fff;
+  transition:background-color .12s ease,border-color .12s ease}
+.tick input:checked + span,.tick input:indeterminate + span{border-color:var(--action);
+  background:var(--action) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fffcf5' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E") center/15px no-repeat}
+.tick input:indeterminate + span{background-image:linear-gradient(var(--sheet),var(--sheet));background-size:11px 2.5px}
+.tick input:focus-visible + span{outline:3px solid var(--gold);outline-offset:2px}
+.select-toggle[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--sheet)}
+
+.bulk-bar{position:sticky;bottom:12px;z-index:5;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 18px;
+  margin-top:14px;padding:12px 16px;background:var(--sheet);border:1px solid var(--line);border-radius:12px;
+  box-shadow:0 1px 1px #58452c0a,0 18px 40px -18px #58452c66;transition:opacity .18s ease,translate .22s var(--ease-out)}
+.js .bulk-bar:not(.is-open){display:none}
+@starting-style{.bulk-bar.is-open{opacity:0;translate:0 8px}}
+.bulk-count{display:flex;flex-wrap:wrap;align-items:center;gap:0 14px;font-size:16px}
+.bulk-count b{font-variant-numeric:tabular-nums}
+.bulk-actions{display:flex;flex-wrap:wrap;gap:8px}
+.bulk-bar.is-empty .bulk-actions{opacity:.45;pointer-events:none}
+.bulk-menu{position:relative}
+.bulk-menu summary{list-style:none}
+.bulk-menu summary::-webkit-details-marker{display:none}
+.bulk-menu summary .icon{width:16px;height:16px;rotate:-90deg;transition:rotate .15s ease}
+.bulk-menu[open] summary .icon{rotate:90deg}
+.bulk-menu-list{position:absolute;bottom:calc(100% + 6px);left:0;min-width:190px;display:grid;padding:6px;background:var(--sheet);
+  border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow)}
+.bulk-menu-item{min-height:42px;padding:0 12px;border:0;border-radius:7px;background:none;color:var(--ink);text-align:left;
+  font:500 16px Manrope,sans-serif;cursor:pointer}
+.bulk-menu-item:hover,.bulk-menu-item:focus-visible{background:var(--wash)}
+
 /* ---------- Narrower screens ---------- */
 /* Between laptop and phone the five tabs keep their words on one line by putting each under its icon. */
 @media (max-width:1080px) and (min-width:761px){
@@ -480,6 +517,14 @@ a.side-name:hover{text-decoration:underline}
   .guest-table .actions > *{margin:0}
   .guest-table .actions .button,.guest-table .send-form .button{width:100%;padding:0 6px;gap:6px;font-size:15.5px}
   .guest-table .is-open{display:inline-flex}
+  .guest-table.is-selecting tbody tr{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"pick who seats" "pick where where" "pick note note"}
+  .guest-table.is-selecting .actions{display:none}
+  .guest-table .pick{grid-area:pick;width:auto;align-self:start;padding:0}
+  .guest-table .tick{margin:-8px 0 0 -10px}
+  .bulk-bar{bottom:8px;margin:14px -6px 0;padding:12px}
+  .bulk-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+  .bulk-actions .button,.bulk-menu summary{width:100%;padding:0 8px}
+  .bulk-menu-list{left:auto;right:0}
   .preview-table{display:block;overflow-x:auto}
 
   .mini-list li{grid-template-columns:minmax(0,1fr);grid-template-areas:"name" "stage" "action";gap:4px}

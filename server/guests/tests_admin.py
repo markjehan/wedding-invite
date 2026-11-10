@@ -208,6 +208,39 @@ class GuestListTests(TestCase):
         self.client.post(url)
         self.assertFalse(Guest.objects.filter(pk=self.guest.pk).exists())
 
+    def test_many_guests_at_once(self):
+        url = reverse('couple:guest_bulk')
+        self.assertEqual(self.client.get(url).status_code, 405)
+        chosen = [self.guests['unsent'].pk, self.guests['coming'].pk]
+        back = '/admin/guests/?show=coming'
+
+        response = self.client.post(url, {'ids': chosen, 'do': 'side-groom', 'back': back})
+        self.assertRedirects(response, back, fetch_redirect_response=False)
+        self.assertEqual(set(Guest.objects.filter(pk__in=chosen).values_list('side', flat=True)), {'groom'})
+
+        self.client.post(url, {'ids': chosen, 'do': 'sent'})
+        self.assertIsNotNone(Guest.objects.get(pk=self.guests['unsent'].pk).sent_at)
+        self.client.post(url, {'ids': chosen, 'do': 'clear'})
+        coming = Guest.objects.get(pk=self.guests['coming'].pk)
+        self.assertEqual((coming.reply, coming.people, coming.message), ('', 0, ''))
+
+        response = self.client.post(url, {'ids': chosen, 'do': 'export'})
+        self.assertEqual(response['Content-Type'], XLSX)
+        names_in_sheet = [row[0].value for row in load_workbook(BytesIO(response.content)).active.iter_rows(min_row=2)]
+        self.assertEqual(names_in_sheet, ['Nimal', 'Sunil & Kamala'])
+
+        self.client.post(url, {'ids': chosen, 'do': 'delete'})
+        self.assertFalse(Guest.objects.filter(pk__in=chosen).exists())
+        self.assertEqual(Guest.objects.count(), 3)
+
+    def test_many_guests_needs_a_tick_and_stays_on_this_site(self):
+        url = reverse('couple:guest_bulk')
+        response = self.client.post(url, {'do': 'delete', 'back': 'https://elsewhere.example/'})
+        self.assertRedirects(response, reverse('couple:guests'), fetch_redirect_response=False)
+        self.assertEqual(Guest.objects.count(), 5)
+        self.client.post(url, {'ids': [self.guest.pk], 'do': 'nonsense'})
+        self.assertTrue(Guest.objects.filter(pk=self.guest.pk).exists())
+
     def test_whatsapp_opens_with_their_link_and_marks_it_sent(self):
         url = reverse('couple:send', args=[self.guest.pk])
         self.assertEqual(self.client.get(url).status_code, 405)

@@ -14,6 +14,7 @@ from django.core.exceptions import PermissionDenied
 from django.db.models import Count, Q, Sum
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_POST
@@ -261,6 +262,49 @@ def guest_delete(request, pk):
     guest.delete()
     messages.success(request, f'{guest.name} was taken off the list. Their link no longer opens their invitation.')
     return redirect('couple:guests')
+
+
+@require_POST
+@couple_only
+def guest_bulk(request):
+    """Many guests at once, ticked on the guest list: take them off, mark them sent or not sent, put
+    them on a side, clear their replies, or download just them as Excel."""
+    back = request.POST.get('back', '')
+    if not back.startswith(reverse('couple:guests')):
+        back = reverse('couple:guests')
+    ids = [value for value in request.POST.getlist('ids') if value.isdigit()]
+    guests = Guest.objects.filter(pk__in=ids)
+    n = guests.count()
+    if not n:
+        messages.error(request, 'Tick at least one guest first.')
+        return redirect(back)
+    who = f'{n} guest{"s" * (n != 1)}'
+    do = request.POST.get('do')
+    if do == 'export':
+        path_of = names.paths()
+        sheet = spreadsheet.write(guests.order_by('name'), lambda guest: link_of(request, guest, path_of))
+        return _download(sheet, f'guests-{n}-chosen-{timezone.localdate():%Y-%m-%d}.xlsx')
+    if do == 'delete':
+        guests.delete()
+        done = f'{who} taken off the list. Their links no longer open an invitation.'
+    elif do == 'sent':
+        guests.filter(sent_at__isnull=True).update(sent_at=timezone.now())
+        done = f'{who} marked as sent.'
+    elif do == 'unsent':
+        guests.update(sent_at=None, reminded_at=None)
+        done = f'{who} marked as not sent.'
+    elif do in ('side-bride', 'side-groom', 'side-none'):
+        side = {'side-bride': 'bride', 'side-groom': 'groom', 'side-none': ''}[do]
+        guests.update(side=side)
+        done = f'{who} moved to {dict(SIDES).get(side, "no side")}.'
+    elif do == 'clear':
+        guests.update(reply='', people=0, message='', reply_language='', replied_at=None)
+        done = f'Replies cleared for {who}. They can answer again on their links.'
+    else:
+        messages.error(request, 'Nothing was changed. Please try again.')
+        return redirect(back)
+    messages.success(request, done)
+    return redirect(back)
 
 
 @require_POST

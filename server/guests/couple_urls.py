@@ -9,6 +9,7 @@ urlpatterns = [
     path('garden.json', dashboard.garden_now, name='garden'),
     path('guests/', dashboard.guest_list, name='guests'),
     path('guests/new/', dashboard.guest_new, name='guest_new'),
+    path('guests/chosen/', dashboard.guest_bulk, name='guest_bulk'),
     path('guests/<int:pk>/', dashboard.guest_page, name='guest'),
     path('guests/<int:pk>/remove/', dashboard.guest_delete, name='guest_delete'),
     path('guests/<int:pk>/whatsapp/', dashboard.send, name='send'),

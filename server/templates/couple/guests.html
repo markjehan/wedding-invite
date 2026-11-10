@@ -5,6 +5,7 @@
   <h1>Guests <span class="count">{{ counts.invited }}</span></h1>
   <div class="head-actions">
     <a class="button" href="{% url 'couple:guest_new' %}"><svg class="icon"><use href="#i-plus"/></svg><span>Add a guest</span></a>
+    {% if guests %}<button type="button" class="button is-quiet select-toggle" aria-pressed="false" hidden><svg class="icon"><use href="#i-check"/></svg><span>Select</span></button>{% endif %}
     <a class="button is-quiet head-download" href="{% url 'couple:export' %}"><svg class="icon"><use href="#i-download"/></svg><span>Download Excel</span></a>
   </div>
 </div>
@@ -46,6 +47,7 @@
   <table class="guest-table">
     <thead>
       <tr>
+        <th scope="col" class="pick"><label class="tick"><input type="checkbox" class="pick-all" aria-label="Select every guest shown"><span aria-hidden="true"></span></label></th>
         <th scope="col">Guest</th>
         <th scope="col" class="num">Seats</th>
         <th scope="col">Where they are</th>
@@ -56,6 +58,7 @@
     <tbody>
       {% for guest in guests %}
         <tr>
+          <td class="pick"><label class="tick"><input type="checkbox" name="ids" value="{{ guest.pk }}" form="bulk" aria-label="Select {{ guest.name }}"><span aria-hidden="true"></span></label></td>
           <th scope="row" class="who">
             <a class="name" href="{% url 'couple:guest' guest.pk %}">{{ guest.name }}</a>
             <span class="sub">{% if guest.name_si %}<span lang="si">{{ guest.name_si }}</span>{% endif %}{% if guest.side %}<span>{{ guest.get_side_display }}</span>{% endif %}</span>
@@ -74,6 +77,28 @@
       {% endfor %}
     </tbody>
   </table>
+  <form id="bulk" class="bulk-bar" method="post" action="{% url 'couple:guest_bulk' %}" aria-label="Do something with the guests you ticked">
+    {% csrf_token %}
+    <input type="hidden" name="back" value="{{ request.get_full_path }}">
+    <div class="bulk-count"><b data-chosen>0</b> <span data-chosen-word>guests</span> selected
+      <button type="button" class="text-button bulk-all">Select all {{ guests|length }}</button>
+      <button type="button" class="text-button bulk-none">Clear</button>
+    </div>
+    <div class="bulk-actions">
+      <button class="button is-quiet is-small" name="do" value="export"><svg class="icon"><use href="#i-download"/></svg><span>Download Excel</span></button>
+      <button class="button is-quiet is-small" name="do" value="sent"><svg class="icon"><use href="#i-send"/></svg><span>Mark as sent</span></button>
+      <button class="button is-quiet is-small" name="do" value="unsent"><span>Mark not sent</span></button>
+      <details class="bulk-menu">
+        <summary class="button is-quiet is-small"><span>Move to side</span><svg class="icon"><use href="#i-back"/></svg></summary>
+        <div class="bulk-menu-list">
+          {% for key, label in sides %}<button class="bulk-menu-item" name="do" value="side-{{ key }}">{{ label }}</button>{% endfor %}
+          <button class="bulk-menu-item" name="do" value="side-none">No side</button>
+        </div>
+      </details>
+      <button class="button is-quiet is-small" name="do" value="clear" data-confirm="Clear the replies of {n}? They will be able to answer again on their links."><span>Clear replies</span></button>
+      <button class="button is-quiet is-small is-declined" name="do" value="delete" data-confirm="Take {n} off the list? Their links will stop working. This cannot be undone."><svg class="icon"><use href="#i-trash"/></svg><span>Delete</span></button>
+    </div>
+  </form>
   <p class="help list-help">Tap a name to change their details, record a reply they gave you by phone, or take them off the list.</p>
   <p class="foot-download"><a class="button is-quiet" href="{% url 'couple:export' %}"><svg class="icon"><use href="#i-download"/></svg><span>Download the list as Excel</span></a></p>
 {% elif counts.invited == 0 and not query and not side %}
