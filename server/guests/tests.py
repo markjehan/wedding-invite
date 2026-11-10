@@ -97,6 +97,11 @@ class PageTests(TestCase):
         self.assertIn('<meta property="og:image" content="http://testserver/assets/couple/naveen-dulanjani-invite.jpg">', page)
         self.assertEqual(self.client.get('/assets/couple/naveen-dulanjani-invite.jpg').status_code, 200)
 
+    def test_link_preview_apps_may_check_before_fetching(self):
+        # WhatsApp and others may ask with HEAD first; a "not allowed" there left the card without its picture.
+        for url in ('/', '/?name=Ruwan', f'/{self.guest.code}', '/assets/couple/naveen-dulanjani-invite.jpg'):
+            self.assertEqual(self.client.head(url).status_code, 200, url)
+
     def test_code_in_capitals_still_works(self):
         self.assertEqual(self.client.get(f'/{self.guest.code.upper()}').status_code, 200)
 

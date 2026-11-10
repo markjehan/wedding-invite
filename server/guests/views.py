@@ -6,7 +6,7 @@ from django.db.models import F
 from django.http import FileResponse, Http404, HttpResponse, JsonResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_POST, require_safe
 
 from . import names, site
 from .models import Guest, ReplyTo
@@ -30,7 +30,7 @@ def _reply_of(guest):
     return {'reply': guest.reply, 'people': guest.people, 'message': guest.message}
 
 
-@require_GET
+@require_safe
 def general(request):
     """The invitation without a name: everything to read, nothing to reply with.
 
@@ -46,7 +46,7 @@ def general(request):
     return _guest_page(request, guest) if guest else _page(request, {'mode': 'named', 'name': name})
 
 
-@require_GET
+@require_safe
 def personal(request, code):
     guest = Guest.objects.filter(code=code.lower()).first()
     # A mistyped or retired link still shows the invitation, just not anyone's details.
@@ -115,7 +115,7 @@ def opened(request, code):
     return HttpResponse(status=204)
 
 
-@require_GET
+@require_safe
 def site_file(request, name):
     path = site.public_file(name)
     if path is None:
