@@ -214,9 +214,7 @@ class GuestListTests(TestCase):
         response = self.client.post(url)
         self.assertTrue(response['Location'].startswith('https://api.whatsapp.com/send?phone=94770000001&text='))
         text = unquote(response['Location'])
-        self.assertIn('💌 Dear Nimal,', text)
-        self.assertIn('💍✨', text)
-        self.assertIn('http://testserver/?name=Nimal', text)
+        self.assertIn('The Wedding of Naveen & Dulanjani\n\nhttp://testserver/?name=Nimal', text)
         self.guest.refresh_from_db()
         first = self.guest.sent_at
         self.assertIsNotNone(first)
@@ -228,7 +226,7 @@ class GuestListTests(TestCase):
         guest = self.guests['sent']
         sent = guest.sent_at
         response = self.client.post(reverse('couple:send', args=[guest.pk]), {'kind': 'reminder'})
-        self.assertIn('gentle reminder', unquote(response['Location']))
+        self.assertIn('The Wedding of Naveen & Dulanjani\n\nhttp://testserver/?name=Amali', unquote(response['Location']))
         guest.refresh_from_db()
         self.assertIsNotNone(guest.reminded_at)
         self.assertEqual(guest.sent_at, sent)

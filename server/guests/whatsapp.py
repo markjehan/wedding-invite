@@ -1,42 +1,18 @@
 """The WhatsApp messages each guest is sent with their link: the invitation, and a reminder.
 
-They are written in English, as the couple asked on 30 October 2026. The invitation itself still opens
-on its language page, where every guest chooses English or Sinhala for themselves. Change the wording
-here; {name} is the name the invitation greets them by.
+On 10 November 2026 the couple asked for the message to say nothing but whose wedding it is: with the
+date and place written out, a guest has no reason to open the link, and the link is where they see
+their invitation and reply. The reminder says the same. {link} is the guest's own invitation.
 """
 from urllib.parse import quote
 
 INVITATION = (
-    '💌 Dear {name},\n'
+    'The Wedding of Naveen & Dulanjani\n'
     '\n'
-    'With joy in our hearts, we would love you to be part of the most special day of our lives. '
-    'Please join us as we begin our forever together. 💍✨\n'
-    '\n'
-    '📅 Monday, 7 December 2026\n'
-    '📍 Avenra Gardens, Negombo\n'
-    '\n'
-    'Your own invitation is waiting for you here 👇\n'
-    '{link}\n'
-    '\n'
-    'Open it to see all the details, and let us know if you can come. '
-    'Having you there would mean the world to us. 🤍\n'
-    '\n'
-    'With love,\n'
-    'Naveen & Dulanjani 🌸'
+    '{link}'
 )
 
-REMINDER = (
-    '🌸 Dear {name},\n'
-    '\n'
-    'A gentle reminder from Naveen & Dulanjani: we would love to know whether you can celebrate '
-    'with us on Monday, 7 December 2026. 💍\n'
-    '\n'
-    'It only takes a moment to reply on your invitation 👇\n'
-    '{link}\n'
-    '\n'
-    'We truly hope to see you there. 🤍\n'
-    'Naveen & Dulanjani'
-)
+REMINDER = INVITATION
 
 
 def message(guest, link, reminder=False):
