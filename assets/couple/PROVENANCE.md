@@ -48,7 +48,10 @@ drawing, with the detail of a hand-drawn graphite portrait. Drawings made by cod
 were turned down, and on 10 November 2026 the user sent examples of graphite pencil portraits made by
 AI and linked their Figma account to Weave for it.
 
-`couple-drawing.webp` is that drawing. It starts from the shoot's full-size `BSD_9474.JPG` (6048 by
+`couple-drawing-<fingerprint>.webp` is that drawing. The fingerprint in its name changes whenever the
+drawing does: the site lets browsers keep anything in `assets/` for a day without asking again, so
+when the drawing turned gold under its old name, phones that had already opened the invitation went
+on showing it grey. It starts from the shoot's full-size `BSD_9474.JPG` (6048 by
 4024, the red outfits under the white bell arch). The couple were cut out of the arch, the garden and
 the wall (GrabCut guided by hand, then closed-form matting for the edge, made on this computer),
 framed from his hair to below his watch, set on white and uploaded to Weave, where Nano Banana Pro
