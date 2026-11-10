@@ -11,6 +11,10 @@
   // the doors synchronously - a class added after that point would restart the figure mid-step.
   const canMove = !reduced.matches && CSS.supports('translate','0 1px');
   if(canMove)document.documentElement.classList.add('motion-ready');
+  // A guest who refreshes, or comes back to the page, is put back where they had been reading by the
+  // browser itself, some time after this script has run. The doors then opened onto the middle of the
+  // invitation while the mark drew itself unseen at the top. The page keeps its own place instead.
+  try{history.scrollRestoration='manual'}catch{}
   // ---------- The score ----------
   // One recording carries the whole invitation, and every duration in it is cut from the same grid.
   // The file is trimmed to its own first downbeat, so t=0 is beat one. At 100bpm a beat is 0.6s and
@@ -275,6 +279,9 @@
         // their whole swing and land a little after the downbeat instead. Silence reports nothing.
         const shift=Math.min(Math.max(Music.position()||0,0),.15);
         document.documentElement.style.setProperty('--sync',shift+'s');
+        // The doors open onto the welcome and nothing else, whatever moved the page beneath them in
+        // the meantime: the mark is the first thing a guest sees through them, every time.
+        if(returnHash==='#welcome')window.scrollTo({top:0,behavior:'instant'});
         beginArrival(ARRIVE_LEAD-shift);
         intro.classList.add('opening');document.body.classList.add('intro-opening');
         // Two bars: three beats of swing, then five walking through, less whatever --sync skipped.
