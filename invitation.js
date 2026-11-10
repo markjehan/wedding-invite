@@ -559,18 +559,27 @@
         const leaving=prints[top];leaving.style.setProperty('--throw',side);leaving.classList.add('is-thrown');
         top=(top+1)%n;lay();setTimeout(()=>leaving.classList.remove('is-thrown'),800);
       }else{
-        top=(top-1+n)%n;const arriving=prints[top];arriving.style.setProperty('--throw',-1);
+        top=(top-1+n)%n;const arriving=prints[top];arriving.style.setProperty('--throw',side);
         arriving.classList.add('is-thrown','is-still');lay();void arriving.offsetWidth;
         arriving.classList.remove('is-still');requestAnimationFrame(()=>arriving.classList.remove('is-thrown'));
       }
     }
-    function later(wait=4600){clearTimeout(timer);if(canMove&&inView&&!held&&!document.hidden)timer=setTimeout(()=>{turn(1);later()},wait)}
-    const byHand=(step,side)=>{turn(step,side);later(9000)};
+    // A print turns once a bar, on the bar's first beat while the music is sounding, so the pile is
+    // leafed through in time with it. The wait is never shorter than half a bar, so a print set down
+    // just before a downbeat is not taken away again at once.
+    function later(bars=1){
+      clearTimeout(timer);if(!(canMove&&inView&&!held&&!document.hidden))return;
+      const at=Music.position(),toBar=at===null?TEMPO.bar:(TEMPO.bar-at%TEMPO.bar)%TEMPO.bar;
+      let wait=toBar+(bars-1)*TEMPO.bar;if(wait<TEMPO.bar/2)wait+=TEMPO.bar;
+      timer=setTimeout(()=>{turn(1);later()},wait*1000);
+    }
+    const byHand=(step,side)=>{turn(step,side);later(4)};
     lay();
     stack.querySelectorAll('.stack-turn').forEach(button=>button.addEventListener('click',()=>byHand(+button.dataset.turn)));
     table.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();byHand(e.key==='ArrowRight'?1:-1)}});
-    // A swipe carries the top print with the finger; let go far enough and it is thrown the way it was
-    // going, otherwise it slips back. A tap that hardly moves turns the next one over.
+    // A swipe carries the top print with the finger. Let go far enough to the right and it is thrown
+    // off that way to show the next; far enough to the left and the previous print slides back in from
+    // the right, following the finger. A shorter swipe slips back, and a tap turns the next one over.
     let start=null,dx=0;
     table.addEventListener('pointerdown',e=>{if(e.button)return;start=e.clientX;dx=0;table.setPointerCapture(e.pointerId)});
     table.addEventListener('pointermove',e=>{
@@ -582,7 +591,7 @@
       if(start===null)return;start=null;const print=prints[top];
       print.style.translate=print.style.rotate='';print.classList.remove('is-dragging');
       if(e.type==='pointercancel')return;
-      if(Math.abs(dx)>60)byHand(1,Math.sign(dx));else if(Math.abs(dx)<6)byHand(1);
+      if(dx>60)byHand(1,1);else if(dx<-60)byHand(-1,1);else if(Math.abs(dx)<6)byHand(1);
     };
     table.addEventListener('pointerup',release);table.addEventListener('pointercancel',release);
     table.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'){held=true;clearTimeout(timer)}});
