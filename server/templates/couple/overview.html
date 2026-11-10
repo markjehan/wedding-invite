@@ -4,12 +4,23 @@
 {% url 'couple:guests' as guests_url %}
 
 <div class="hello">
-  <h1>The guest list</h1>
-  <p class="countdown">
-    {% if days > 0 %}<b>{{ days }}</b> day{{ days|pluralize }} to the wedding on Monday, 7 December
-    {% elif days == 0 %}The wedding is today
-    {% else %}The wedding was on 7 December{% endif %}{% if replies_close %}. Guests can reply until {{ replies_close|date:"j F" }}.{% endif %}
-  </p>
+  <div class="hello-text">
+    <h1>The guest list</h1>
+    <p class="countdown">
+      {% if days > 0 %}<b>{{ days }}</b> day{{ days|pluralize }} to the wedding on Monday, 7 December
+      {% elif days == 0 %}The wedding is today
+      {% else %}The wedding was on 7 December{% endif %}{% if replies_close %}. Guests can reply until {{ replies_close|date:"j F" }}.{% endif %}
+    </p>
+  </div>
+  {# The question most people come here with: has this person replied? #}
+  <form class="finder is-home" method="get" action="{{ guests_url }}" role="search">
+    <label class="search">
+      <span class="visually-hidden">Find a guest</span>
+      <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
+      <input type="search" name="q" placeholder="Guest's name or number" autocomplete="off" enterkeyhint="search">
+    </label>
+    <button class="button">Find</button>
+  </form>
 </div>
 
 {% if not reply_to.bride or not reply_to.groom %}
@@ -21,23 +32,34 @@
   </div>
 {% endif %}
 
-{# The question most people come here with: has this person replied? #}
-<form class="finder is-home" method="get" action="{{ guests_url }}" role="search">
-  <label class="search">
-    <span class="finder-label">Find a guest</span>
-    <svg class="icon" aria-hidden="true"><use href="#i-search"/></svg>
-    <input type="search" name="q" placeholder="Name or phone number" autocomplete="off" enterkeyhint="search">
-  </label>
-  <button class="button">Find</button>
-</form>
-
 {% include "couple/_flowers.html" %}
 {% comment %}The whole list as a garden: one magnolia for every invitation, at the stage it has reached, on one
    champagne ground line. Each flower opens its guest; the key under it names each stage with its number
    and opens that part of the list. A flower blooms on this page the moment its guest replies (couple.js).{% endcomment %}
 <section class="sheet summary" aria-labelledby="summary-title" data-live="{% url 'couple:garden' %}" data-guests="{{ guests_url }}">
-  <h2 id="summary-title" class="summary-lead"><span class="summary-figure">{{ counts.people }}</span> {{ counts.people|pluralize:"person is,people are" }} coming</h2>
-  <p class="summary-sub">{% if counts.invited %}From {{ counts.coming }} of {{ counts.invited }} invitation{{ counts.invited|pluralize }}, with {{ counts.seats }} seat{{ counts.seats|pluralize }} kept in all.{% else %}Nobody is on the list yet.{% endif %}</p>
+  {# The answer first: how many people are coming, with the other three parts of the list beside it. #}
+  <div class="summary-top">
+    <div class="summary-main">
+      <h2 id="summary-title" class="summary-lead"><span class="summary-figure">{{ counts.people }}</span> <span>{{ counts.people|pluralize:"person is,people are" }} coming</span></h2>
+      <p class="summary-sub">{% if counts.invited %}From {{ counts.coming }} of {{ counts.invited }} invitation{{ counts.invited|pluralize }}, with {{ counts.seats }} seat{{ counts.seats|pluralize }} kept in all.{% else %}Nobody is on the list yet.{% endif %}</p>
+      <p class="summary-actions">
+        <a class="button is-small" href="{{ guests_url }}?show=coming"><svg class="icon"><use href="#i-people"/></svg><span>See who is coming</span></a>
+        <a class="button is-quiet is-small" href="{% url 'couple:export' %}"><svg class="icon"><use href="#i-download"/></svg><span>Download as Excel</span></a>
+      </p>
+    </div>
+    <ul class="tally-key">
+      {% for tile in tiles %}{% if tile.key != 'coming' %}
+        <li>
+          <a class="key is-{{ tile.key }}" href="{{ guests_url }}?show={{ tile.key }}">
+            <svg class="swatch is-{{ tile.flower }}" viewBox="0 0 40 60" aria-hidden="true"><use href="#f-{{ tile.flower }}"/></svg>
+            <span class="key-figure">{{ tile.value }}</span>
+            <span class="key-text"><span class="key-label">{{ tile.label }}</span><span class="key-note">{{ tile.note }}</span></span>
+            <svg class="icon key-go" aria-hidden="true"><use href="#i-back"/></svg>
+          </a>
+        </li>
+      {% endif %}{% endfor %}
+    </ul>
+  </div>
   {% if garden %}
     <ul class="garden{% if garden|length > 90 %} is-crowded{% elif garden|length > 36 %} is-dense{% endif %}" aria-label="Every invitation, as a flower">
       {% for flower in garden %}
@@ -51,18 +73,6 @@
       {% endfor %}
     </ul>
   {% endif %}
-  <ul class="tally-key">
-    {% for tile in tiles %}
-      <li>
-        <a class="key is-{{ tile.key }}" href="{{ guests_url }}?show={{ tile.key }}">
-          <svg class="swatch is-{{ tile.flower }}" viewBox="0 0 40 60" aria-hidden="true"><use href="#f-{{ tile.flower }}"/></svg>
-          <span class="key-figure">{{ tile.value }}</span>
-          <span class="key-text"><span class="key-label">{{ tile.label }}</span><span class="key-note">{{ tile.note }}</span></span>
-          <svg class="icon key-go" aria-hidden="true"><use href="#i-back"/></svg>
-        </a>
-      </li>
-    {% endfor %}
-  </ul>
 </section>
 
 <div class="garden-news" role="status" aria-live="polite"></div>
@@ -70,46 +80,38 @@
 <div class="overview">
   <section class="sheet needs" aria-labelledby="needs-title">
     <h2 id="needs-title">What to do next</h2>
-    {% for group in needs %}
-      <div class="need">
-        <h3><a href="{{ guests_url }}?show={{ group.key }}">{{ group.label }}</a> <span class="count">{{ group.total }}</span></h3>
-        {% if group.guests %}
-          <p class="help">{% if group.key == 'unsent' %}They have not been sent their link yet. Press <b>Send</b> and WhatsApp opens with the message already written. Check it, then press send in WhatsApp.{% else %}They have their link but have not answered. <b>Remind</b> opens WhatsApp with a gentle reminder written for you.{% endif %}</p>
-          <ul class="mini-list">
-            {% for guest in group.guests %}
-              <li>
-                <a class="name" href="{% url 'couple:guest' guest.pk %}">{{ guest.name }}</a>
-                {% include "couple/_stage.html" %}
-                {% include "couple/_send.html" %}
-              </li>
-            {% endfor %}
-          </ul>
-          {% if group.total > group.guests|length %}<a class="more" href="{{ guests_url }}?show={{ group.key }}">See all {{ group.total }}</a>{% endif %}
-        {% else %}
-          <p class="empty">{% if group.key == 'unsent' %}Nothing to do. Everyone on the list has been sent their invitation.{% else %}Nothing to do. Nobody is waiting to be reminded.{% endif %}</p>
-        {% endif %}
+    {% if not counts.invited %}
+      <div class="all-done">
+        <svg class="icon" aria-hidden="true"><use href="#i-people"/></svg>
+        <p><b>Start by adding your guests.</b> <a href="{% url 'couple:import' %}">Add them from Excel</a>, or one at a time on <a href="{{ guests_url }}">Guests</a>.</p>
       </div>
-    {% endfor %}
-  </section>
-
-  <section class="sheet sides" aria-labelledby="sides-title">
-    <h2 id="sides-title">Each side</h2>
-    <ul class="side-list">
-      {% for side in sides %}
-        <li>
-          <a class="side-name" href="{{ guests_url }}?side={{ side.key }}">{{ side.label }}</a>
-          <p><b class="is-coming">{{ side.people }} coming</b> · {{ side.declined }} can't come · {{ side.waiting }} no answer yet</p>
-          {% if side.invited %}
-            <div class="tally is-thin" aria-hidden="true">{% if side.coming %}<span class="tally-part is-coming" style="flex-grow:{{ side.coming }}"></span>{% endif %}{% if side.declined %}<span class="tally-part is-declined" style="flex-grow:{{ side.declined }}"></span>{% endif %}{% if side.sent or side.opened %}<span class="tally-part is-waiting" style="flex-grow:{{ side.sent|add:side.opened }}"></span>{% endif %}{% if side.unsent %}<span class="tally-part is-unsent" style="flex-grow:{{ side.unsent }}"></span>{% endif %}</div>
+    {% elif not needs.0.total and not needs.1.total %}
+      <div class="all-done">
+        <svg class="icon" aria-hidden="true"><use href="#i-check"/></svg>
+        <p><b>Nothing to do right now.</b> Everyone on the list has their invitation, and nobody is waiting to be reminded.</p>
+      </div>
+    {% else %}
+      {% for group in needs %}
+        <div class="need">
+          <h3><a href="{{ guests_url }}?show={{ group.key }}">{{ group.label }}</a> <span class="count">{{ group.total }}</span></h3>
+          {% if group.guests %}
+            <p class="help">{% if group.key == 'unsent' %}They have not been sent their link yet. Press <b>Send</b> and WhatsApp opens with the message already written. Check it, then press send in WhatsApp.{% else %}They have their link but have not answered. <b>Remind</b> opens WhatsApp with a gentle reminder written for you.{% endif %}</p>
+            <ul class="mini-list">
+              {% for guest in group.guests %}
+                <li>
+                  <a class="name" href="{% url 'couple:guest' guest.pk %}">{{ guest.name }}</a>
+                  {% include "couple/_stage.html" %}
+                  {% include "couple/_send.html" %}
+                </li>
+              {% endfor %}
+            </ul>
+            {% if group.total > group.guests|length %}<a class="more" href="{{ guests_url }}?show={{ group.key }}">See all {{ group.total }}</a>{% endif %}
+          {% else %}
+            <p class="empty">{% if group.key == 'unsent' %}Everyone on the list has been sent their invitation.{% else %}Nobody is waiting to be reminded.{% endif %}</p>
           {% endif %}
-          <p class="quiet">{{ side.invited }} invitation{{ side.invited|pluralize }}, {{ side.seats }} seat{{ side.seats|pluralize }} kept</p>
-          <p class="reply-to"><svg class="icon" aria-hidden="true"><use href="#i-send"/></svg>Replies go to +{{ side.reply_to }}</p>
-        </li>
+        </div>
       {% endfor %}
-    </ul>
-    <p class="numbers-link"><a class="button is-quiet is-small" href="{% url 'couple:numbers' %}"><svg class="icon"><use href="#i-phone"/></svg><span>Change the reply numbers</span></a></p>
-    <p class="help">“Coming” counts people. The rest count invitations, and one invitation can be a whole family.</p>
-    <a class="button is-quiet" href="{% url 'couple:export' %}"><svg class="icon"><use href="#i-download"/></svg><span>Download the list as Excel</span></a>
+    {% endif %}
   </section>
 
   <section class="sheet replies" aria-labelledby="replies-title">
@@ -129,6 +131,26 @@
     {% else %}
       <p class="empty">No replies yet. They appear here, with anything the guest writes, the moment they reply.</p>
     {% endif %}
+  </section>
+
+  <section class="sheet sides" aria-labelledby="sides-title">
+    <div class="sheet-head">
+      <h2 id="sides-title">Each side</h2>
+      <a class="button is-quiet is-small" href="{% url 'couple:numbers' %}"><svg class="icon"><use href="#i-phone"/></svg><span>Change the reply numbers</span></a>
+    </div>
+    <ul class="side-list">
+      {% for side in sides %}
+        <li>
+          <a class="side-name" href="{{ guests_url }}?side={{ side.key }}">{{ side.label }}</a>
+          <p class="side-coming"><b>{{ side.people }}</b> coming</p>
+          <div class="tally is-thin" aria-hidden="true">{% if side.coming %}<span class="tally-part is-coming" style="flex-grow:{{ side.coming }}"></span>{% endif %}{% if side.declined %}<span class="tally-part is-declined" style="flex-grow:{{ side.declined }}"></span>{% endif %}{% if side.sent or side.opened %}<span class="tally-part is-waiting" style="flex-grow:{{ side.sent|add:side.opened }}"></span>{% endif %}{% if side.unsent %}<span class="tally-part is-unsent" style="flex-grow:{{ side.unsent }}"></span>{% endif %}</div>
+          <p>{{ side.declined }} can't come · {{ side.waiting }} no answer yet</p>
+          <p class="quiet">{{ side.invited }} invitation{{ side.invited|pluralize }}, {{ side.seats }} seat{{ side.seats|pluralize }} kept</p>
+          <p class="reply-to"><svg class="icon" aria-hidden="true"><use href="#i-send"/></svg>Replies go to +{{ side.reply_to }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+    <p class="help">“Coming” counts people. The rest count invitations, and one invitation can be a whole family.</p>
   </section>
 </div>
 {% endblock %}

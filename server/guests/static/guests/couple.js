@@ -225,13 +225,13 @@
       for (const part of parts) {
         const now = document.querySelector(part), next = fresh.querySelector(part);
         if (now && next) now.replaceWith(next);
-        else if (next && part === '.garden') summary.querySelector('.summary-sub').after(next);
+        else if (next && part === '.garden') summary.append(next);
         else if (now && !next) now.remove();
       }
       const note = document.querySelector('.setup-note'), freshNote = fresh.querySelector('.setup-note');
       if (note && freshNote) note.replaceWith(freshNote);
       else if (note) note.remove();
-      else if (freshNote) document.querySelector('.finder.is-home')?.before(freshNote);
+      else if (freshNote) document.querySelector('.hello')?.after(freshNote);
     };
 
     let busy = false;

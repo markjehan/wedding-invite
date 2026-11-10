@@ -109,17 +109,18 @@ table{font-variant-numeric:tabular-nums}
 [data-stage]{transition:filter .2s ease,opacity .2s ease}
 
 /* ---------- Home ---------- */
-.hello{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 24px;margin-bottom:18px}
-.hello h1{font-size:30px}
-.countdown{font-size:16px;color:var(--ink-soft)}
+.hello{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 32px;margin-bottom:22px}
+.hello-text{flex:1 1 320px}
+.hello h1{font-size:32px;line-height:1.2}
+.countdown{margin-top:4px;font-size:16px;color:var(--ink-soft)}
 .countdown b{color:var(--ink)}
 
 .finder{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:16px}
 .search{position:relative;flex:1 1 300px;max-width:520px}
 .search .icon{position:absolute;left:14px;bottom:13px;color:var(--ink-soft);pointer-events:none}
 .finder-label{display:block;margin-bottom:7px;font-size:16px;font-weight:600}
-.finder.is-home{margin-bottom:26px}
-.finder.is-home .search{max-width:620px}
+.finder.is-home{flex:0 1 500px;flex-wrap:nowrap;margin-bottom:0}
+.finder.is-home .search{flex:1 1 0;min-width:0;max-width:none}
 .search input,.side-pick select,.field input,.field select,.field textarea,.fix-coming select{width:100%;min-height:var(--tap);padding:10px 14px;
   border:1.5px solid var(--line);border-radius:var(--radius);background:#fff;color:var(--ink);font:400 17px/1.4 Manrope,sans-serif;
   transition:border-color .15s ease,box-shadow .15s ease}
@@ -131,12 +132,16 @@ table{font-variant-numeric:tabular-nums}
 .search input:focus,.side-pick select:focus,.field input:focus,.field select:focus,.field textarea:focus,.fix-coming select:focus{
   outline:none;border-color:var(--gold);box-shadow:0 0 0 3px #ac8b5140}
 
-/* The whole list on one champagne rule. Each part is as long as its share of the invitations, and the
-   key under it names the part with its number, its diamond and where it leads. */
-.summary{margin-bottom:24px;padding:26px 28px 12px}
-.summary-lead{display:flex;align-items:baseline;flex-wrap:wrap;gap:2px 12px;font-size:24px;line-height:1.2;color:var(--coming)}
-.summary-figure{font-size:56px;font-weight:500;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
-.summary-sub{margin-top:8px;font-size:16px;color:var(--ink-soft)}
+/* The answer first: how many people are coming, large, with the other three parts of the list beside
+   it, each with its number, its flower and where it leads. The garden lies under them. */
+.summary{margin-bottom:22px;padding:0}
+.summary-top{display:grid;grid-template-columns:minmax(300px,1fr) minmax(0,2fr)}
+.summary-top:not(:last-child){border-bottom:1px solid var(--rule)}
+.summary-main{padding:28px 30px 26px;border-right:1px solid var(--rule)}
+.summary-lead{display:grid;gap:6px;font-size:22px;line-height:1.25;color:var(--coming)}
+.summary-figure{font-size:68px;font-weight:500;line-height:.95;letter-spacing:-.035em;font-variant-numeric:tabular-nums}
+.summary-sub{margin-top:8px;font-size:16px;color:var(--ink-soft);max-width:34ch}
+.summary-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
 .tally{display:flex;gap:3px;height:12px;margin:22px 0 8px;border-radius:99px;overflow:hidden}
 .tally.is-thin{height:6px;gap:2px;margin:9px 0 7px}
 .tally-part{flex-basis:0;min-width:6px}
@@ -144,20 +149,21 @@ table{font-variant-numeric:tabular-nums}
 .tally-part.is-declined{background:var(--declined)}
 .tally-part.is-waiting{background:var(--gold)}
 .tally-part.is-unsent{background:repeating-linear-gradient(135deg,var(--line) 0 2px,var(--wash) 2px 5px)}
-.tally-key{list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:6px -12px 0;padding:0}
+.tally.is-thin{background:var(--wash)}
+.tally-key{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin:0;padding:14px 0}
 .tally-key li + li{border-left:1px solid var(--rule)}
-.key{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"swatch figure go" ". text text";align-items:center;
-  gap:2px 10px;height:100%;padding:12px 12px 14px;border-radius:10px;color:var(--ink);text-decoration:none;
+.key{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"swatch figure go" "text text text";align-content:center;align-items:center;
+  gap:10px 12px;height:100%;padding:16px 16px 18px;margin:0 10px;border-radius:10px;color:var(--ink);text-decoration:none;
   transition:background-color .15s ease}
 .key:active{background:var(--wash)}
-.key .swatch{grid-area:swatch;width:20px;height:30px;align-self:center;overflow:visible}
-.key-figure{grid-area:figure;font-size:30px;font-weight:500;line-height:1.15;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-.key.is-coming .key-figure,.key.is-coming .key-label{color:var(--coming)}
+.key .swatch{grid-area:swatch;width:26px;height:39px;overflow:visible}
+.key-figure{grid-area:figure;font-size:38px;font-weight:500;line-height:1;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
 .key.is-declined .key-figure{color:var(--declined)}
-.key-text{grid-area:text;display:grid}
-.key-label{font-size:16px;font-weight:600}
-.key-note{font-size:14.5px;color:var(--ink-soft)}
-.key-go{grid-area:go;width:18px;height:18px;rotate:180deg;color:var(--action);transition:translate .2s var(--ease-out)}
+.key.is-waiting .key-figure{color:var(--opened)}
+.key-text{grid-area:text;display:grid;gap:1px}
+.key-label{font-size:17px;font-weight:600}
+.key-note{font-size:15px;color:var(--ink-soft)}
+.key-go{grid-area:go;width:20px;height:20px;rotate:180deg;color:var(--action);transition:translate .2s var(--ease-out)}
 @media (hover:hover){.key:hover{background:var(--tint);color:var(--ink)}.key:hover .key-go{translate:3px 0}}
 
 /* The garden: one magnolia per invitation on a champagne ground line, drawn in _flowers.html. Each
@@ -169,7 +175,7 @@ table{font-variant-numeric:tabular-nums}
 .flower.is-coming,.swatch.is-coming{--petal:#eef4e3;--inner:#fffcf5;--edge:#58784a;--heart:#c9a45d}
 .flower.is-declined,.swatch.is-declined{--petal:#f5e1d8;--edge:#a6604b}
 /* The fewer the guests, the larger each flower: a short list should still look like a garden. */
-.garden{list-style:none;display:flex;flex-wrap:wrap;margin:24px 0 10px;padding:0;--w:52px;--h:78px}
+.garden{list-style:none;display:flex;flex-wrap:wrap;margin:0;padding:22px 30px 26px;--w:52px;--h:78px}
 .garden.is-dense{--w:38px;--h:57px}
 .garden.is-crowded{--w:26px;--h:39px}
 .flower{position:relative;width:var(--w);height:var(--h);border-bottom:1px solid var(--line)}
@@ -209,8 +215,12 @@ table{font-variant-numeric:tabular-nums}
 .lead{color:var(--ink-soft);font-size:17px}
 .empty{color:var(--ink-soft);font-size:16px;padding:6px 0 4px}
 .more{display:inline-block;margin-top:12px;font-size:16px;font-weight:600}
-.overview{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);grid-template-areas:"needs sides" "needs replies";
-  grid-template-rows:auto 1fr;gap:22px;align-items:start}
+.sheet-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 20px;margin-bottom:8px}
+.sheet-head h2{font-size:21px;line-height:1.3}
+.overview{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);grid-template-areas:"needs replies" "sides sides";gap:22px;align-items:start}
+.all-done{display:flex;align-items:flex-start;gap:14px;margin-top:10px;padding:16px 18px;border-radius:10px;background:var(--coming-wash);color:#2f4a25;font-size:16px}
+.all-done .icon{width:24px;height:24px;margin-top:1px;color:var(--coming)}
+.all-done a{color:inherit;font-weight:600}
 .overview .needs{grid-area:needs}
 .overview .sides{grid-area:sides}
 .overview .replies{grid-area:replies}
@@ -230,18 +240,18 @@ table{font-variant-numeric:tabular-nums}
 .mini-list .name:hover,.reply-list .name:hover,.who .name:hover{text-decoration:underline}
 .mini-list .button{min-width:116px}
 
-.side-list{list-style:none;margin:6px 0 14px;padding:0}
-.side-list li{padding:12px 0;border-top:1px solid var(--rule)}
-.side-list li:first-child{border-top:0}
-.side-name{display:inline-block;font-weight:600;font-size:17px;color:var(--ink);text-decoration:none;margin-bottom:2px}
+.side-list{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:0 44px;margin:6px 0 4px;padding:0}
+.side-list li{padding:10px 0 16px}
+.side-name{display:inline-block;font-weight:600;font-size:17px;color:var(--ink);text-decoration:none}
 a.side-name:hover{text-decoration:underline}
 .side-list p{font-size:16px}
 .side-list .quiet{font-size:15px}
-.side-list .is-coming{color:var(--coming)}
-.sides .help{margin-bottom:14px}
+.side-coming{color:var(--coming);font-weight:600}
+.side-coming b{margin-right:4px;font-size:34px;font-weight:500;line-height:1.15;letter-spacing:-.025em;font-variant-numeric:tabular-nums}
+.side-list .tally.is-thin{margin:8px 0 10px}
+.sides > .help{padding-top:14px;border-top:1px solid var(--rule)}
 .reply-to{display:flex;align-items:center;gap:7px;margin-top:4px;font-size:15px;color:var(--ink-soft)}
 .reply-to .icon{width:16px;height:16px;color:var(--gold)}
-.numbers-link{margin:-2px 0 16px}
 .setup-note{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px 14px;margin:0 0 20px;padding:14px 16px;
   background:var(--waiting-wash);border:1px solid #e3cf9f;border-radius:12px;font-size:16px}
 .setup-note > .icon{color:var(--action)}
@@ -449,11 +459,11 @@ a.side-name:hover{text-decoration:underline}
 }
 @media (max-width:1020px){
   .overview,.import-layout{grid-template-columns:minmax(0,1fr)}
-  .overview{grid-template-areas:"needs" "sides" "replies";grid-template-rows:none}
+  .overview{grid-template-areas:"needs" "replies" "sides"}
   .guest-page{grid-template-columns:minmax(0,1fr);grid-template-areas:"invite" "fix" "form"}
-  .tally-key{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .tally-key li:nth-child(3){border-left:0}
-  .tally-key li:nth-child(n+3){border-top:1px solid var(--rule)}
+  .summary-top{grid-template-columns:minmax(0,1fr)}
+  .summary-main{border-right:0;border-bottom:1px solid var(--rule)}
+  .summary-sub{max-width:none}
 }
 /* What guests wrote is on Home and on each guest's page; below this width the list keeps its buttons. */
 @media (max-width:1180px) and (min-width:761px){
@@ -474,13 +484,22 @@ a.side-name:hover{text-decoration:underline}
   .foot{padding:20px 16px 32px;flex-direction:column}
   .hello h1,.page-head h1{font-size:26px}
   .sheet{padding:20px 18px;border-radius:11px}
-  .summary{padding:22px 18px 8px}
-  .summary-lead{font-size:21px}
-  .summary-figure{font-size:46px}
-  .tally-key{margin:4px -8px 0}
-  .key{padding:12px 8px 14px;gap:2px 8px}
-  .key-figure{font-size:26px}
-  .key-go{display:none}
+  .finder.is-home{flex:1 1 100%}
+  .summary{padding:0}
+  .summary-main{padding:22px 18px 20px}
+  .summary-lead{font-size:20px}
+  .summary-figure{font-size:56px}
+  .summary-actions .button{flex:1 1 auto}
+  /* The three parts become three rows: flower, number, what it is, and the arrow that opens it. */
+  .tally-key{grid-template-columns:minmax(0,1fr);padding:4px 6px}
+  .tally-key li + li{border-left:0;border-top:1px solid var(--rule)}
+  .key{grid-template-columns:auto 2.4ch minmax(0,1fr) auto;grid-template-areas:"swatch figure text go";gap:0 12px;min-height:72px;margin:0;padding:10px 12px}
+  .key .swatch{width:22px;height:33px}
+  .key-figure{font-size:30px}
+  .garden{padding:18px 18px 22px}
+  .sheet-head .button{flex:1 1 100%}
+  .side-list{gap:0}
+  .side-list li + li{border-top:1px solid var(--rule);padding-top:16px}
   .search{max-width:none;flex-basis:100%}
   .finder > .button{flex:1}
   /* On Home the box and its button share one line, as on any search page. */
@@ -491,7 +510,7 @@ a.side-name:hover{text-decoration:underline}
   .head-download{display:none}
   .foot-download{display:block;margin-top:16px}
   .foot-download .button{width:100%}
-  .garden{--w:40px;--h:60px;margin-top:20px}
+  .garden{--w:40px;--h:60px}
   .garden.is-dense{--w:31px;--h:46px}
   .garden.is-crowded{--w:22px;--h:33px}
   .garden-news{left:16px;right:16px;bottom:16px;width:auto}
@@ -541,9 +560,6 @@ a.side-name:hover{text-decoration:underline}
   .form-actions .button{flex:1}
 }
 @media (max-width:340px){
-  .tally-key{grid-template-columns:minmax(0,1fr)}
-  .tally-key li{border-left:0!important}
-  .tally-key li + li{border-top:1px solid var(--rule)}
   .sign-out .button{padding:0 10px}
 }
 @media (prefers-reduced-motion:reduce){
