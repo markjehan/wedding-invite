@@ -79,9 +79,10 @@ that run the way the drawing's own hatching runs. Where each part lies is set by
 
 The gallery no longer uses the seven crops above, and since 10 November 2026 nor does the link card.
 
-`naveen-dulanjani-card.jpg` (1200 by 630) is the picture WhatsApp shows with each guest's link. It is
-the couple's photo in red at the white wall, untouched, filling the right of the card and fading from
-its left side into ivory paper with the pearl paper's grain, where their gold monogram sits inside a
-fine gold border (`build_assets/share_card.py`). On 10 November 2026 it replaced three earlier tries:
-their photo in white cut out onto the magnolia hall, a pencil drawing of this photo, and this photo
-with its background blurred and recoloured.
+`naveen-dulanjani-invite.jpg` (1200 by 630) is the picture WhatsApp shows with each guest's link, laid
+out like the front of the envelope: the suite's ivory paper with its magnolia relief down the left
+edge, the couple's gold monogram with their names in Pinyon Script beneath, and their photo in red at
+the white wall running in from the right and fading into the paper. The photo is their own, only
+warmed so its greys are the paper's ivory (`build_assets/share_card.py`). It is the fifth version made
+on 10 November 2026; the user turned down a cut-out on the magnolia hall, a pencil drawing, a blurred
+and recoloured background, and a plain fade onto bare paper.
