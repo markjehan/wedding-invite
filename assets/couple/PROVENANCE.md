@@ -67,8 +67,10 @@ On this computer its paper was then measured and divided out, leaving only the g
 saved on a transparent sheet, 834 by 1200, trailing off at the foot. At the user's request it is in
 the invitation's gold rather than grey: pale champagne in the lightest strokes, the venue drawing's
 gold in the middle tones and the letter's dark ink (`--ink`) in the darkest.
-`couple-strokes.js` holds the paths the live drawing's pencil follows over it, its lines and then two
-passes of shading:
+`couple-strokes.js` holds the paths the live drawing's pencil follows over it, in the order an artist
+works, which the user asked to feel hand-made and in time with the music: a light sketch of its lines,
+then their faces, their hair, her arms and his hand, her dress and his shirt, each shaded with strokes
+that run the way the drawing's own hatching runs. Where each part lies is set by hand in the script:
 
     python -I build_assets/trace_drawing.py <Weave's drawing> assets/couple/couple-drawing.webp couple-strokes.js
 

@@ -332,7 +332,22 @@
                prints below keeps the photographs themselves. -->
           <figure class="couple-drawing" id="couple-drawing" aria-hidden="true">
             <canvas id="couple-canvas"></canvas>
-            <span class="couple-nib"></span>
+            <span class="couple-pencil"><svg viewBox="0 0 150 11">
+              <defs>
+                <linearGradient id="pencil-lacquer" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffdf7"/><stop offset=".35" stop-color="#f6ecd6"/><stop offset=".72" stop-color="#e4d2ac"/><stop offset="1" stop-color="#c6ad80"/></linearGradient>
+                <linearGradient id="pencil-wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5e4c4"/><stop offset="1" stop-color="#d4b583"/></linearGradient>
+                <linearGradient id="pencil-ferrule" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9c7a33"/><stop offset=".3" stop-color="#f3dc9c"/><stop offset=".55" stop-color="#c9a44f"/><stop offset="1" stop-color="#86661f"/></linearGradient>
+                <linearGradient id="pencil-lead" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a6c45"/><stop offset="1" stop-color="#4f3e2a"/></linearGradient>
+              </defs>
+              <path d="M30 .5L9 4.3V6.7L30 10.5Z" fill="url(#pencil-wood)"/>
+              <path d="M9 4.3L0 5.5L9 6.7Z" fill="url(#pencil-lead)"/>
+              <path d="M28.6 .5C31 2 29.2 3.6 31.2 5.5C29.2 7.4 31 9 28.6 10.5H128V.5Z" fill="url(#pencil-lacquer)"/>
+              <path d="M32 2.6H127" stroke="#fff" stroke-opacity=".8" stroke-width=".7"/>
+              <path d="M120.5 .5V10.5M123 .5V10.5" stroke="#b8913f" stroke-width=".55"/>
+              <rect x="128" y="0" width="12" height="11" rx=".8" fill="url(#pencil-ferrule)"/>
+              <path d="M131 .3V10.7M134 .3V10.7M137 .3V10.7" stroke="#7d5f22" stroke-opacity=".45" stroke-width=".6"/>
+              <rect x="139.6" y=".7" width="10.4" height="9.6" rx="2.6" fill="url(#pencil-lacquer)"/>
+            </svg></span>
           </figure>
           <p class="letter-greeting" id="greeting" hidden></p>
           <p class="letter-label" data-i18n="letter.label">Together with our families</p>
