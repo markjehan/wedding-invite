@@ -41,20 +41,34 @@ follow a colour pattern, so five more were saved the same way from the folder (0
 8250, 8576, 9165 and 9946 dropped out of the stack (8250 is nearly 8248, 9946
 nearly 9942) and stay only as spares.
 
-## The engraving at the head of the letter
+## The pencil drawing at the head of the letter
 
-On 9 November 2026 the user shared, in chat, a 1765 by 1175 copy of the shoot's red-outfit photograph
-under the white bell arch, and asked for the two of them alone, sketched live at the top of the
-invitation like the venue drawing, then for more detail and more realism. `couple-strokes.js` in the
-site's root is that drawing as pen strokes. The couple are cut out of the arch, the garden and the wall
-(GrabCut, then closed-form matting for a soft, exact edge, with any green of the garden or grey of the
-wall at their edge counted as background) and split into their parts. Their hair is drawn in strands,
-their skin in dots, their clothes in even lines that thicken in shadow, and over that go the outline,
-the edges between the parts, and their features, each looked for in its own small box on the face. It
-was made on this computer alone; no photograph is stored for it:
+The user asked for the two of them alone, sketched live at the top of the invitation like the venue
+drawing, with the detail of a hand-drawn graphite portrait. Drawings made by code from the photograph
+were turned down, and on 10 November 2026 the user sent examples of graphite pencil portraits made by
+AI and linked their Figma account to Weave for it.
 
-    python -I build_assets/engrave_couple.py <the photograph> couple-strokes.js
-    python -I build_assets/cutout_couple.py <the photograph> build_assets/couple-cutout.png
+`couple-drawing.webp` is that drawing. It starts from the shoot's full-size `BSD_9474.JPG` (6048 by
+4024, the red outfits under the white bell arch). The couple were cut out of the arch, the garden and
+the wall (GrabCut guided by hand, then closed-form matting for the edge, made on this computer),
+framed from his hair to below his watch, set on white and uploaded to Weave, where Nano Banana Pro
+(2K, 3:4, 11 credits, approved by the user) redrew it from this prompt:
+
+    Redraw this photograph as a highly detailed, realistic graphite pencil drawing by a skilled
+    portrait artist, on plain white drawing paper. Keep everything exactly as in the photo: the same
+    two people with their exact faces and likeness, expressions, poses and framing, and every detail
+    (his glasses, beard and haircut; her bun, earring, bracelet and nails; the lace dress with its
+    bow; his shirt, watch and hand in his pocket). Fine graphite pencil: crisp contours, soft blended
+    shading on the skin, dense strands in the hair and beard, hatching in the folds of the clothes,
+    the paper left white for highlights. Monochrome graphite on a clean white background, no scenery,
+    frame, text or signature; the drawing fades out softly at the bottom.
+
+On this computer its paper was then measured and divided out, leaving only the graphite, which is
+saved as warm graphite on a transparent sheet, 834 by 1200, trailing off at the foot.
+`couple-strokes.js` holds the paths the live drawing's pencil follows over it, its lines and then two
+passes of shading:
+
+    python -I build_assets/trace_drawing.py <Weave's drawing> assets/couple/couple-drawing.webp couple-strokes.js
 
 The gallery no longer uses the seven crops above, which stay only because the link card still uses
 `naveen-dulanjani-preview.jpg`.
