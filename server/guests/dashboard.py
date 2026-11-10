@@ -188,6 +188,14 @@ class GuestForm(forms.ModelForm):
                       'phone': 'Any way it is written: 077 123 4567, +94 77 123 4567.',
                       'seats': '', 'notes': 'Only for the two of you. Guests never see this.'}
         widgets = {'notes': forms.Textarea(attrs={'rows': 3}), 'seats': forms.NumberInput(attrs={'min': 1, 'max': 50})}
+        error_messages = {'name': {'required': 'Type their name first, the way the invitation should greet them.'},
+                          'seats': {'required': 'Type how many seats to keep for them.',
+                                    'invalid': 'Type the number of seats as a number, like 2.'}}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # The empty choice says what it means, rather than a dash.
+        self.fields['side'].choices = [('', 'Not set')] + SIDES
 
 
 @couple_only

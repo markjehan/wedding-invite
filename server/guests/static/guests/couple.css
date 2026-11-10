@@ -274,7 +274,7 @@ a.side-name:hover{text-decoration:underline}
 
 /* ---------- The guest list ---------- */
 .page-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px 20px;margin-bottom:18px}
-.page-head h1{font-size:30px;display:flex;align-items:center;gap:10px}
+.page-head h1{font-size:32px;line-height:1.2;display:flex;align-items:center;gap:10px}
 .page-head h1 .count{font-size:15px}
 .head-actions{display:flex;flex-wrap:wrap;gap:10px}
 
@@ -299,13 +299,15 @@ a.side-name:hover{text-decoration:underline}
 .guest-table tbody tr:last-child > *,.preview-table tbody tr:last-child > *{border-bottom:0}
 @media (hover:hover){.guest-table tbody tr{transition:background-color .12s ease}.guest-table tbody tr:hover{background:var(--tint)}}
 .guest-table .num,.preview-table .num{text-align:right}
-.guest-table .who{max-width:260px}
-.guest-table .where{min-width:13rem}
+.guest-table .who{max-width:250px}
+.guest-table .where{white-space:nowrap}
 .who .name{display:block;font-size:17px}
 .who .sub{display:flex;flex-wrap:wrap;gap:0 10px;margin-top:2px;font-size:14.5px;color:var(--ink-soft)}
 .seats .unit{display:none}
-.guest-table .note{max-width:280px;font-size:15.5px}
-.guest-table .note q{font-size:15.5px;quotes:'“' '”'}
+.guest-table .note{min-width:150px;max-width:300px;font-size:15.5px}
+/* What they wrote keeps to three lines in the list; all of it is on their own page. */
+.guest-table .note q{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden;font-size:15.5px;quotes:'“' '”'}
+.guest-table .stage small{display:block;margin:1px 0 0 20px}
 .guest-table .actions{text-align:right;white-space:nowrap}
 .guest-table .actions > *{vertical-align:middle;margin-left:6px}
 .guest-table .send-form{display:inline-block}
@@ -529,7 +531,7 @@ a.side-name:hover{text-decoration:underline}
   .guest-table tbody tr:last-child{border-bottom:0}
   .guest-table tbody tr > *{padding:0;border:0}
   .guest-table .who{grid-area:who;max-width:none}
-  .guest-table .where{grid-area:where}
+  .guest-table .where{grid-area:where;white-space:normal}
   .guest-table .seats{grid-area:seats;align-self:start;font-size:15px;color:var(--ink-soft)}
   .seats .unit{display:inline}
   .guest-table .note{grid-area:note;display:block;max-width:none}

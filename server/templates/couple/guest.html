@@ -1,4 +1,5 @@
 {% extends "couple/base.html" %}
+{% load phone %}
 {% block title %}{% if guest %}{{ guest.name }}{% else %}Add a guest{% endif %}{% endblock %}
 {% block content %}
 <a class="back" href="{% url 'couple:guests' %}"><svg class="icon"><use href="#i-back"/></svg>All guests</a>
@@ -42,7 +43,7 @@
       </div>
       <p class="help">Copy the link to send it some other way, like SMS or email. Looking at it here does not count as them opening it.</p>
       {% if guest.phone %}
-        <p class="phone-line"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><a href="tel:+{{ guest.phone }}">Call +{{ guest.phone }}</a></p>
+        <p class="phone-line"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><a href="tel:+{{ guest.phone }}">Call {{ guest.phone|phone }}</a></p>
       {% endif %}
 
       {% if guest.stage == 'unsent' %}

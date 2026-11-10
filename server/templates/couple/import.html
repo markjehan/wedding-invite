@@ -43,7 +43,7 @@
 {% else %}
   <section class="sheet">
     <p class="lead">From <b>{{ file_name }}</b>: <b>{{ adding }}</b> to add, <b>{{ updating }}</b> to update{% if skipping %}, <b>{{ skipping }}</b> left out{% endif %}.
-      <span class="quiet">Columns used: {{ used|join:", " }}.</span></p>
+      <span class="quiet">Columns used: {{ used|join:", " }}.</span> Nothing has changed yet. Check the rows, then press the button under them.</p>
     <table class="preview-table">
       <thead>
         <tr><th scope="col" class="num">Row</th><th scope="col">Name</th><th scope="col">Sinhala name</th><th scope="col">Number</th><th scope="col" class="num">Seats</th><th scope="col">Side</th><th scope="col">What happens</th></tr>
@@ -57,14 +57,14 @@
             <td>{{ row.fields.phone|default:"" }}</td>
             <td class="num">{{ row.fields.seats|default:"" }}</td>
             <td>{{ row.fields.side|default:""|capfirst }}</td>
-            <td class="what">{% if row.action == 'add' %}Added{% elif row.action == 'update' %}Updates them{% else %}Left out: {{ row.reason }}{% endif %}</td>
+            <td class="what">{% if row.action == 'add' %}Will be added{% elif row.action == 'update' %}Already on the list: will be updated{% else %}Left out: {{ row.reason }}{% endif %}</td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
     <form method="post" class="form-actions">
       {% csrf_token %}
-      {% if adding or updating %}<button class="button" name="confirm" value="1">Go ahead</button>{% endif %}
+      {% if adding or updating %}<button class="button" name="confirm" value="1">Yes, put them on the list</button>{% endif %}
       <a class="button is-quiet" href="{% url 'couple:import' %}">Choose another sheet</a>
     </form>
   </section>

@@ -347,7 +347,7 @@ class ReplyNumberTests(TestCase):
         self.assertRedirects(response, reverse('couple:numbers'), fetch_redirect_response=False)
         numbers = ReplyTo.current()
         self.assertEqual((numbers.bride, numbers.groom, numbers.everyone), ('94770000101', '94770000202', '94771281561'))
-        self.assertContains(self.client.get('/admin/'), 'Replies go to +94770000101')
+        self.assertContains(self.client.get('/admin/'), 'Replies go to +94 77 000 0101')
 
     def test_home_asks_for_the_numbers_until_both_are_set(self):
         self.client.force_login(admin_with_two_step())
