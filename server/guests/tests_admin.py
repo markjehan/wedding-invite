@@ -229,8 +229,8 @@ class GuestListTests(TestCase):
         sent = guest.sent_at
         response = self.client.post(reverse('couple:send', args=[guest.pk]), {'kind': 'reminder'})
         text = unquote(response['Location'])
-        self.assertIn('text=Dear Amali,', text)
-        self.assertIn('Your invitation 👇\nhttp://testserver/?name=Amali\n', text)
+        self.assertIn('text=💌 Dear Amali,\n\nJust a little note from us.', text)
+        self.assertIn('Your Invitation 👇\nhttp://testserver/?name=Amali\n', text)
         guest.refresh_from_db()
         self.assertIsNotNone(guest.reminded_at)
         self.assertEqual(guest.sent_at, sent)
