@@ -94,8 +94,8 @@ class PageTests(TestCase):
 
     def test_the_link_card_shows_the_couple(self):
         page = self.client.get(f'/{self.guest.code}').content.decode()
-        self.assertIn('<meta property="og:image" content="http://testserver/assets/couple/naveen-dulanjani-front.jpg">', page)
-        self.assertEqual(self.client.get('/assets/couple/naveen-dulanjani-front.jpg').status_code, 200)
+        self.assertIn('<meta property="og:image" content="http://testserver/assets/couple/naveen-dulanjani-invite.jpg">', page)
+        self.assertEqual(self.client.get('/assets/couple/naveen-dulanjani-invite.jpg').status_code, 200)
 
     def test_code_in_capitals_still_works(self):
         self.assertEqual(self.client.get(f'/{self.guest.code.upper()}').status_code, 200)
