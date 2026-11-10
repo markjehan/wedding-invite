@@ -42,7 +42,7 @@
    thrown aside flies past the edge of the screen on purpose; the page is clipped there so the flight never
    widens it. Clip and not hidden: hidden would make the page a scroll box of its own, and on older
    iPhones without clip the only cost is that brief flight. */
-.stack-print:not(.is-thrown):not([data-depth="0"],[data-depth="1"],[data-depth="2"]){translate:6px 8px}
+.stack-print:not(.is-coming):not([data-depth="0"],[data-depth="1"],[data-depth="2"]){translate:6px 8px}
 .print-stack{margin-inline:calc((100% - var(--table)) / 2)}
 main{overflow-x:clip}
 

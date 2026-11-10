@@ -545,26 +545,45 @@
   if('IntersectionObserver' in window){const observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){startVenue();observer.disconnect();}},{threshold:.2});observer.observe($('#architecture'));}else startVenue();
   $('#redraw').addEventListener('click',()=>window.playVenueDrawing?.());
   // The stack of prints. Each print's depth in the pile is written on it and the stylesheet lays it
-  // there; turning one over throws the top print aside and moves every other one up a place. Leafing
-  // back brings the last one in from the side it went out. It turns on its own every few seconds while
-  // most of it is on screen, never while a pointer rests on it or it has focus, and waits a while
-  // after the guest has turned it by hand.
+  // there; turning one over lifts the top print off to the side and moves every other one up a place.
+  // Leafing back is that same flight run backwards: the print comes in from where it went, along the
+  // same path at the same pace, and lands as gently as it was lifted. It turns on its own every
+  // second and a half while most of it is on screen, never while a pointer rests on it or it has
+  // focus, and waits a while after the guest has turned it by hand.
   (()=>{
     const stack=$('#print-stack'); if(!stack)return;
     const table=stack.querySelector('.stack-table'),prints=[...table.children],count=stack.querySelector('.stack-count b'),n=prints.length;
     let top=0,timer=0,inView=false,held=false;
     const lay=()=>{prints.forEach((print,i)=>{const depth=(i-top+n)%n;print.dataset.depth=depth;print.style.setProperty('--depth',depth)});count.textContent=top+1};
-    function turn(step,side=-1){
+    // LIFT eases a print away and LAND is LIFT mirrored in time, so the two flights are one motion.
+    // CARRY is for a print let go mid-swipe, which keeps the speed the finger gave it.
+    const LIFT='cubic-bezier(.45,0,.25,1)',LAND='cubic-bezier(.75,0,.55,1)',CARRY='cubic-bezier(.2,.7,.3,1)';
+    const aside=side=>({translate:side*118+'% -6%',rotate:side*16+'deg',opacity:0});
+    // Where a print is at this instant, mid-flight or under a finger, so a new flight starts from there.
+    const pose=print=>{const c=getComputedStyle(print);return{translate:c.translate==='none'?'0px 0px':c.translate,rotate:c.rotate==='none'?'0deg':c.rotate,opacity:c.opacity}};
+    // Puts a print in its place in the pile at once; the flight then plays over the top of that.
+    const settle=print=>{
+      print.classList.add('is-still');print.classList.remove('is-dragging','is-coming');
+      print.style.translate=print.style.rotate='';print.style.removeProperty('--p');
+      lay();void print.offsetWidth;print.classList.remove('is-still');
+    };
+    // A print is opaque for the near half of its flight and fades over the far half, both ways.
+    function fly(print,from,to,easing,ms){
+      if(!canMove||!print.animate)return;
+      print.flight?.cancel();print.classList.add('is-lifted');
+      // One already part-faded on its way out just goes on fading.
+      const frames=to.opacity===0&&from.opacity<1?[from,to]:[from,{opacity:1,offset:.5},to];
+      const flight=print.flight=print.animate(frames,{duration:ms,easing});
+      flight.onfinish=flight.oncancel=()=>{if(print.flight===flight){print.flight=null;print.classList.remove('is-lifted')}};
+    }
+    function turn(step,side=-1,carried=false){
       if(step>0){
-        const leaving=prints[top];leaving.style.setProperty('--throw',side);leaving.classList.add('is-thrown');
-        top=(top+1)%n;lay();
-        // Once it has gone it is put back at the foot of the pile unseen, not flown back across the table.
-        clearTimeout(leaving.putBack);
-        leaving.putBack=setTimeout(()=>{leaving.classList.add('is-still');leaving.classList.remove('is-thrown');void leaving.offsetWidth;leaving.classList.remove('is-still')},1000);
+        const leaving=prints[top],from=pose(leaving);
+        top=(top+1)%n;settle(leaving);fly(leaving,from,aside(side),carried?CARRY:LIFT,carried?520:800);
       }else{
-        top=(top-1+n)%n;const arriving=prints[top];clearTimeout(arriving.putBack);arriving.style.setProperty('--throw',side);
-        arriving.classList.add('is-thrown','is-still');lay();void arriving.offsetWidth;
-        arriving.classList.remove('is-still');void arriving.offsetWidth;arriving.classList.remove('is-thrown');
+        top=(top-1+n)%n;const arriving=prints[top];
+        const from=arriving.flight||arriving.classList.contains('is-coming')?pose(arriving):aside(side);
+        settle(arriving);fly(arriving,from,{opacity:1},carried?CARRY:LAND,carried?520:800);
       }
     }
     // A print turns every second and a half (two and a half beats), and the pile is left alone for
@@ -573,26 +592,49 @@
       clearTimeout(timer);if(!(canMove&&inView&&!held&&!document.hidden))return;
       timer=setTimeout(()=>{turn(1);later()},wait*1000);
     }
-    const byHand=(step,side)=>{turn(step,side);later(5)};
+    const byHand=(step,side,carried)=>{turn(step,side,carried);later(5)};
     lay();
     stack.querySelectorAll('.stack-turn').forEach(button=>button.addEventListener('click',()=>byHand(+button.dataset.turn)));
     table.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();byHand(e.key==='ArrowRight'?1:-1)}});
-    // A swipe carries the top print with the finger. Let go far enough to the left and it is thrown off
-    // that way to show the next; far enough to the right and the previous print comes back in from the
-    // left, the way the last one went out. A shorter swipe slips back, and a tap turns the next one over.
-    let start=null,dx=0;
-    table.addEventListener('pointerdown',e=>{if(e.button)return;start=e.clientX;dx=0;table.setPointerCapture(e.pointerId)});
+    // A swipe moves the prints with the finger. To the left it carries the top print away; to the
+    // right it draws the one before back in from the left, under the finger the whole way. Let go
+    // far enough, or with a flick, and the print finishes its flight at the speed it was given;
+    // otherwise it slips back where it was. A tap turns the next one over.
+    let start=null,dx=0,vx=0,lastX=0,lastT=0,moved=false,coming=null;
+    const sendBack=()=>{
+      const print=coming,from=pose(print);coming=null;
+      print.classList.add('is-still');print.classList.remove('is-coming');print.style.removeProperty('--p');
+      void print.offsetWidth;print.classList.remove('is-still');fly(print,from,aside(-1),CARRY,420);
+    };
+    table.addEventListener('pointerdown',e=>{if(e.button)return;start=lastX=e.clientX;lastT=e.timeStamp;dx=vx=0;moved=false;table.setPointerCapture(e.pointerId)});
     table.addEventListener('pointermove',e=>{
-      if(start===null)return;dx=e.clientX-start;if(Math.abs(dx)<5)return;
-      // Dragging right is only a pull on the print, since what comes next is the one before it.
-      const pull=dx<0?dx:dx*.3,print=prints[top];print.classList.add('is-dragging');
-      print.style.translate=pull+'px '+(-Math.abs(pull)*.04)+'px';print.style.rotate='calc(var(--tilt) * .3 + '+(pull/28)+'deg)';
+      if(start===null)return;
+      const dt=e.timeStamp-lastT;if(dt>0){vx=.7*(e.clientX-lastX)/dt+.3*vx;lastX=e.clientX;lastT=e.timeStamp}
+      dx=e.clientX-start;if(!moved&&Math.abs(dx)<5)return;moved=true;
+      const print=prints[top];
+      if(dx<=0){
+        if(coming)sendBack();
+        print.classList.add('is-dragging');
+        print.style.translate=dx+'px '+(dx*.04)+'px';print.style.rotate='calc(var(--tilt) * .3 + '+(dx/28)+'deg)';
+      }else{
+        print.style.translate=print.style.rotate='';print.classList.remove('is-dragging');
+        const before=prints[(top-1+n)%n];
+        if(coming!==before){coming=before;before.flight?.cancel();before.classList.add('is-coming')}
+        before.style.setProperty('--p',Math.min(1,dx/(before.offsetWidth*1.18)));
+      }
     });
     const release=e=>{
-      if(start===null)return;start=null;const print=prints[top];
-      print.style.translate=print.style.rotate='';print.classList.remove('is-dragging');
-      if(e.type==='pointercancel')return;
-      if(dx<-60)byHand(1,-1);else if(dx>60)byHand(-1,-1);else if(Math.abs(dx)<6)byHand(1);
+      if(start===null)return;start=null;
+      if(e.timeStamp-lastT>80)vx=0;
+      const print=prints[top],flick=Math.abs(vx)>.45&&Math.abs(dx)>14,against=Math.abs(vx)>.25&&vx*dx<0;
+      const go=e.type!=='pointercancel'&&moved&&!against&&(Math.abs(dx)>60||flick);
+      if(go&&dx<0)byHand(1,-1,true);
+      else if(go&&coming){coming=null;byHand(-1,-1,true)}
+      else{
+        if(coming)sendBack();
+        print.style.translate=print.style.rotate='';print.classList.remove('is-dragging');
+        if(e.type!=='pointercancel'&&!moved)byHand(1);
+      }
     };
     table.addEventListener('pointerup',release);table.addEventListener('pointercancel',release);
     table.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'){held=true;clearTimeout(timer)}});
