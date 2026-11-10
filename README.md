@@ -7,7 +7,9 @@ private page where the bride and groom keep the guest list and see the replies.
 (Sinhala: සෙන්ට්‍රියම් බෝල් රූම්, ඇවෙන්රා ගාර්ඩ්න්ස්, මීගමුව).
 
 **Live site:** https://naveenwedsdulanjani.com
-(also https://wedding-invite-ten-orcin-20.vercel.app — the same site).
+Every page — the invitation, `/admin/` and everything under them — opens only on this domain:
+any Vercel address (`…vercel.app`, old or new) sends the visitor to the same page here
+(`MainAddress` in `server/guests/middleware.py`).
 **Couple's pages:** https://naveenwedsdulanjani.com/admin/
 **Code:** https://github.com/markjehan/wedding-invite — the `main` branch is the live site.
 

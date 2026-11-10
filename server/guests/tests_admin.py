@@ -329,6 +329,25 @@ class VercelAddressTests(TestCase):
         response = self.client.get('/', HTTP_HOST='wedding-invite-mark-6689.vercel.app')
         self.assertEqual(response.status_code, 200)
 
+    @override_settings(SITE_HOST='naveenwedsdulanjani.com')
+    def test_on_the_live_site_every_other_address_goes_to_the_domain(self):
+        for host in ('wedding-invite-ten-orcin-20.vercel.app', 'wedding-invite-mark-6689.vercel.app',
+                     'wedding-invite-3f8iv4ffm-mark-6689.vercel.app'):
+            for path in ('/admin', '/admin/guests/?show=coming', '/accounts/login/?next=/admin/', '/', '/?name=Chamini',
+                         '/assets/audio/invitation.mp3'):
+                response = self.client.get(path, HTTP_HOST=host)
+                self.assertEqual(response.status_code, 308)
+                self.assertEqual(response['Location'], f'https://naveenwedsdulanjani.com{path}')
+        response = self.client.post('/accounts/login/', {'login': 'x'}, HTTP_HOST='wedding-invite-mark-6689.vercel.app')
+        self.assertEqual(response.status_code, 308)  # a form stays a form on the way over
+
+    @override_settings(SITE_HOST='naveenwedsdulanjani.com')
+    def test_on_the_live_site_the_domain_itself_stays(self):
+        self.assertEqual(self.client.get('/', HTTP_HOST='naveenwedsdulanjani.com').status_code, 200)
+        self.assertEqual(self.client.get('/', HTTP_HOST='NaveenWedsDulanjani.com').status_code, 200)
+        self.assertRedirects(self.client.get('/admin/', HTTP_HOST='naveenwedsdulanjani.com'),
+                             '/accounts/login/?next=/admin/', fetch_redirect_response=False)
+
     def test_off_vercel_nothing_moves(self):
         self.assertEqual(self.client.get('/', HTTP_HOST='localhost').status_code, 200)
 

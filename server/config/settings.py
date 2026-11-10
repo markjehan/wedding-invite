@@ -68,6 +68,13 @@ VERCEL_MAIN_HOST = os.environ.get('VERCEL_PROJECT_PRODUCTION_URL', '') if ON_VER
 VERCEL_OWN_HOST = os.environ.get('VERCEL_URL', '') if ON_VERCEL else ''
 if not SITE_URL and VERCEL_MAIN_HOST:
     SITE_URL = f'https://{VERCEL_MAIN_HOST}'
+# The one address the live site answers at (naveenwedsdulanjani.com). Every other address Vercel
+# also answers to (wedding-invite-ten-orcin-20.vercel.app, the old wedding-invite-mark-6689.vercel.app
+# that was once wrongly flagged, each deployment's own) sends the visitor to the same page here, so
+# the invitation, /admin/ and everything under them only ever open on the real domain
+# (guests/middleware.py). Preview deployments of other branches are left alone.
+SITE_HOST = ((urlsplit(SITE_URL).hostname or '').lower()
+             if ON_VERCEL and os.environ.get('VERCEL_ENV') == 'production' else '')
 
 INSTALLED_APPS = [
     'django.contrib.auth',
