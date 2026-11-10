@@ -26,22 +26,20 @@ body.intro-locked{overflow:hidden}
 /* will-change:opacity is essential, not an optimisation. The dissolve is added with .opening, so
    without it the entrance is promoted to its own layer at that exact moment and the first frame
    renders un-rasterised — you see the page straight through the closed doors before they swing. */
-.door-intro{position:fixed;inset:0;z-index:100;overflow:hidden;isolation:isolate;will-change:opacity;background:var(--paper) url('assets/magnolia-suite/garden.webp') center/cover}
-.door-intro::before{content:'';position:absolute;inset:0;background:#f7f2e8c9}
+/* The doorway is a real opening onto the page itself: the entrance paints nothing behind the doors,
+   so once they part the guest is looking into the welcome they are about to stand in, and the mark is
+   already drawing there. Walking through is then one continuous move with no second scene to fade
+   into. The washed garden only fills the screen either side of the set, which on a phone is nowhere. */
+.door-intro{--dh:100vh;position:fixed;inset:0;z-index:100;overflow:hidden;isolation:isolate;will-change:opacity}
+@supports(height:1svh){.door-intro{--dh:100svh}}
+.door-intro::before{content:'';position:absolute;inset:0;background:linear-gradient(#f7f2e8c9,#f7f2e8c9),url('assets/magnolia-suite/garden.webp') center/cover var(--paper);-webkit-mask-image:linear-gradient(90deg,#000 calc(50% - var(--dh)/3 + 1px),#0000 0,#0000 calc(50% + var(--dh)/3 - 1px),#000 0);mask-image:linear-gradient(90deg,#000 calc(50% - var(--dh)/3 + 1px),#0000 0,#0000 calc(50% + var(--dh)/3 - 1px),#000 0)}
 /* The camera is the fixed frame the set is seen through: it holds the lens (perspective) and never
    moves. The eye is level with the middle of the doorway, so the doorway is what everything recedes
    towards. What moves is the world inside it. */
-.door-camera{--dh:100vh;--lt:calc(var(--dh)*.018);position:absolute;top:50%;left:50%;height:var(--dh);width:calc(var(--dh)*.666667);transform:translate(-50%,-50%);perspective:calc(var(--dh)*1.1);perspective-origin:50% 58%}
-@supports(height:1svh){.door-camera{--dh:100svh}}
+.door-camera{--lt:calc(var(--dh)*.018);position:absolute;top:50%;left:50%;height:var(--dh);width:calc(var(--dh)*.666667);transform:translate(-50%,-50%);perspective:calc(var(--dh)*1.1);perspective-origin:50% 58%}
 /* will-change is set up front, not on .opening: promoting these layers at the moment the animation
    starts costs the first few frames, which is exactly where the hitch was visible. */
 .door-world{position:absolute;inset:0;transform-style:preserve-3d;transform:translateZ(0);will-change:transform}
-/* The vista - the garden through the next arch - stands seven tenths of the set's height behind the
-   wall, enlarged so that from the threshold it fills the doorway. It is drawn and on its own layer
-   from the first frame, under the closed doors, so it is ready the instant they part. As the camera
-   nears the doorway it sees past the picture's edges, and must not find a cut there: the marble
-   floor carries on below the picture, and its sides are feathered away to the hall behind it. */
-.door-room{position:absolute;inset:0 0 -30%;transform-origin:50% 44.6154%;transform:translateZ(calc(var(--dh)*-.7)) scale(1.211);will-change:transform;background:url('assets/magnolia-suite/portrait.webp') top/100% auto no-repeat,linear-gradient(#f4ebdc00 74%,#f4ebdc 77%);-webkit-mask-image:linear-gradient(90deg,#0000,#000 7%,#000 93%,#0000);mask-image:linear-gradient(90deg,#0000,#000 7%,#000 93%,#0000)}
 /* Sunlit air between the doorway and the garden. It blooms as the leaves part and then settles, and
    because it hangs in the middle of the space the camera walks into it. */
 .door-haze{position:absolute;left:5%;width:90%;top:18%;height:80%;transform:translateZ(calc(var(--dh)*-.3));opacity:0;will-change:transform,opacity;background:radial-gradient(closest-side,#fffbf2e6,#fffaf080 50%,#fffaf000)}
@@ -155,7 +153,7 @@ h1[tabindex="-1"]:focus,h2[tabindex="-1"]:focus{outline:none}
 .section>h2{max-width:900px;margin-inline:auto}
 .reply-card input:focus,.reply-card textarea:focus,.reply-card select:focus{border-bottom-color:var(--action)}
 .reply-card input:user-invalid{border-bottom-color:#984f35}
-@media(max-width:700px){.door-camera{--dh:max(100vh,150vw)}@supports(height:1svh){.door-camera{--dh:max(100svh,150vw)}}.masthead{height:64px;padding-inline:22px}.disclosure{font-size:11px}.timeline time{font-size:12px}.timeline p{font-size:14px}}
+@media(max-width:700px){.door-intro{--dh:max(100vh,150vw)}@supports(height:1svh){.door-intro{--dh:max(100svh,150vw)}}.masthead{height:64px;padding-inline:22px}.disclosure{font-size:11px}.timeline time{font-size:12px}.timeline p{font-size:14px}}
 @media(max-width:360px){.masthead{padding-inline:18px}}
 /* Asked for less motion, the page keeps still - except the doors, which every guest sees open. */
 @media(prefers-reduced-motion:reduce){:root{scroll-behavior:auto}*:not(#door-intro,#door-intro *,.intro-opening .masthead),*:not(#door-intro,#door-intro *)::before,*:not(#door-intro,#door-intro *)::after{animation:none!important;transition:none!important}}
