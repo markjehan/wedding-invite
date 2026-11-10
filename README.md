@@ -152,7 +152,7 @@ of that script).
   than four seconds).
 
 Please have a Sinhala reader confirm the spelling of the names and of the venue transliteration
-(ඇවන්රා ගාඩන්ස්) before the invitation is sent.
+(ඇවෙන්රා ගාර්ඩ්න්ස්) before the invitation is sent.
 
 ## The score
 
