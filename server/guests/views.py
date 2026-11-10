@@ -2,6 +2,7 @@ import json
 
 from django.conf import settings
 from django.core.handlers.wsgi import get_str_from_wsgi
+from django.db import DatabaseError
 from django.db.models import F
 from django.http import FileResponse, Http404, HttpResponse, JsonResponse
 from django.utils import timezone
@@ -42,17 +43,28 @@ def general(request):
     name = names.from_query(get_str_from_wsgi(request.environ, 'QUERY_STRING', ''))
     if not name:
         return _page(request, {'mode': 'general'})
-    guest = names.find(name)
-    return _guest_page(request, guest) if guest else _page(request, {'mode': 'named', 'name': name})
+    # If the guest list cannot be reached (the free database asleep, full or down), the guest still
+    # gets the invitation with their name on it, and their reply goes by WhatsApp.
+    try:
+        guest = names.find(name)
+        if guest:
+            return _guest_page(request, guest)
+    except DatabaseError:
+        pass
+    return _page(request, {'mode': 'named', 'name': name})
 
 
 @require_safe
 def personal(request, code):
-    guest = Guest.objects.filter(code=code.lower()).first()
-    # A mistyped or retired link still shows the invitation, just not anyone's details.
-    if guest is None:
-        return _page(request, {'mode': 'general'}, status=404)
-    return _guest_page(request, guest)
+    try:
+        guest = Guest.objects.filter(code=code.lower()).first()
+        # A mistyped or retired link still shows the invitation, just not anyone's details.
+        if guest is None:
+            return _page(request, {'mode': 'general'}, status=404)
+        return _guest_page(request, guest)
+    except DatabaseError:
+        # The guest list cannot be reached: the invitation itself must still open.
+        return _page(request, {'mode': 'general'})
 
 
 def _guest_page(request, guest):

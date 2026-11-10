@@ -197,6 +197,23 @@ class OpenedTests(TestCase):
         self.assertEqual(guest.times_opened, 0)
 
 
+class DatabaseDownTests(TestCase):
+    """The free database being asleep, full or down must never stop the invitation opening."""
+
+    def test_the_invitation_still_opens_without_the_guest_list(self):
+        from unittest import mock
+        from django.db import OperationalError
+        guest = Guest.objects.create(name='Ruwan Perera')
+        with mock.patch('django.db.models.query.QuerySet._fetch_all', side_effect=OperationalError('down')),                 mock.patch('django.db.models.query.QuerySet.first', side_effect=OperationalError('down')):
+            plain = self.client.get('/')
+            named = self.client.get('/?name=Ruwan+Perera')
+            coded = self.client.get(f'/{guest.code}')
+        self.assertEqual(invite_data(plain)['mode'], 'general')
+        self.assertEqual(invite_data(named), {'mode': 'named', 'name': 'Ruwan Perera'})
+        self.assertEqual(coded.status_code, 200)
+        self.assertEqual(invite_data(coded)['mode'], 'general')
+
+
 class FileTests(TestCase):
     def test_the_invitation_files_are_served(self):
         for name, kind in [('invitation.css', 'text/css'), ('invitation.js', 'text/javascript'),
