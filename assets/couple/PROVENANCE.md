@@ -64,7 +64,9 @@ framed from his hair to below his watch, set on white and uploaded to Weave, whe
     frame, text or signature; the drawing fades out softly at the bottom.
 
 On this computer its paper was then measured and divided out, leaving only the graphite, which is
-saved as warm graphite on a transparent sheet, 834 by 1200, trailing off at the foot.
+saved on a transparent sheet, 834 by 1200, trailing off at the foot. At the user's request it is in
+the invitation's gold rather than grey: pale champagne in the lightest strokes, the venue drawing's
+gold in the middle tones and the letter's dark ink (`--ink`) in the darkest.
 `couple-strokes.js` holds the paths the live drawing's pencil follows over it, its lines and then two
 passes of shading:
 

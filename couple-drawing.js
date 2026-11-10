@@ -1,6 +1,6 @@
 (() => {
- // The couple at the head of the letter: a graphite pencil drawing of them, made from their photograph
- // under the bell arch, that draws itself when the letter comes into view. The pencil goes over the
+ // The couple at the head of the letter: a pencil drawing of them in the invitation's gold, made from
+ // their photograph under the bell arch, that draws itself when the letter comes into view. The pencil goes over the
  // drawing's lines first, then shades it in two passes, the first light and diagonal, the second
  // across it to finish. Each stroke uncovers the finished drawing beneath it, so what the pencil
  // leaves behind is the drawing itself. couple-strokes.js holds the paths and names the drawing
