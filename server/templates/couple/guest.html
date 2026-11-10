@@ -4,22 +4,21 @@
 {% block content %}
 <a class="back" href="{% url 'couple:guests' %}"><svg class="icon"><use href="#i-back"/></svg>All guests</a>
 
-<div class="guest-head">
-  <h1 class="guest-name">{% if guest %}{{ guest.name }}{% else %}Add a guest{% endif %}</h1>
-  {% if guest %}
-    <p class="guest-sub">
-      {% include "couple/_stage.html" %}
-      {% if guest.name_si %}<span lang="si">{{ guest.name_si }}</span>{% endif %}
-      {% if guest.side %}<span>{{ guest.get_side_display }}</span>{% endif %}
-      <span>{{ guest.seats }} seat{{ guest.seats|pluralize }} kept</span>
-    </p>
-  {% endif %}
-</div>
-
-<div class="guest-page{% if not guest %} is-new{% endif %}">
-  {% if guest %}
-    <aside class="sheet invitation-panel" aria-labelledby="invitation-title">
-      <h2 id="invitation-title">Their invitation</h2>
+{% if guest %}
+  {% include "couple/_flowers.html" %}
+  {# Who they are, where they have got to, and the one next thing to do, before anything else. #}
+  <header class="sheet guest-hero">
+    <div class="hero-top">
+      <svg class="swatch hero-flower is-{{ guest.stage }}" viewBox="0 0 40 60" aria-hidden="true"><use href="#f-{{ guest.stage }}"/></svg>
+      <div class="hero-who">
+        <h1 class="guest-name">{{ guest.name }}</h1>
+        <p class="guest-sub">
+          {% include "couple/_stage.html" %}
+          {% if guest.name_si %}<span lang="si">{{ guest.name_si }}</span>{% endif %}
+          {% if guest.side %}<span>{{ guest.get_side_display }}</span>{% endif %}
+          <span>{{ guest.seats }} seat{{ guest.seats|pluralize }} kept</span>
+        </p>
+      </div>
       {# The one next thing to do is the solid button; sending again is always there beside it, quieter. #}
       <div class="send-row">
         {% include "couple/_send.html" %}
@@ -32,49 +31,55 @@
           </form>
         {% endif %}
       </div>
+    </div>
+    <ol class="steps" aria-label="So far">
+      <li class="is-done"><span class="diamond" aria-hidden="true"></span><b>Added</b> {{ guest.created_at|date:"j M, g:i a" }}</li>
+      <li class="{% if guest.sent_at %}is-done{% endif %}"><span class="diamond" aria-hidden="true"></span><b>Sent</b>
+        {% if guest.sent_at %}{{ guest.sent_at|date:"j M, g:i a" }}{% else %}not yet{% endif %}</li>
+      {% if guest.reminded_at %}<li class="is-done"><span class="diamond" aria-hidden="true"></span><b>Reminded</b> {{ guest.reminded_at|date:"j M, g:i a" }}</li>{% endif %}
+      <li class="{% if guest.first_opened_at %}is-done{% endif %}"><span class="diamond" aria-hidden="true"></span><b>Opened</b>
+        {% if guest.first_opened_at %}{{ guest.first_opened_at|date:"j M, g:i a" }}{% if guest.times_opened > 1 %}, {{ guest.times_opened }} times in all{% endif %}{% else %}not yet{% endif %}</li>
+      <li class="{% if guest.reply %}is-done is-{{ guest.stage }}{% endif %}"><span class="diamond" aria-hidden="true"></span><b>Replied</b>
+        {% if guest.reply == 'yes' %}coming, {{ guest.people }} of {{ guest.seats }}, {{ guest.replied_at|date:"j M, g:i a" }}
+        {% elif guest.reply == 'no' %}can't come, {{ guest.replied_at|date:"j M, g:i a" }}
+        {% else %}not yet{% endif %}</li>
+    </ol>
+    {% if guest.stage == 'unsent' %}
+      <form method="post" action="{% url 'couple:guest_fix' guest.pk %}" class="inline-fix">{% csrf_token %}
+        <input type="hidden" name="do" value="sent">
+        <span>Already sent it some other way?</span> <button class="text-button">Mark as sent</button>
+      </form>
+    {% elif guest.stage == 'sent' %}
+      <form method="post" action="{% url 'couple:guest_fix' guest.pk %}" class="inline-fix">{% csrf_token %}
+        <input type="hidden" name="do" value="unsent">
+        <span>WhatsApp opened but you didn't actually send it?</span> <button class="text-button">Mark as not sent</button>
+      </form>
+    {% endif %}
+  </header>
+{% else %}
+  <div class="guest-head">
+    <h1 class="guest-name">Add a guest</h1>
+  </div>
+{% endif %}
 
+<div class="guest-page{% if not guest %} is-new{% endif %}">
+  {% if guest %}
+    <aside class="sheet invitation-panel" aria-labelledby="invitation-title">
+      <h2 id="invitation-title">Their invitation</h2>
+      {% if guest.message %}
+        <p class="link-label">What they wrote</p>
+        <blockquote class="their-note">{{ guest.message }}</blockquote>
+      {% endif %}
       <div class="link-box">
         <p class="link-label">Their link</p>
         <a class="guest-link" href="{{ path }}" target="_blank" rel="noopener">{{ link }}</a>
         <div class="link-actions">
           <button type="button" class="button is-quiet is-small copy-link" data-link="{{ path }}"><svg class="icon"><use href="#i-copy"/></svg><span>Copy link</span></button>
           <a class="button is-quiet is-small" href="{{ path }}" target="_blank" rel="noopener"><svg class="icon"><use href="#i-open"/></svg><span>See what they see</span></a>
+          {% if guest.phone %}<a class="button is-quiet is-small" href="tel:+{{ guest.phone }}"><svg class="icon"><use href="#i-phone"/></svg><span>Call {{ guest.phone|phone }}</span></a>{% endif %}
         </div>
       </div>
       <p class="help">Copy the link to send it some other way, like SMS or email. Looking at it here does not count as them opening it.</p>
-      {% if guest.phone %}
-        <p class="phone-line"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg><a href="tel:+{{ guest.phone }}">Call {{ guest.phone|phone }}</a></p>
-      {% endif %}
-
-      {% if guest.stage == 'unsent' %}
-        <form method="post" action="{% url 'couple:guest_fix' guest.pk %}" class="inline-fix">{% csrf_token %}
-          <input type="hidden" name="do" value="sent">
-          <span>Already sent it some other way?</span> <button class="text-button">Mark as sent</button>
-        </form>
-      {% elif guest.stage == 'sent' %}
-        <form method="post" action="{% url 'couple:guest_fix' guest.pk %}" class="inline-fix">{% csrf_token %}
-          <input type="hidden" name="do" value="unsent">
-          <span>WhatsApp opened but you didn't actually send it?</span> <button class="text-button">Mark as not sent</button>
-        </form>
-      {% endif %}
-
-      <h2>So far</h2>
-      <ol class="timeline">
-        <li class="is-done"><span class="diamond" aria-hidden="true"></span><b>Added</b> {{ guest.created_at|date:"j M, g:i a" }}</li>
-        <li class="{% if guest.sent_at %}is-done{% endif %}"><span class="diamond" aria-hidden="true"></span><b>Sent</b>
-          {% if guest.sent_at %}{{ guest.sent_at|date:"j M, g:i a" }}{% else %}not yet{% endif %}</li>
-        {% if guest.reminded_at %}<li class="is-done"><span class="diamond" aria-hidden="true"></span><b>Reminded</b> {{ guest.reminded_at|date:"j M, g:i a" }}</li>{% endif %}
-        <li class="{% if guest.first_opened_at %}is-done{% endif %}"><span class="diamond" aria-hidden="true"></span><b>Opened</b>
-          {% if guest.first_opened_at %}{{ guest.first_opened_at|date:"j M, g:i a" }}{% if guest.times_opened > 1 %}, {{ guest.times_opened }} times in all{% endif %}{% else %}not yet{% endif %}</li>
-        <li class="{% if guest.reply %}is-done is-{{ guest.stage }}{% endif %}"><span class="diamond" aria-hidden="true"></span><b>Replied</b>
-          {% if guest.reply == 'yes' %}coming, {{ guest.people }} of {{ guest.seats }}, {{ guest.replied_at|date:"j M, g:i a" }}
-          {% elif guest.reply == 'no' %}can't come, {{ guest.replied_at|date:"j M, g:i a" }}
-          {% else %}not yet{% endif %}</li>
-      </ol>
-      {% if guest.message %}
-        <h2>What they wrote</h2>
-        <blockquote class="their-note">{{ guest.message }}</blockquote>
-      {% endif %}
     </aside>
 
     {# For when a guest answers by phone, at the temple, or presses the wrong button. #}

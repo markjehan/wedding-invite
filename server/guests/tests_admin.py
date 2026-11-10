@@ -342,7 +342,7 @@ class ReplyNumberTests(TestCase):
 
     def test_numbers_are_tidied_and_saved(self):
         self.client.force_login(admin_with_two_step())
-        self.assertContains(self.client.get(reverse('couple:numbers')), ReplyTo.MAIN)
+        self.assertContains(self.client.get(reverse('couple:numbers')), '+94 77 128 1561')  # ReplyTo.MAIN, as people write it
         response = self.client.post(reverse('couple:numbers'), {'bride': '077 000 0101', 'groom': '+94 77 000 0202', 'everyone': '0771281561'})
         self.assertRedirects(response, reverse('couple:numbers'), fetch_redirect_response=False)
         numbers = ReplyTo.current()

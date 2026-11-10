@@ -22,6 +22,7 @@ from django.views.decorators.http import require_POST
 from . import names, spreadsheet, whatsapp
 from .middleware import has_two_step
 from .models import Guest, ReplyTo
+from .templatetags.phone import phone as written
 
 WEDDING = date(2026, 12, 7)
 XLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
@@ -196,6 +197,8 @@ class GuestForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # The empty choice says what it means, rather than a dash.
         self.fields['side'].choices = [('', 'Not set')] + SIDES
+        if self.instance.phone:
+            self.initial['phone'] = written(self.instance.phone)
 
 
 @couple_only
@@ -402,6 +405,12 @@ class ReplyToForm(forms.ModelForm):
         widgets = {field: forms.TextInput(attrs={'inputmode': 'tel', 'autocomplete': 'off', 'placeholder': '077 123 4567'})
                    for field in ('bride', 'groom', 'everyone')}
         error_messages = {'everyone': {'required': 'Keep a main number, so a reply always has somewhere to go.'}}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields:
+            if getattr(self.instance, field):
+                self.initial[field] = written(getattr(self.instance, field))
 
 
 @couple_only

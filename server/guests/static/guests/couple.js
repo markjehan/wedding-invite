@@ -48,7 +48,7 @@
     setTimeout(() => {
       button.classList.add('is-done');
       relabel(button, button.dataset.done, '#i-check');
-      const stage = form.closest('tr, li, .invitation-panel')?.querySelector('[data-stage]');
+      const stage = form.closest('tr, li, .guest-hero')?.querySelector('[data-stage]');
       if (!stage || reminder || form.classList.contains('is-resend')) return;  // sending again moves no one back
       stage.classList.add('is-changing');
       setTimeout(() => {

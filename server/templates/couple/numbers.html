@@ -5,25 +5,38 @@
 <div class="page-head">
   <h1>Reply numbers</h1>
 </div>
-<p class="lead numbers-lead">When a guest presses “Send my reply”, it is saved here and WhatsApp opens with it written out to one of these numbers.
-  Guests on the bride's side write to the first, guests on the groom's side to the second.</p>
+<p class="lead numbers-lead">Whose WhatsApp a guest's reply is sent to. The bride's guests write to one number, the groom's guests to another.</p>
 
-<section class="sheet numbers-sheet" aria-label="WhatsApp numbers">
-  <form method="post" novalidate>
-    {% csrf_token %}
-    {% for field in form %}
-      <div class="field{% if field.errors %} has-error{% endif %} field-{{ field.name }}">
-        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-        {{ field }}
-        {% if field.errors %}<p class="field-error">{{ field.errors|join:" " }}</p>
-        {% elif field.help_text %}<p class="help">{{ field.help_text }}</p>{% endif %}
+<div class="numbers-layout">
+  <section class="sheet numbers-sheet" aria-label="WhatsApp numbers">
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="field number-row{% if field.errors %} has-error{% endif %} field-{{ field.name }}">
+          <div class="number-what">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {% if field.errors %}<p class="field-error">{{ field.errors|join:" " }}</p>
+            {% elif field.help_text %}<p class="help">{{ field.help_text }}</p>{% endif %}
+          </div>
+          <div class="number-box"><svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>{{ field }}</div>
+        </div>
+      {% endfor %}
+      <div class="form-actions">
+        <button class="button">Save the numbers</button>
+        <a class="button is-quiet" href="{% url 'couple:overview' %}">Cancel</a>
       </div>
-    {% endfor %}
-    <div class="form-actions">
-      <button class="button">Save the numbers</button>
-      <a class="button is-quiet" href="{% url 'couple:overview' %}">Cancel</a>
-    </div>
-  </form>
-</section>
-<p class="help numbers-note">A guest's side is set on their page, or in the Side column of your Excel list. Changing a number here changes it for every reply sent after you save.</p>
+    </form>
+  </section>
+
+  <aside class="how numbers-how">
+    <h2>How a reply reaches you</h2>
+    <ol class="how-steps">
+      <li><b>The guest presses “Send my reply”.</b> Their answer is saved here straight away, so Home always has it.</li>
+      <li><b>WhatsApp opens on their phone</b> with the reply already written, addressed to the number for their side.</li>
+      <li><b>They press send,</b> and it arrives as an ordinary WhatsApp message.</li>
+    </ol>
+    <p>A guest's side is set on their page, or in the Side column of your Excel list.</p>
+    <p>Changing a number here changes it for every reply sent after you save.</p>
+  </aside>
+</div>
 {% endblock %}

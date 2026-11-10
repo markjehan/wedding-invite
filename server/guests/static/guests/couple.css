@@ -257,10 +257,21 @@ a.side-name:hover{text-decoration:underline}
 .setup-note > .icon{color:var(--action)}
 .setup-note b{font-weight:600}
 .numbers-lead{max-width:62ch;margin:-6px 0 20px}
-.numbers-sheet{max-width:660px}
-.numbers-sheet form{display:grid;gap:18px}
-.numbers-sheet .field input{max-width:320px}
-.numbers-note{max-width:62ch;margin-top:14px}
+.numbers-layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:28px;align-items:start}
+.numbers-sheet{padding:8px 26px 24px}
+.numbers-sheet form{display:grid}
+.number-row{display:grid;grid-template-columns:minmax(0,1fr) 250px;align-items:center;gap:8px 28px;padding:20px 0;border-bottom:1px solid var(--rule)}
+.number-row label{margin-bottom:3px;font-size:17px}
+.number-row .help,.number-row .field-error{margin-top:0}
+.number-box{position:relative}
+.number-box .icon{position:absolute;left:14px;top:50%;translate:0 -50%;color:var(--gold);pointer-events:none}
+.number-box input{padding-left:44px;font-weight:500;font-variant-numeric:tabular-nums}
+.numbers-sheet .form-actions{margin-top:22px}
+.how-steps{list-style:none;counter-reset:step;margin:0 0 18px;padding:0;display:grid;gap:14px}
+.how-steps li{position:relative;padding-left:44px;font-size:16px;color:var(--ink-soft);counter-increment:step}
+.how-steps li::before{content:counter(step);position:absolute;left:0;top:0;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;
+  background:var(--wash);color:var(--action-deep);font-weight:600;font-size:15px}
+.numbers-how{padding-top:6px}
 
 .reply-list{list-style:none;margin:6px 0 0;padding:0}
 .reply-list li{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:baseline;gap:2px 12px;padding:13px 0;border-top:1px solid var(--rule)}
@@ -293,18 +304,38 @@ a.side-name:hover{text-decoration:underline}
 .filter-note{margin:0 0 14px;font-size:16px;color:var(--ink-soft)}
 .filter-note a{font-weight:600;margin-left:6px}
 
+/* The guest list is one sheet: the search and the tabs that narrow it, then the guests. */
+.list-sheet{padding:0;overflow:hidden}
+.list-sheet .finder{margin:0;padding:20px 22px 14px}
+.list-sheet .stage-tabs{margin:0;padding:0 22px 18px}
+.list-sheet .filter-note{margin:-6px 22px 16px}
+.list-sheet .guest-table{border:0;border-top:1px solid var(--rule);border-radius:0;box-shadow:none;background:none}
+.list-sheet .guest-table thead th:first-child,.list-sheet .guest-table tbody tr > :first-child{padding-left:22px}
+.list-sheet .guest-table thead th:nth-child(2),.js .list-sheet .guest-table:not(.is-selecting) .who{padding-left:22px}
+.list-sheet .guest-table .actions{padding-right:22px}
+.list-sheet .guest-table tbody tr:last-child > *{border-bottom:1px solid var(--rule)}
+.list-sheet .list-help{margin:0;padding:14px 22px 16px}
+.list-sheet .empty-state{margin:0 22px 22px;background:var(--tint)}
+.who{position:relative}
+.guest-table .who{padding-left:60px}
+.who .swatch{position:absolute;left:22px;top:50%;width:24px;height:36px;translate:0 -50%;overflow:visible}
+.js .list-sheet .guest-table:not(.is-selecting) .who{padding-left:60px}
+.guest-table.is-selecting .who{padding-left:16px}
+.guest-table.is-selecting .who .swatch{display:none}
+.guest-table .is-open .icon{width:16px;height:16px;rotate:180deg}
+.guest-table .who .name{white-space:normal;overflow:visible}
 .guest-table,.preview-table{width:100%;border-collapse:separate;border-spacing:0;background:var(--sheet);border:1px solid var(--rule);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
 .guest-table thead th,.preview-table thead th{padding:12px 16px;background:var(--tint);border-bottom:1px solid var(--rule);text-align:left;font-size:14.5px;font-weight:600;color:var(--ink-soft)}
 .guest-table td,.guest-table tbody th,.preview-table td{padding:14px 16px;border-bottom:1px solid var(--rule);text-align:left;vertical-align:middle;font-weight:400}
 .guest-table tbody tr:last-child > *,.preview-table tbody tr:last-child > *{border-bottom:0}
 @media (hover:hover){.guest-table tbody tr{transition:background-color .12s ease}.guest-table tbody tr:hover{background:var(--tint)}}
 .guest-table .num,.preview-table .num{text-align:right}
-.guest-table .who{max-width:250px}
+.guest-table .who{max-width:262px}
 .guest-table .where{white-space:nowrap}
 .who .name{display:block;font-size:17px}
 .who .sub{display:flex;flex-wrap:wrap;gap:0 10px;margin-top:2px;font-size:14.5px;color:var(--ink-soft)}
 .seats .unit{display:none}
-.guest-table .note{min-width:150px;max-width:300px;font-size:15.5px}
+.guest-table .note{min-width:130px;max-width:300px;font-size:15.5px}
 /* What they wrote keeps to three lines in the list; all of it is on their own page. */
 .guest-table .note q{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;line-clamp:3;overflow:hidden;font-size:15.5px;quotes:'“' '”'}
 .guest-table .stage small{display:block;margin:1px 0 0 20px}
@@ -329,8 +360,33 @@ a.side-name:hover{text-decoration:underline}
 .guest-page.is-new{grid-template-columns:minmax(0,660px);grid-template-areas:"form"}
 .guest-head{margin-bottom:20px}
 .guest-name{font-size:34px;line-height:1.2}
-.guest-sub{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 18px;margin-top:8px;font-size:16px;color:var(--ink-soft)}
-.guest-sub .stage{font-size:17px}
+.guest-sub{display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px;margin-top:10px;font-size:16px;color:var(--ink-soft)}
+/* Who, where they have got to, and the next thing to do, on one sheet across the page. */
+.guest-hero{margin-bottom:22px;padding:26px 28px 22px}
+.hero-top{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px 22px}
+.hero-flower{width:54px;height:81px;overflow:visible}
+.guest-hero .stage{display:inline-flex;align-items:center;flex-wrap:wrap;padding:5px 14px 5px 12px;border-radius:99px;background:var(--wash);font-size:16px;font-weight:600}
+.guest-hero .stage.is-coming{background:var(--coming-wash)}
+.guest-hero .stage.is-declined{background:var(--declined-wash)}
+.guest-hero .stage.is-opened,.guest-hero .stage.is-sent{background:var(--waiting-wash)}
+.guest-hero .send-row{justify-content:flex-end;margin:0}
+/* Their walk so far, left to right: a gold rule runs as far as they have got. */
+.steps{list-style:none;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);margin:24px 0 0;padding:0}
+.steps li{position:relative;padding:22px 16px 0 0;font-size:15px;line-height:1.45;color:var(--ink-soft)}
+.steps li::before{content:'';position:absolute;left:0;right:0;top:5px;height:2px;background:var(--rule)}
+.steps li.is-done::before{background:var(--gold)}
+.steps li .diamond{position:absolute;left:0;top:0;width:11px;height:11px;background:var(--sheet);border-color:var(--line)}
+.steps li b{display:block;font-size:16px;color:var(--ink-soft)}
+.steps li.is-done{color:var(--ink)}
+.steps li.is-done b{color:var(--ink)}
+.steps li.is-done .diamond{background:var(--gold);border-color:var(--gold)}
+.steps li.is-coming .diamond{background:var(--coming);border-color:var(--coming)}
+.steps li.is-coming b{color:var(--coming)}
+.steps li.is-declined .diamond{background:var(--declined);border-color:var(--declined)}
+.steps li.is-declined b{color:var(--declined)}
+.guest-hero .inline-fix{margin-top:18px}
+.invitation-panel .their-note{margin:0 0 18px}
+.invitation-panel .link-label{margin-bottom:6px}
 .guest-form form{margin-top:16px;display:grid;gap:18px}
 .field label{display:block;margin-bottom:7px;font-size:16px;font-weight:600}
 .field textarea{min-height:90px;resize:vertical}
@@ -460,7 +516,9 @@ a.side-name:hover{text-decoration:underline}
   .sections a{flex-direction:column;justify-content:center;gap:2px;padding:0 9px;font-size:14px}
 }
 @media (max-width:1020px){
-  .overview,.import-layout{grid-template-columns:minmax(0,1fr)}
+  .overview,.import-layout,.numbers-layout{grid-template-columns:minmax(0,1fr)}
+  .hero-top{grid-template-columns:auto minmax(0,1fr)}
+  .guest-hero .send-row{grid-column:1/-1;justify-content:flex-start}
   .overview{grid-template-areas:"needs" "replies" "sides"}
   .guest-page{grid-template-columns:minmax(0,1fr);grid-template-areas:"invite" "fix" "form"}
   .summary-top{grid-template-columns:minmax(0,1fr)}
@@ -553,7 +611,29 @@ a.side-name:hover{text-decoration:underline}
   .mini-list li{grid-template-columns:minmax(0,1fr);grid-template-areas:"name" "stage" "action";gap:4px}
   .mini-list .send-form{margin-top:6px}
   .mini-list .button{width:100%}
-  .guest-name{font-size:28px}
+  .guest-name{font-size:27px}
+  .guest-hero{padding:20px 18px 18px}
+  .hero-top{gap:12px 14px}
+  .hero-flower{width:40px;height:60px;align-self:start}
+  /* On a phone their walk runs down the page instead. */
+  .steps{grid-auto-flow:row;margin-top:20px}
+  .steps li{padding:0 0 14px 26px}
+  .steps li:last-child{padding-bottom:0}
+  .steps li::before{left:5px;right:auto;top:6px;bottom:-6px;width:2px;height:auto}
+  .steps li:last-child::before{display:none}
+  .steps li .diamond{top:6px}
+  .steps li b{display:inline;margin-right:6px}
+  .list-sheet .finder{padding:16px 16px 12px}
+  .list-sheet .stage-tabs{padding:0 16px 16px}
+  .list-sheet .filter-note{margin:-4px 16px 14px}
+  .list-sheet .list-help{padding:14px 16px 16px}
+  .list-sheet .empty-state{margin:0 16px 16px}
+  .list-sheet .guest-table tbody tr > *,.js .list-sheet .guest-table:not(.is-selecting) .who,.list-sheet .guest-table .actions{padding:0}
+  .list-sheet .guest-table .who,.js .list-sheet .guest-table:not(.is-selecting) .who{padding-left:36px}
+  .who .swatch{left:0;top:2px;translate:none}
+  .guest-table.is-selecting .who{padding-left:0}
+  .number-row{grid-template-columns:minmax(0,1fr);padding:18px 0}
+  .numbers-sheet{padding:4px 18px 20px}
   .send-row > *{flex:1 1 100%}
   .send-row .button{width:100%}
   .link-actions .button{flex:1 1 auto}

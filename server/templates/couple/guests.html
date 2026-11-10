@@ -10,6 +10,9 @@
   </div>
 </div>
 
+{% include "couple/_flowers.html" %}
+{# One sheet holds the whole list: the search, the tabs that narrow it, and the guests under them. #}
+<section class="sheet list-sheet" aria-label="The guest list">
 <form class="finder" method="get" role="search">
   {% if show %}<input type="hidden" name="show" value="{{ show }}">{% endif %}
   <label class="search">
@@ -60,6 +63,7 @@
         <tr>
           <td class="pick"><label class="tick"><input type="checkbox" name="ids" value="{{ guest.pk }}" form="bulk" aria-label="Select {{ guest.name }}"><span aria-hidden="true"></span></label></td>
           <th scope="row" class="who">
+            <svg class="swatch is-{{ guest.stage }}" viewBox="0 0 40 60" aria-hidden="true"><use href="#f-{{ guest.stage }}"/></svg>
             <a class="name" href="{% url 'couple:guest' guest.pk %}">{{ guest.name }}</a>
             <span class="sub">{% if guest.name_si %}<span lang="si">{{ guest.name_si }}</span>{% endif %}{% if guest.side %}<span>{{ guest.get_side_display }}</span>{% endif %}</span>
           </th>
@@ -71,12 +75,14 @@
             <button type="button" class="button is-quiet copy-link" data-link="{{ guest.path }}" aria-label="Copy the link for {{ guest.name }}">
               <svg class="icon"><use href="#i-copy"/></svg><span>Copy link</span>
             </button>
-            <a class="button is-quiet is-open" href="{% url 'couple:guest' guest.pk %}" aria-label="Open {{ guest.name }}"><span>Open</span></a>
+            <a class="button is-quiet is-open" href="{% url 'couple:guest' guest.pk %}" aria-label="Open {{ guest.name }}"><span>Open</span><svg class="icon"><use href="#i-back"/></svg></a>
           </td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
+  <p class="help list-help">Tap a name to change their details, record a reply they gave you by phone, or take them off the list.</p>
+</section>
   <form id="bulk" class="bulk-bar" method="post" action="{% url 'couple:guest_bulk' %}" aria-label="Do something with the guests you ticked">
     {% csrf_token %}
     <input type="hidden" name="back" value="{{ request.get_full_path }}">
@@ -101,7 +107,6 @@
       <button class="button is-quiet is-small is-declined" name="do" value="delete" data-confirm="Take {n} off the list? Their links will stop working. This cannot be undone."><svg class="icon"><use href="#i-trash"/></svg><span>Delete</span></button>
     </div>
   </form>
-  <p class="help list-help">Tap a name to change their details, record a reply they gave you by phone, or take them off the list.</p>
   <p class="foot-download"><a class="button is-quiet" href="{% url 'couple:export' %}"><svg class="icon"><use href="#i-download"/></svg><span>Download the list as Excel</span></a></p>
 {% elif counts.invited == 0 and not query and not side %}
   <div class="empty-state">
@@ -119,4 +124,5 @@
     <p class="empty-actions"><a class="button is-quiet" href="{% url 'couple:guests' %}">Show everyone</a></p>
   </div>
 {% endif %}
+{% if not guests %}</section>{% endif %}
 {% endblock %}
