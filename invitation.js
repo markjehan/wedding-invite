@@ -587,12 +587,12 @@
       }
     }
     // A print turns every second and a half (two and a half beats), and the pile is left alone for
-    // a few seconds after the guest has turned it by hand.
+    // two seconds after the guest has turned it by hand.
     function later(wait=1.5){
       clearTimeout(timer);if(!(canMove&&inView&&!held&&!document.hidden))return;
       timer=setTimeout(()=>{turn(1);later()},wait*1000);
     }
-    const byHand=(step,side,carried)=>{turn(step,side,carried);later(5)};
+    const byHand=(step,side,carried)=>{turn(step,side,carried);later(2)};
     lay();
     stack.querySelectorAll('.stack-turn').forEach(button=>button.addEventListener('click',()=>byHand(+button.dataset.turn)));
     table.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();byHand(e.key==='ArrowRight'?1:-1)}});
@@ -639,7 +639,9 @@
     table.addEventListener('pointerup',release);table.addEventListener('pointercancel',release);
     table.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse'){held=true;clearTimeout(timer)}});
     table.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'){held=false;later()}});
-    stack.addEventListener('focusin',()=>{held=true;clearTimeout(timer)});
+    // Only focus from the keyboard holds the pile still. A tap or a click focuses what it lands on
+    // too, and on a phone that focus never leaves, which stopped the pile for good.
+    stack.addEventListener('focusin',e=>{if(e.target.matches(':focus-visible')){held=true;clearTimeout(timer)}});
     stack.addEventListener('focusout',()=>{held=false;later()});
     document.addEventListener('visibilitychange',()=>later());
     if('IntersectionObserver' in window)new IntersectionObserver(([entry])=>{inView=entry.isIntersecting;later()},{threshold:.5}).observe(table);
