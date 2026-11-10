@@ -116,44 +116,7 @@
     names: 'නවීන් සහ දුලාංජනී',
     'names.amp': 'සහ',
     'welcome.cue': 'ඔබට අපගේ ආරාධනාව',
-    // The initials, set large in Gurulugomi's calligraphy and placed by their measured ink so the pair
-    // and the diamond between them sit on the medallion's axis (build_sinhala.py prints these). Where the
-    // English mark has its ampersand, the Sinhala mark has the invitation's own gold diamond: a Latin
-    // glyph has no place in it, and a small සහ there read as a caption rather than a monogram.
-    'mono.n': 'න',
-    'mono.d': 'දු',
-    'mono.amp': 'සහ',
-    'mono.size': '60',
-    'mono.amp.size': '18',
-    'mono.face': 'SinhalaScript,serif',
-    'mono.amp.face': 'SinhalaSerif,serif',
-    // The same face again as an inline style, for the <use> copies of the crest; see apply().
-    'crest.face': 'font-family:SinhalaScript,serif',
-    'crest.amp.style': 'display:none',
-    'mono.n.x': '53.6',
-    'mono.d.x': '124.2',
-    'mono.amp.x': '103.5',
-    'mono.amp.y': '117.8',
-    // Each ink front starts at its letter's left edge and ends a full soft edge past its right.
-    'ink.n': '--ink-from:51px;--ink-to:194px',
-    'ink.amp': '--ink-from:88px;--ink-to:229px',
-    'ink.d': '--ink-from:123px;--ink-to:257px',
-    // The compact mark above every section, and the foil stamp struck from it, render at a third of
-    // the medallion's size, where its spacing closed up and සහ ran into both letters. Same
-    // composition, sized for its size: slightly smaller letters, held further apart.
-    'crest.size': '56',
-    'crest.amp.size': '16',
-    'crest.n.x': '57.4',
-    'crest.amp.x': '103.3',
-    'crest.amp.y': '117.6',
-    'crest.d.x': '121.9',
-    // The letters' shared baseline, raised so the tail of ු clears the swash, and the gold diamond that
-    // stands between them. On the compact crests the diamond is switched on by its inline style.
-    'mono.y': '114',
-    'mono.join': 'translate(104.5 103.9)',
-    'crest.y': '114',
-    'crest.join': 'translate(104.2 104.6)',
-    'crest.join.style': 'display:inline',
+    // The monogram keeps the English N and D in Sinhala too: it is the couple's mark, so it is left as it is.
 
     'letter.label': `දෙපවුලේ ආශීර්${J}වාදය සමඟ`,
     'letter.title': 'සොම්නස් සිතින්',

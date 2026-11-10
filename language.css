@@ -195,8 +195,6 @@ html:lang(si) .scroll-cue{font-size:13px}
 /* The initials in both medallions are the calligraphy, and the small සහ that joins them is the serif, as
    Pinyon's N and D are joined by Italiana's ampersand. The compact crests are <use> copies that
    carry their faces as inline styles instead; see apply() in i18n.js. */
-html:lang(si) .wc-letter{font-family:SinhalaScript,serif}
-html:lang(si) .wc-letter.wc-amp{font-family:SinhalaSerif,serif}
 /* Between the Sinhala initials sits the invitation's gold diamond on a hairline, where the English
    mark has its ampersand. It reveals under the ampersand's own ink front, so it arrives on the same
    beat. These rules reach the two drawn medallions; the compact crests are <use> copies and are
@@ -205,8 +203,6 @@ html:lang(si) .wc-letter.wc-amp{font-family:SinhalaSerif,serif}
 .wc-join-frame{fill:none;stroke:var(--gold);stroke-width:.9}
 .wc-join-seed{fill:var(--gold);stroke:none}
 .wc-join-rule{fill:none;stroke:var(--line);stroke-width:.6}
-html:lang(si) :is(.welcome-crest,.closing-crest) .wc-join{display:inline}
-html:lang(si) :is(.welcome-crest,.closing-crest) .wc-amp{display:none}
 
 html:lang(si) .letter-label{font:400 15px/1.7 SinhalaSerif,serif;letter-spacing:0;text-transform:none}
 html:lang(si) .invitation-letter h2{font:400 clamp(27px,3.3vw,33px)/1.5 SinhalaSerif,serif;letter-spacing:0}
