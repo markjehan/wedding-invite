@@ -233,6 +233,14 @@ class GuestListTests(TestCase):
         self.assertFalse(Guest.objects.filter(pk__in=chosen).exists())
         self.assertEqual(Guest.objects.count(), 3)
 
+    def test_every_guest_on_the_list_even_ones_not_shown(self):
+        url = reverse('couple:guest_bulk')
+        self.assertContains(self.client.get('/admin/guests/?show=coming'), 'Select all 5 guests')
+        self.client.post(url, {'everyone': '1', 'ids': [self.guests['coming'].pk], 'do': 'side-bride', 'back': '/admin/guests/?show=coming'})
+        self.assertEqual(Guest.objects.exclude(side='bride').count(), 0)
+        self.client.post(url, {'everyone': '1', 'do': 'delete'})
+        self.assertEqual(Guest.objects.count(), 0)
+
     def test_many_guests_needs_a_tick_and_stays_on_this_site(self):
         url = reverse('couple:guest_bulk')
         response = self.client.post(url, {'do': 'delete', 'back': 'https://elsewhere.example/'})

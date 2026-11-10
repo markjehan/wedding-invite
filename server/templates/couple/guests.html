@@ -80,8 +80,10 @@
   <form id="bulk" class="bulk-bar" method="post" action="{% url 'couple:guest_bulk' %}" aria-label="Do something with the guests you ticked">
     {% csrf_token %}
     <input type="hidden" name="back" value="{{ request.get_full_path }}">
-    <div class="bulk-count"><b data-chosen>0</b> <span data-chosen-word>guests</span> selected
-      <button type="button" class="text-button bulk-all">Select all {{ guests|length }}</button>
+    <input type="hidden" name="everyone" value="">
+    <div class="bulk-count" data-everyone="{{ everyone }}"><span class="bulk-said"><b data-chosen>0</b> <span data-chosen-word>guests</span> selected</span>
+      {% if guests|length < everyone %}<button type="button" class="text-button bulk-all">Select the {{ guests|length }} shown</button>{% endif %}
+      <button type="button" class="text-button bulk-everyone">Select all {{ everyone }} guest{{ everyone|pluralize }}</button>
       <button type="button" class="text-button bulk-none">Clear</button>
     </div>
     <div class="bulk-actions">

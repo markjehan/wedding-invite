@@ -67,29 +67,42 @@
   if (bulk && toggle && table) {
     const boxes = [...table.querySelectorAll('tbody .pick input')];
     const all = table.querySelector('.pick-all');
+    const everyone = Number(bulk.querySelector('[data-everyone]').dataset.everyone);
+    const whole = bulk.querySelector('[name=everyone]');
     const plural = n => `${n} guest${n === 1 ? '' : 's'}`;
+    // "Select all" reaches every guest on the list, even ones the search or tab is hiding; unticking
+    // anyone goes back to just the ones ticked.
+    const chosen = () => whole.value ? everyone : boxes.filter(box => box.checked).length;
     const update = () => {
-      const n = boxes.filter(box => box.checked).length;
+      const ticked = boxes.filter(box => box.checked).length, n = chosen();
       boxes.forEach(box => box.closest('tr').classList.toggle('is-chosen', box.checked));
-      bulk.querySelector('[data-chosen]').textContent = n;
-      bulk.querySelector('[data-chosen-word]').textContent = n === 1 ? 'guest' : 'guests';
+      bulk.querySelector('[data-chosen]').textContent = whole.value ? `All ${n}` : n;
+      bulk.querySelector('[data-chosen-word]').textContent = whole.value
+        ? `guest${n === 1 ? '' : 's'} on the list`
+        : n === 1 ? 'guest' : 'guests';
       bulk.classList.toggle('is-empty', !n);
-      all.checked = n === boxes.length;
-      all.indeterminate = n > 0 && n < boxes.length;
+      bulk.classList.toggle('is-whole', !!whole.value);
+      all.checked = ticked === boxes.length;
+      all.indeterminate = ticked > 0 && ticked < boxes.length;
+    };
+    const tick = (on, wholeList = false) => {
+      boxes.forEach(box => { box.checked = on; });
+      whole.value = on && wholeList ? '1' : '';
+      update();
     };
     const selecting = on => {
       table.classList.toggle('is-selecting', on);
       bulk.classList.toggle('is-open', on);
       toggle.setAttribute('aria-pressed', on);
       toggle.querySelector('span').textContent = on ? 'Done' : 'Select';
-      if (!on) boxes.forEach(box => { box.checked = false; });
+      if (!on) tick(false);
       update();
     };
     toggle.hidden = false;
     toggle.addEventListener('click', () => selecting(!table.classList.contains('is-selecting')));
     table.addEventListener('change', event => {
-      if (event.target === all) boxes.forEach(box => { box.checked = all.checked; });
-      update();
+      if (event.target === all) tick(all.checked, all.checked && boxes.length === everyone);
+      else { whole.value = ''; update(); }
     });
     // While selecting, a tap anywhere on a guest's row ticks them, rather than opening their page.
     table.addEventListener('click', event => {
@@ -99,16 +112,24 @@
       event.preventDefault();
       const box = row.querySelector('.pick input');
       box.checked = !box.checked;
+      whole.value = '';
       update();
     });
-    bulk.querySelector('.bulk-all').addEventListener('click', () => { boxes.forEach(box => { box.checked = true; }); update(); });
-    bulk.querySelector('.bulk-none').addEventListener('click', () => { boxes.forEach(box => { box.checked = false; }); update(); });
+    bulk.querySelector('.bulk-all')?.addEventListener('click', () => tick(true));
+    bulk.querySelector('.bulk-everyone').addEventListener('click', () => tick(true, true));
+    bulk.querySelector('.bulk-none').addEventListener('click', () => tick(false));
     bulk.addEventListener('submit', event => {
       const ask = event.submitter?.dataset.confirm;
-      const n = boxes.filter(box => box.checked).length;
+      const n = chosen();
       if (!n) { event.preventDefault(); return; }
-      if (ask && !confirm(ask.replace('{n}', plural(n)))) event.preventDefault();
+      const who = whole.value ? `all ${plural(n)}` : plural(n);
+      if (ask && !confirm(ask.replace('{n}', who))) event.preventDefault();
       bulk.querySelector('.bulk-menu')?.removeAttribute('open');
+    });
+    // Ctrl+A (Cmd+A on a Mac) while selecting ticks every guest on the list.
+    document.addEventListener('keydown', event => {
+      if (!table.classList.contains('is-selecting') || event.target.closest('input[type=search], input[type=text], textarea')) return;
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'a') { event.preventDefault(); tick(true, true); }
     });
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape' && table.classList.contains('is-selecting')) selecting(false);

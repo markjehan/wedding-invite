@@ -173,6 +173,7 @@ def guest_list(request):
         # ?show=sent or ?show=opened (from the home page) has no tab of its own, so the page says it.
         'show_label': STAGE[show][0] if show in ('sent', 'opened') else '',
         'side': side if side in dict(SIDES) else '', 'sides': SIDES, 'query': query, 'counts': counts,
+        'everyone': Guest.objects.count(),
     })
 
 
@@ -272,8 +273,11 @@ def guest_bulk(request):
     back = request.POST.get('back', '')
     if not back.startswith(reverse('couple:guests')):
         back = reverse('couple:guests')
-    ids = [value for value in request.POST.getlist('ids') if value.isdigit()]
-    guests = Guest.objects.filter(pk__in=ids)
+    # "Every guest on the list" reaches past the search, side and tab the page was showing.
+    if request.POST.get('everyone') == '1':
+        guests = Guest.objects.all()
+    else:
+        guests = Guest.objects.filter(pk__in=[value for value in request.POST.getlist('ids') if value.isdigit()])
     n = guests.count()
     if not n:
         messages.error(request, 'Tick at least one guest first.')

@@ -426,6 +426,8 @@ a.side-name:hover{text-decoration:underline}
 @starting-style{.bulk-bar.is-open{opacity:0;translate:0 8px}}
 .bulk-count{display:flex;flex-wrap:wrap;align-items:center;gap:0 14px;font-size:16px}
 .bulk-count b{font-variant-numeric:tabular-nums}
+.bulk-bar.is-whole .bulk-said{color:var(--action-deep);font-weight:600}
+.bulk-bar.is-whole .bulk-everyone,.bulk-bar.is-whole .bulk-all{display:none}
 .bulk-actions{display:flex;flex-wrap:wrap;gap:8px}
 .bulk-bar.is-empty .bulk-actions{opacity:.45;pointer-events:none}
 .bulk-menu{position:relative}
