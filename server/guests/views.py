@@ -85,17 +85,16 @@ def reply(request, code):
     try:
         sent = json.loads(request.body)
         answer = sent['attendance']
-        people = int(sent.get('people') or 0)
         note = str(sent.get('note') or '').strip()
         language = sent.get('lang')
     except (ValueError, TypeError, KeyError, AttributeError):
         return JsonResponse({'error': 'unreadable'}, status=400)
     if answer not in {'yes', 'no'} or len(note) > 1000:
         return JsonResponse({'error': 'invalid'}, status=400)
-    if answer == 'yes' and not 1 <= people <= guest.seats:
-        return JsonResponse({'error': 'people'}, status=400)
     guest.reply = answer
-    guest.people = people if answer == 'yes' else 0
+    # A guest who accepts takes the seats kept for them. They cannot choose a number: whatever their
+    # page sends is ignored, and only the couple change seats or how many are coming, on their pages.
+    guest.people = guest.seats if answer == 'yes' else 0
     guest.message = note
     guest.reply_language = language if language in {'en', 'si'} else ''
     guest.replied_at = timezone.now()

@@ -886,13 +886,12 @@
   });
   $('#rsvp').addEventListener('input',()=>{if(!$('#prepared').hidden){$('#prepared').hidden=true;$('#reply-status').textContent=say('changed')||'Details changed. Prepare your updated RSVP.';}});
   $('#copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('#reply-text').textContent);$('#reply-status').textContent=say('copied')||'Copied. Paste your RSVP into a message to the couple.';}catch{const range=document.createRange();range.selectNodeContents($('#reply-text'));getSelection().removeAllRanges();getSelection().addRange(range);$('#reply-status').textContent=say('selectCopy')||'Select and copy the highlighted reply.';}});
-  // A guest's own link. They are already known, so the form asks only whether they are coming, how
-  // many of the seats kept for them will be used, and for a note. The reply is saved on the server
+  // A guest's own link. They are already known, so the form shows the seats kept for them and asks
+  // only whether they are coming, and for a note. The reply is saved on the server
   // and is there again whenever the link is opened, and it also opens in WhatsApp, written to the
   // couple, as replies always did before there was a server.
   function personal(me){
     const form=$('#rsvp'),button=form.querySelector('button[type=submit]'),status=$('#reply-status');
-    const people=form.elements.namedItem('people'),field=form.querySelector('.people-field');
     const choice=answer=>form.querySelector(`[data-reply="${answer}"]`);
     const name=()=>window.invitationLanguage?.current==='si'&&me.nameSi||me.name;
     form.elements.namedItem('name').value=me.name;
@@ -900,9 +899,10 @@
     $('#reply-whatsapp-note').hidden=true;$('#reply-saved-note').hidden=false;
     // From here the button's words are this script's, so i18n.js stops swapping them.
     button.removeAttribute('data-i18n-text');
-    for(let n=1;n<=me.seats;n++)people.add(new Option(n,n));
-    if(me.reply){choice(me.reply).checked=true;people.value=String(Math.max(1,me.people));form.elements.namedItem('note').value=me.message||'';}
-    const seats=()=>{field.hidden=me.seats<2||!choice('yes').checked};
+    // The seats kept for them are shown as a fact. Accepting takes all of them; the couple change the
+    // number, or how many are really coming, on their own pages.
+    $('#seats-count').textContent=me.seats;$('#seats-kept').hidden=false;
+    if(me.reply){choice(me.reply).checked=true;form.elements.namedItem('note').value=me.message||'';}
     const lock=()=>{if(!me.open)[...form.elements].forEach(el=>el.disabled=true)};
     function paint(){
       // The first words after the doors greet them by name. i18n.js has just set the plain line for
@@ -911,12 +911,10 @@
       $('#greeting').textContent=say('dear',name());$('#greeting').hidden=false;
       const words=[...button.childNodes].find(node=>node.nodeType===3&&node.nodeValue.trim());
       if(words)words.nodeValue=say(me.reply?'update':'send')+' ';
-      $('#people-hint').textContent=me.seats>1?say('seats',me.seats):'';
       const saved=me.reply?say('already',choice(me.reply).parentElement.textContent.trim(),me.people):'';
       status.textContent=me.open?saved:`${saved} ${say('closed')}`.trim();
     }
-    seats();paint();lock();
-    form.addEventListener('change',seats);
+    paint();lock();
     document.addEventListener('invitation:language',paint);
     // Reported once per visit, by the open page rather than when the link is fetched, so the preview
     // WhatsApp makes of a link does not count as the guest opening it.
@@ -926,7 +924,7 @@
       e.preventDefault();
       if(!form.reportValidity())return;
       const picked=form.querySelector('[name=attendance]:checked'),answer=picked.dataset.reply;
-      const count=answer==='yes'?+people.value||1:0,note=form.elements.namedItem('note').value.trim();
+      const count=answer==='yes'?me.seats:0,note=form.elements.namedItem('note').value.trim();
       // WhatsApp opens now, inside the press, or the phone holds it back; the panel stays as the
       // fallback. It goes whether or not the save below works, so the couple hear either way.
       // The server says whose WhatsApp it goes to: the bride's for her side, the groom's for his.

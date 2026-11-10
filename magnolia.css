@@ -301,7 +301,10 @@ blockquote{color:var(--gold)}
 .send-actions{display:grid;gap:10px;margin:16px 0 12px}
 /* The Sinhala label runs to two lines on a phone; balanced, it never leaves one word on the second. */
 .reply-card>.button{text-wrap:balance}
-#people-hint{display:block;margin:-14px 0 22px;font-size:11px;color:var(--muted)}
+/* The seats kept for the guest: a line to read, with nothing to press. */
+.seats-kept{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin:0 0 26px;padding:12px 0;border-block:1px solid var(--line);font-size:13px}
+.seats-kept strong{font-size:22px;font-weight:500;color:var(--action);font-variant-numeric:lining-nums}
+html:lang(si) .seats-kept{font-size:14px;line-height:1.75}
 .reply-general{margin-top:34px}
 #prepared>.button.secondary{width:100%}
 .scratch-sheen{position:absolute;inset:0;opacity:0;pointer-events:none;clip-path:url(#cameo);background:linear-gradient(105deg,transparent 38%,#fff6dc8c 47%,#fffefa9e 50%,#fff6dc8c 53%,transparent 62%);background-size:280% 100%;transition:opacity .3s}

@@ -525,8 +525,9 @@
           <label class="choice" data-i18n-text="rsvp.decline"><input type="radio" name="attendance" value="Regretfully declines" data-reply="no">Regretfully declines</label>
         </fieldset>
 
-        <!-- Personal links only, and only when more than one seat is kept for the guest. -->
-        <label class="people-field" hidden data-i18n-text="rsvp.people">Guests attending<select name="people"></select><small id="people-hint"></small></label>
+        <!-- Personal links only. The seats kept for the guest are shown, never chosen: only the couple
+             change them, on their own pages. -->
+        <p class="seats-kept" id="seats-kept" hidden><span data-i18n="rsvp.people">Seats reserved for you</span><strong id="seats-count"></strong></p>
         
         <label data-i18n-text="rsvp.note">A note for the couple <span data-i18n="rsvp.optional">(optional)</span>
           <textarea name="note" rows="3" maxlength="1000" placeholder="Your wishes or a little hello…" data-i18n-attr="placeholder:rsvp.note.hint"></textarea>

@@ -29,7 +29,7 @@ were agreed along the way. Read **Working rules** before changing anything.
 6. **The programme** — 9.00 am arrival of the couple → 9.30 → 11.45 → 12.30 → 3.45 pm going away.
 7. **The venue** — a drawing of Avenra Gardens that draws itself, plus Google Maps directions
    (latitude 7.2175792, longitude 79.8554087).
-8. **Reply (RSVP)** — coming / not coming, how many seats, a note.
+8. **Reply (RSVP)** — coming / not coming, the seats kept for them (shown, only the couple can change it), a note.
 
 The footer has *Back to the beginning*, *Replay the opening* and an English | සිංහල switch.
 

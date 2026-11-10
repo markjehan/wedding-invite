@@ -138,9 +138,12 @@ class ReplyTests(TestCase):
         self.guest.refresh_from_db()
         self.assertEqual((self.guest.reply, self.guest.people), ('no', 0))
 
-    def test_no_more_people_than_seats(self):
-        self.assertEqual(self.send(attendance='yes', people=3).status_code, 400)
-        self.assertEqual(self.send(attendance='yes', people=0).status_code, 400)
+    def test_a_guest_cannot_choose_the_number_of_seats(self):
+        for asked in (1, 3, 0, 50):
+            self.assertEqual(self.send(attendance='yes', people=asked).json()['people'], 2)
+        self.assertEqual(self.send(attendance='yes').json()['people'], 2)
+        self.guest.refresh_from_db()
+        self.assertEqual((self.guest.seats, self.guest.people), (2, 2))
 
     def test_only_yes_or_no(self):
         self.assertEqual(self.send(attendance='maybe').status_code, 400)
