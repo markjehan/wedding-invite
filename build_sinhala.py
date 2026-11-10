@@ -56,7 +56,7 @@ FONTS = ROOT / 'assets' / 'fonts'
 OUT = ROOT / 'build_assets' / 'sinhala-names.html'
 SCRIPT = SOURCES / 'UN-Gurulugomi.ttf'
 
-NAMES = ['නවීන්', 'දුලාංජනී']
+NAMES = ['නවීන්', 'දුලංජනී']
 # The English outlines are written in Pinyon Script's 2048 units to the em, and the pen width is
 # computed from that number (invitation.js, setPen), so every other font's outlines are scaled into
 # the same space. OPTICAL then sets the Sinhala names against the English: Gurulugomi's letters are

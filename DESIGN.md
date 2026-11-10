@@ -544,7 +544,7 @@ were then set on the invitation's first screen side by side (`.qa/sinhala-elegan
   wedding cards are printed in: thick-and-thin strokes, open counters and a formal, flowing rhythm, which
   is what Pinyon's copperplate and Great Vibes do in English. A handwriting face, Atlas Chirani (OFL), was
   tried first and rejected on sight: beside the English it read as a casual hand, not an invitation. Of the
-  other calligraphic UN faces Alakamanda was the close second; Isiwara and Disapamok turn දුලාංජනී into
+  other calligraphic UN faces Alakamanda was the close second; Isiwara and Disapamok turn දුලංජනී into
   shapes that are hard to read. Gurulugomi carries no licence text of its own. FontMaster fonts are
   distributed as free for personal use, which a personal wedding invitation is; commercial reuse would
   need a FontMaster licence. `assets/fonts/Gurulugomi-NOTICE.txt` records its source and terms.
@@ -581,7 +581,7 @@ glyph 41 units clear of its ink, exactly as the English letters are. The pen tra
 
 Each name still takes one bar: the step between letters is recomputed from the letter count. නවීන් is
 four glyphs, because Gurulugomi draws its long al-lakuna as a glyph of its own;
-දුලාංජනී is six. They wait in
+දුලංජනී is five. They wait in
 `<template id="names-si">` and trade places with the English letters, so every pen and ink rule applies
 unchanged and `.given:last-child` still finds the second name.
 
