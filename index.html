@@ -22,10 +22,13 @@
   <!-- Light stationery only: this keeps Android's forced dark mode from inverting the invitation. -->
   <meta name="color-scheme" content="only light">
   <link rel="icon" href="assets/materials/brass-seal-monogram-512.png">
+  <!-- The two scripts that answer the language page and work the doors go first. They sit at the foot
+       of the page, and on a phone's connection they used to queue behind the fonts and the door art:
+       the language page was on screen for seconds before a press on it could do anything. -->
+  <link rel="preload" href="i18n.js" as="script" fetchpriority="high">
+  <link rel="preload" href="invitation.js" as="script" fetchpriority="high">
   <!-- Only the faces on the first screen are preloaded: the script for the medallion's initials and
-       Italiana for the welcome line. The section headings' script (457KB) and the date figures used
-       to be preloaded as well, which put half a megabyte ahead of the doors on a phone's connection
-       for text nobody sees until they scroll. Both are still fetched at load, just not first. -->
+       Italiana for the welcome line. -->
   <link rel="preload" href="assets/fonts/pinyon-script.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/italiana-regular.ttf" as="font" type="font/ttf" crossorigin>
   <!-- The language page is the first screen now, and it sets its Sinhala in Noto Serif Sinhala Light,
@@ -43,6 +46,11 @@
   <link rel="stylesheet" href="magnolia.css">
   <link rel="stylesheet" href="language.css">
   <link rel="stylesheet" href="devices.css">
+  <!-- The English headings' handwriting, Great Vibes, is 457KB and no Sinhala line uses it. It is
+       declared here switched off (media="not all"), so nothing fetches it while the language is still
+       being chosen, and a guest who reads in Sinhala never downloads it at all. i18n.js switches it on
+       the moment English is chosen, and the language page waits for it like every other face. -->
+  <style id="hand-face" media="not all">@font-face{font-family:Calligraphy;src:url('assets/fonts/greatvibes.ttf') format('truetype');font-display:swap}</style>
 
   <!-- A link can name its language (?lang=si or ?lang=en), to send a family the Sinhala invitation
        directly. It is read here, before the first paint, so the language page never flashes up. -->
@@ -171,6 +179,33 @@
       <p class="gate-status" role="status"></p>
     </div>
   </div>
+  <!-- A press on a language counts from the first moment the page is on screen. The script that owns
+       this page (i18n.js) arrives a little later on a slow connection, and until it did a press was
+       simply lost. This takes the press, shows it has landed, starts that language's faces on their
+       way, and leaves the choice for i18n.js to carry out when it arrives. Old JavaScript on purpose. -->
+  <script>(function(){
+    var gate=document.getElementById('language-gate');if(!gate)return;
+    var wait={en:'Preparing your invitation…',si:'ඔබගේ ආරාධනාව සූදානම් වෙමින්…'};
+    gate.addEventListener('click',function(event){
+      if(window.invitationLanguage||window.invitationEarlyChoice)return;
+      var button=event.target;
+      while(button&&button!==gate&&!(button.getAttribute&&button.getAttribute('data-language')))button=button.parentNode;
+      if(!button||button===gate)return;
+      var lang=button.getAttribute('data-language')==='si'?'si':'en';
+      window.invitationEarlyChoice={language:lang,at:Date.now()};
+      button.setAttribute('data-chosen','');
+      gate.className+=' is-choosing';
+      var status=gate.querySelector('.gate-status');
+      if(status){status.lang=lang;status.textContent=wait[lang]}
+      try{
+        if(lang==='en')document.getElementById('hand-face').media='all';
+        if(document.fonts&&document.fonts.load){
+          if(lang==='si'){document.fonts.load('40px SinhalaScript','නදු');document.fonts.load('14px NotoSinhala','නදු')}
+          else document.fonts.load('40px Calligraphy','A');
+        }
+      }catch(e){}
+    });
+  })();</script>
 
   <header class="masthead">
     <!-- The score starts with the doors, so the control is offered from the first screen onward.
@@ -565,6 +600,7 @@
   </footer>
   
   <noscript>
+    <style>@font-face{font-family:Calligraphy;src:url('assets/fonts/greatvibes.ttf') format('truetype');font-display:swap}</style>
     <style>#scratch,.scratch-label,.drawing-actions,#rsvp button{display:none}
            #door-intro,#language-gate{display:none}body.intro-locked{overflow:auto}</style>
     <p class="noscript-note">Interactive features need JavaScript. The date, invitation and directions are still available. RSVP delivery is not yet connected.</p>
@@ -628,8 +664,24 @@
       setTimeout(function () {
         // The language page is only as good as the script that answers it. If that never arrived,
         // the page is taken away too, and the invitation reads in English.
+        // One of the scripts not arriving is usually a dropped connection, not an old browser, so the
+        // page is fetched once more before giving up: the guest gets the language page again rather
+        // than an invitation in a language they did not choose. Once only, or it would loop.
+        if (!window.invitationLanguage || !window.invitationBooted) {
+          try {
+            if (sessionStorage.getItem('nd-reloaded') !== '1') {
+              sessionStorage.setItem('nd-reloaded', '1');
+              if (sessionStorage.getItem('nd-reloaded') === '1') { location.reload(); return; }
+            }
+          } catch (e) {}
+        }
         var gate = document.getElementById('language-gate');
-        if (gate && !window.invitationLanguage) gate.hidden = true;
+        if (gate && !window.invitationLanguage) {
+          gate.hidden = true;
+          // The still page reads in English, so its headings need their handwriting after all.
+          var hand = document.getElementById('hand-face');
+          if (hand) hand.media = 'all';
+        }
         if (window.invitationBooted) return;
         var doors = document.getElementById('door-intro');
         if (doors) doors.hidden = true;

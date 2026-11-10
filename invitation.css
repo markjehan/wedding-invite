@@ -1,5 +1,5 @@
 /* --- COMBINED INVITATION.CSS --- */
-    @font-face{font-family:Calligraphy;src:url('assets/fonts/greatvibes.ttf') format('truetype');font-display:swap}
+    /* Calligraphy (Great Vibes, 457KB) is declared in index.html's head, switched off until English is chosen. */
     @font-face{font-family:Italiana;src:url('assets/fonts/italiana-regular.ttf') format('truetype');font-display:swap}
     @font-face{font-family:Manrope;src:url('assets/fonts/manrope-regular.ttf') format('truetype');font-display:swap}
     :root{--paper:#f7f2e8;--light:#fffcf5;--gold:#ac8b51;--ink:#58452c;--muted:#776247;--action:#796035;--line:#cab991;--shadow:0 16px 45px #58452c17;scroll-behavior:smooth;scroll-padding-top:85px;color-scheme:light}

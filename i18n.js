@@ -235,15 +235,24 @@
     en: [['40px Calligraphy', 'A'], ['40px Script', 'N'], ['20px Italiana', 'A'], ['14px Manrope', 'A'], ['20px Figures', '0']],
     si: [['40px SinhalaScript', 'නදු'], ['20px SinhalaSerif', 'නදු'], ['14px NotoSinhala', 'නදු']]
   };
+  // Great Vibes, the English headings' handwriting, is declared switched off in the head so that it is
+  // never fetched for a guest reading in Sinhala. Asking for English is what switches it on.
+  function hand() { const face = $('#hand-face'); if (face && face.media !== 'all') face.media = 'all'; }
+  const wait = ms => new Promise(ok => setTimeout(ok, ms));
   function warm(lang) {
+    if (lang !== 'si') hand();
     if (!document.fonts || !document.fonts.load) return Promise.resolve();
-    return Promise.all((FACES[lang] || []).map(([font, text]) => document.fonts.load(font, text).catch(() => []))).then(() => {});
+    // A face that fails on a weak signal is asked for twice more before it is given up on.
+    const fetchFace = (font, text, tries) => document.fonts.load(font, text).then(found => found, () => [])
+      .then(found => (found.length || tries <= 1) ? found : wait(700).then(() => fetchFace(font, text, tries - 1)));
+    return Promise.all((FACES[lang] || []).map(([font, text]) => fetchFace(font, text, 3))).then(() => {});
   }
 
   let current = 'en';
   function apply(lang) {
     lang = lang === 'si' ? 'si' : 'en';
     const words = lang === 'si' ? SI : EN;
+    if (lang === 'en') hand();
     current = lang;
     root.lang = lang;
     document.title = words.title || EN.title;
@@ -293,7 +302,6 @@
   const pending = [];
   let arrived = 0, started = false;
   const booted = new Promise(ok => document.readyState === 'complete' ? ok() : addEventListener('DOMContentLoaded', ok, {once: true}));
-  const wait = ms => new Promise(ok => setTimeout(ok, ms));
   function progress() {
     if (!gate) return;
     gate.style.setProperty('--ready', pending.length ? (arrived / pending.length).toFixed(3) : '0');
@@ -309,23 +317,31 @@
   booted.then(() => { started = true; progress(); });
 
   let choosing = false;
-  function choose(button) {
+  // `pressed` is when the guest's finger landed: now, or earlier if the press came before this script did.
+  function choose(button, pressed = performance.now()) {
     if (choosing) return;
     choosing = true;
     const lang = button.dataset.language;
-    // The words change under the guest's finger: the monogram in the crest above becomes Sinhala
-    // initials the instant සිංහල is pressed, and the doors beneath are already in that language.
+    // The words change under the guest's finger: the doors beneath are in that language at once, and
+    // nothing of the other language is drawn again.
     set(lang);
     button.setAttribute('data-chosen', '');
     gate.classList.add('is-choosing');
-    const status = gate.querySelector('.gate-status'), pressed = performance.now();
+    const status = gate.querySelector('.gate-status');
     // Nothing is said unless the wait is long enough to notice.
-    const notice = setTimeout(() => { if (status) { status.lang = lang; status.textContent = say('preparing'); } }, BEAT * 1500);
+    const notice = setTimeout(() => { if (status) { status.lang = lang; status.textContent = say('preparing'); } }, Math.max(0, BEAT * 1500 - (performance.now() - pressed)));
+    // The chosen language's faces are asked for now, not once the rest of the page has finished arriving.
+    const faces = warm(lang);
     booted
       // Held until everything has arrived, however long a slow phone takes: doors let through early
       // swung with pieces of their art still missing. "Preparing your invitation" shows meanwhile.
-      // Twenty seconds is only the backstop for a file that never comes at all.
-      .then(() => Promise.race([Promise.all([warm(lang), ...pending.map(work => Promise.resolve(work).catch(() => {}))]), wait(20000)]))
+      // Twenty seconds is the backstop for art or music that never comes at all. The faces have a
+      // longer one of their own, because words shown before their face has arrived are drawn in the
+      // phone's own and then change in front of the guest.
+      .then(() => Promise.all([
+        Promise.race([faces, wait(45000)]),
+        Promise.race([Promise.all(pending.map(work => Promise.resolve(work).catch(() => {}))), wait(20000)])
+      ]))
       // And never let go in under a beat, so the choice is seen to land before the page leaves.
       .then(() => wait(Math.max(0, BEAT * 1000 - (performance.now() - pressed))))
       .then(() => { clearTimeout(notice); leave(lang); });
@@ -350,6 +366,8 @@
   if (named) set(named);
   if (!gate || named) {
     if (gate) gate.hidden = true;
+    // No question to answer, so the page stays in the English it was written in.
+    if (!named) hand();
     settle(named || 'en');
   } else {
     // The doors are set up underneath from the start, but nothing on them can be reached until the
@@ -361,6 +379,11 @@
     });
     document.addEventListener('keydown', event => { if (!gate.hidden && !choosing) steer(event); });
     progress();
+    // A press that landed before this script arrived was taken by the small script beside the page's
+    // markup (index.html). It is carried out now, counted from when the finger actually came down.
+    const early = window.invitationEarlyChoice;
+    const picked = early && gate.querySelector('.gate-choice[data-language="' + (early.language === 'si' ? 'si' : 'en') + '"]');
+    if (picked) choose(picked, performance.now() - Math.max(0, Date.now() - early.at));
   }
 
   window.invitationLanguage = {

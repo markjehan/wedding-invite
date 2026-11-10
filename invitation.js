@@ -482,12 +482,44 @@
     if (words && sinhala) {
       // Set where the oval is still wide enough, and made smaller until it fits there with room for the diamonds.
       const y = cy + b * .76, room = 2 * a * Math.sqrt(1 - .76 * .76) - 40;
-      let size = 15;
-      do { ctx.font = '400 ' + size + 'px SinhalaSerif, serif'; size -= .5; } while (size > 10 && ctx.measureText(words).width > room);
-      ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
-      const half = ctx.measureText(words).width / 2;
-      press(d => ctx.fillText(words, cx + d, y + d));
-      diamond(cx - half - 12, y - 5, 0); diamond(cx + half + 12, y - 5, 0);
+      // The line is centred on its own ink, not on what the browser says its width is. Phones do not
+      // agree about the measured width of joined Sinhala letters, and on iPhones a line centred on
+      // that number sat off to one side. So it is written once on a sheet of its own, the pixels it actually covers are found, and that
+      // is what gets centred in the oval, and scaled down if it is wider than the room there.
+      const size = 15, font = '400 ' + size + 'px SinhalaSerif, serif', lead = 60;
+      const sheet = document.createElement('canvas'), ink = sheet.getContext('2d');
+      let placed = false;
+      if (ink) try {
+        ink.font = font;
+        const sw = Math.ceil(ink.measureText(words).width * 1.5) + lead * 2, sh = size * 3, base = size * 2;
+        sheet.width = Math.round(sw * dpr); sheet.height = Math.round(sh * dpr);
+        ink.setTransform(dpr,0,0,dpr,0,0); ink.font = font; ink.textAlign = 'left'; ink.textBaseline = 'alphabetic'; ink.fillStyle = '#000';
+        ink.fillText(words, lead, base);
+        const data = ink.getImageData(0,0,sheet.width,sheet.height).data;
+        let first = sheet.width, final = -1;
+        for (let py = 0; py < sheet.height; py++) for (let px = 0, i = py * sheet.width * 4 + 3; px < sheet.width; px++, i += 4) if (data[i] > 40) { if (px < first) first = px; if (px > final) final = px; }
+        if (final > first) {
+          const left = first / dpr, span = (final + 1 - first) / dpr, fit = Math.min(1, room / span), half = span * fit / 2;
+          // The sheet is tinted and laid down twice, as every pressed mark on the leaf is: a pale line a
+          // pixel down and right for the catch of the light, then the dark one.
+          const lay = (tone, alpha, d) => {
+            ink.globalCompositeOperation = 'source-in'; ink.fillStyle = tone; ink.fillRect(0,0,sw,sh);
+            ctx.save(); ctx.globalAlpha = alpha;
+            ctx.drawImage(sheet, cx - half - left * fit + d, y - base * fit + d, sw * fit, sh * fit);
+            ctx.restore();
+          };
+          lay('#fff8e4', .77, .9); lay('#6b4f22', .72, 0);
+          diamond(cx - half - 12, y - 5, 0); diamond(cx + half + 12, y - 5, 0);
+          placed = true;
+        }
+      } catch {}
+      // A browser that will not hand back its pixels gets the line set the plain way.
+      if (!placed) {
+        ctx.font = font; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+        const half = ctx.measureText(words).width / 2;
+        press(d => ctx.fillText(words, cx + d, y + d));
+        diamond(cx - half - 12, y - 5, 0); diamond(cx + half + 12, y - 5, 0);
+      }
     } else if (words) {
       const text = words.toUpperCase(), track = 1.9, size = Math.max(9.5, Math.min(10.5, w / 34));
       ctx.font = '500 ' + size + 'px Manrope, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';

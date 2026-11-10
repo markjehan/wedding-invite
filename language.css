@@ -11,10 +11,14 @@
    All three are cut to the Sinhala block and declared with that unicode-range, so they are only
    fetched once a Sinhala letter is actually on screen, and in every stack they sit beside the
    English face without taking a single Latin glyph from it. Figures, brand names and punctuation
-   inside a Sinhala line keep the invitation's own faces. */
-@font-face{font-family:SinhalaScript;src:url('assets/fonts/sinhala-script.woff') format('woff');unicode-range:U+0D80-0DFF,U+200C-200D,U+25CC;font-display:swap}
-@font-face{font-family:SinhalaSerif;src:url('assets/fonts/noto-serif-sinhala-light.woff') format('woff');unicode-range:U+0D80-0DFF,U+200C-200D,U+25CC;font-display:swap}
-@font-face{font-family:NotoSinhala;src:url('assets/fonts/noto-sans-sinhala-light.woff') format('woff');unicode-range:U+0D80-0DFF,U+200C-200D,U+25CC;font-display:swap}
+   inside a Sinhala line keep the invitation's own faces.
+
+   They are font-display:block, not swap: the language page does not leave until they have arrived
+   (i18n.js), and if one is ever late its words wait unseen rather than appear in the phone's own
+   Sinhala face and then change. */
+@font-face{font-family:SinhalaScript;src:url('assets/fonts/sinhala-script.woff') format('woff');unicode-range:U+0D80-0DFF,U+200C-200D,U+25CC;font-display:block}
+@font-face{font-family:SinhalaSerif;src:url('assets/fonts/noto-serif-sinhala-light.woff') format('woff');unicode-range:U+0D80-0DFF,U+200C-200D,U+25CC;font-display:block}
+@font-face{font-family:NotoSinhala;src:url('assets/fonts/noto-sans-sinhala-light.woff') format('woff');unicode-range:U+0D80-0DFF,U+200C-200D,U+25CC;font-display:block}
 
 /* ---------- The language page ----------
    The first question is asked the way the invitation speaks: two lace-edged cameos, one for each
