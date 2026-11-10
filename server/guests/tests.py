@@ -7,7 +7,7 @@ from django.conf import settings
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
-from . import names
+from . import names, site
 from .codes import ALPHABET, LENGTH, new_code
 from .models import Guest, ReplyTo
 
@@ -205,6 +205,24 @@ class FileTests(TestCase):
             self.assertEqual(response.status_code, 200, name)
             self.assertEqual(response['Content-Type'], kind, name)
             response.close()
+
+    def test_nothing_the_page_uses_is_left_out_of_the_published_site(self):
+        """.vercelignore keeps unused artwork off Vercel; a file the page needs must never be on it."""
+        root = Path(settings.SITE_DIR)
+        left_out = [line.strip().lstrip('/') for line in (root / '.vercelignore').read_text(encoding='utf-8').splitlines()
+                    if line.strip() and not line.startswith('#')]
+        _, linked = site._index()
+        sources = [root / name for name in linked if (root / name).is_file()]
+        sources += [path for folder in ('templates', 'guests') for path in (root / 'server' / folder).rglob('*')
+                    if path.suffix in {'.html', '.css', '.js', '.py'} and not path.name.startswith('tests')]
+        text = ''.join(path.read_text(encoding='utf-8', errors='ignore') for path in sources)
+        used = {name for name in linked if (root / name).is_file()}
+        used |= {found for found in re.findall(r'assets/[\w./ ()-]+', text) if (root / found).is_file()}
+        self.assertGreater(len(used), 30)
+        for name in sorted(used):
+            for entry in left_out:
+                hit = name.startswith(entry) if entry.endswith('/') else name == entry
+                self.assertFalse(hit, f'{name} is used by the page but .vercelignore leaves it out ({entry})')
 
     def test_google_search_consoles_proof_is_served(self):
         proof = Path(settings.SITE_DIR) / 'google0123456789abcdef.html'

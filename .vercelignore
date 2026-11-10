@@ -1,0 +1,82 @@
+# What Vercel leaves behind when it publishes the site.
+#
+# Vercel keeps a full copy of everything published, for every publish, and counts it against the
+# free plan's storage. The live invitation only uses about 6 MB of assets/; the rest (about 95 MB
+# of original artwork and earlier designs) stays in git for the record but is not published.
+#
+# Listed here = not on the live site. Before using one of these files on the page, take its line
+# out. server/guests/tests.py checks that nothing the page uses is listed.
+
+# Design notes and tool folders: never part of the site
+/.impeccable/
+/.claude/
+/DESIGN.md
+/PRODUCT.md
+/VIDEO-REVIEW.md
+
+# Artwork the live page does not use
+/assets/avenra-engraving-v2.png
+/assets/avenra-lineart-transparent-mobile.png
+/assets/avenra-lineart-transparent.png
+/assets/avenra-original.png
+/assets/couple-portrait.png
+/assets/couple-portrait.png.json
+/assets/couple-portrait.webp
+/assets/deckle-mask.svg
+/assets/gallery-dance.png
+/assets/gallery-dance.png.json
+/assets/gallery-dance.webp
+/assets/gallery-garden-mobile.jpg
+/assets/gallery-garden-mobile.webp
+/assets/gallery-garden.jpg
+/assets/gallery-garden.png
+/assets/gallery-garden.png.json
+/assets/gallery-garden.webp
+/assets/gallery-garden.webp.json
+/assets/garden-art-provenance.json
+/assets/garden-gates-mobile.jpg
+/assets/garden-gates-mobile.png
+/assets/garden-gates.jpg
+/assets/garden-gates.png
+/assets/garden-interior-mobile.jpg
+/assets/garden-interior-mobile.png
+/assets/garden-interior-provenance.json
+/assets/garden-interior.jpg
+/assets/garden-interior.png
+/assets/venue-avenra-engraving.png
+/assets/venue-avenra-engraving.png.json
+/assets/couple/PROVENANCE.md
+/assets/couple/couple-close.webp
+/assets/couple/couple-dulanjani.webp
+/assets/couple/couple-garden.webp
+/assets/couple/couple-lilies.webp
+/assets/couple/couple-naveen.webp
+/assets/couple/couple-smiles.webp
+/assets/couple/couple-together.webp
+/assets/couple/naveen-dulanjani.webp
+/assets/couple/shoot/
+/assets/door/
+/assets/entrance-v2/
+/assets/fonts/GreatVibes-OFL.txt
+/assets/fonts/Gurulugomi-NOTICE.txt
+/assets/fonts/JuliusSansOne-OFL.txt
+/assets/fonts/NotoSansSinhala-OFL.txt
+/assets/fonts/NotoSerifSinhala-OFL.txt
+/assets/fonts/PinyonScript-OFL.txt
+/assets/fonts/manrope-light.ttf
+/assets/gemini/
+/assets/logo/
+/assets/magnolia-suite/PROMPTS.md
+/assets/magnolia-suite/doors-original.png
+/assets/magnolia-suite/garden-original.png
+/assets/magnolia-suite/paper-original.png
+/assets/magnolia-suite/portrait-original.png
+/assets/materials/brass-seal-512.png
+/assets/materials/brass-seal.png
+/assets/materials/brass-seal.png.json
+/assets/materials/paper-pearl.jpg
+/assets/materials/paper-pearl.png
+/assets/materials/paper-pearl.png.json
+/assets/materials/ribbon-moire.jpg
+/assets/materials/ribbon-moire.png
+/assets/materials/ribbon-moire.png.json
