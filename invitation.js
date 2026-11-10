@@ -185,9 +185,10 @@
   window.musicPosition=()=>Music.position();
   window.untilNextBeat=untilNextBeat;
 
-  // How far into the entrance the welcome begins to speak. The camera is still moving at this
-  // point, so the first line surfaces through the dissolve rather than waiting behind it.
-  const ARRIVE_LEAD=TEMPO.beat*6;
+  // How far into the entrance the mark begins to draw: beat four, the moment the doors stand open and
+  // the camera starts through them. The entrance dissolves from the same beat, so the ring is being
+  // drawn in the doorway's light as the guest walks in -- one movement, not doors and then a logo.
+  const ARRIVE_LEAD=TEMPO.beat*4;
   // When the arrival's figure was set going. A name traded in by a change of language later on is moved
   // to this point in the figure rather than starting it again; see catchUp below.
   let arrivedAt=null;

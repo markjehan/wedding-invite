@@ -369,10 +369,9 @@ blockquote{color:var(--gold)}
 /* ---------- The arrival: the medallion draws itself, then the names are written ----------
    One figure in three movements, cut from the same grid as everything else: the score is 100bpm,
    so a beat is 0.6s and a bar 2.4s, and every delay below is a whole number of half-beats. The
-   figure runs 6s - two and a half bars - and it is cued to start 3.6s into the door sequence, so
-   the first line is already surfacing while the camera is still moving through the arch. Six
-   seconds later the invitation has finished introducing itself at exactly four bars from the
-   press, which is where the recording's own phrase ends.
+   figure runs 6s - two and a half bars - and it is cued to start 2.4s into the door sequence, so
+   the ring is already being drawn in the doorway's light while the camera is still moving through
+   the arch. Six seconds later the medallion is complete, three and a half bars from the press.
 
    `--arrive` carries that lead. The doors set it to what is left of their own run; every path that
    skips the entrance sets it to zero and the figure simply plays from the top. Nothing here is

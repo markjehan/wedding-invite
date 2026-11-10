@@ -113,7 +113,10 @@ body.intro-locked{overflow:hidden}
 .opening .door-haze{animation:haze-bloom 1.8s ease-out calc(-1 * var(--sync,0s)) both}
 .opening .door-spill{animation:light-spill 1.8s cubic-bezier(.34,0,.24,1) calc(-1 * var(--sync,0s)) both}
 .opening .door-world{animation:walk-through 3s cubic-bezier(.42,0,.32,1) calc(1.8s - var(--sync,0s)) both}
-.opening.door-intro{animation:entrance-dissolve 3s linear calc(1.8s - var(--sync,0s)) both}
+/* The doors and the mark are one move, not two. The entrance thins out while the camera is still
+   walking, from beat four, so the mark is already being drawn in the light beyond the doorway as
+   the guest passes through it; the walk carries on under the dissolve rather than stopping first. */
+.opening.door-intro{animation:entrance-dissolve 1.8s cubic-bezier(.45,0,.55,1) calc(2.4s - var(--sync,0s)) both}
 /* The document is NOT hidden behind the entrance. It used to be visibility:hidden until the doors
    opened, which meant the whole page laid out and painted on frame one of the swing — the stall
    people saw before the doors moved. The entrance is opaque and covers the viewport, so the page
@@ -131,7 +134,7 @@ body.intro-locked{overflow:hidden}
    the camera stops at .85: nothing is ever asked to pass through the lens, and by then the
    entrance has dissolved. */
 @keyframes walk-through{0%{transform:translateZ(0)}100%{transform:translateZ(calc(var(--dh)*.85))}}
-@keyframes entrance-dissolve{0%,45%{opacity:1}90%,100%{opacity:0}}
+@keyframes entrance-dissolve{from{opacity:1}to{opacity:0}}
 @keyframes names-after-entry{0%,75%{opacity:0;transform:translateY(12px)}100%{opacity:1;transform:translateY(0)}}
 .intro-replay{display:block;margin:8px auto;font-size:12px;text-decoration:underline;text-underline-offset:5px;padding:10px 15px}
 /* The score's control. Ghosted into the masthead at the same weight as the navigation, so it reads
