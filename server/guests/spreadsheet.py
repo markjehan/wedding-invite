@@ -14,10 +14,13 @@ from .models import Guest
 from .phones import normalise_phone
 
 COLUMNS = {
-    'name': ['name', 'guest', 'guest name', 'guests name', 'full name', 'invitation name', 'invite name'],
+    'name': ['name', 'names', 'guest', 'guest name', 'guest names', 'guests name', 'full name', 'invitation name',
+             'invite name'],
     'name_si': ['sinhala name', 'name in sinhala', 'name sinhala', 'sinhala', 'සිංහල නම'],
-    'phone': ['phone', 'phone number', 'mobile', 'mobile number', 'whatsapp', 'whatsapp number', 'number', 'contact', 'tel'],
-    'seats': ['seats', 'seat', 'pax', 'people', 'guests', 'count', 'number of guests', 'no of guests', 'invited'],
+    'phone': ['phone', 'phone number', 'phone no', 'mobile', 'mobile number', 'mobile no', 'whatsapp', 'whatsapp number',
+              'whatsapp no', 'number', 'contact', 'contact number', 'contact no', 'tel', 'tel no', 'telephone'],
+    'seats': ['seats', 'seat', 'pax', 'people', 'guests', 'count', 'number of guests', 'no of guests', 'invited', 'heads',
+              'head count', 'headcount', 'no of pax', 'number of people'],
     'side': ['side', 'bride or groom', 'from'],
     'notes': ['notes', 'note', 'remarks', 'remark', 'comment', 'comments'],
 }
@@ -49,8 +52,24 @@ def _text(value):
     return str(value).strip()
 
 
-def read(file):
+def _phone(value):
+    # A cell holding two numbers ("077 111 1111 / 071 222 2222") gives the first one.
+    return normalise_phone(re.split(r'[/,;&]|\bor\b', value)[0])
+
+
+def _seats(value):
+    # "2", "2 pax", "2 people" all mean two.
+    match = re.fullmatch(r'(\d+)\s*[a-z.]*', value.lower())
+    if not match or not 1 <= int(match.group(1)) <= 50:
+        raise ValueError
+    return int(match.group(1))
+
+
+def read(file, side=''):
     """What importing this sheet would do, row by row, without changing anything.
+
+    side ('bride' or 'groom') is given to every guest whose row does not say a side itself, for a sheet
+    that is one side's list.
 
     Returns (rows, columns): each row is {'line', 'action', 'id', 'fields', 'reason'}, where action is
     'add', 'update' or 'skip'; columns are the headings that were used.
@@ -90,16 +109,17 @@ def read(file):
         row = {'line': number, 'action': 'skip', 'id': None, 'fields': {'name': name[:100]}, 'reason': ''}
         rows.append(row)
         try:
-            phone = normalise_phone(cell('phone'))
+            phone = _phone(cell('phone'))
         except ValueError:
             row['reason'] = f'"{cell("phone")}" is not a phone number'
             continue
-        seats = cell('seats')
-        if seats and not (seats.isdigit() and 1 <= int(seats) <= 50):
-            row['reason'] = f'"{seats}" is not a number of seats'
+        try:
+            seats = _seats(cell('seats')) if cell('seats') else None
+        except ValueError:
+            row['reason'] = f'"{cell("seats")}" is not a number of seats'
             continue
         try:
-            side = _side(cell('side'))
+            row_side = _side(cell('side')) or side
         except ValueError:
             row['reason'] = f'"{cell("side")}" is not bride or groom'
             continue
@@ -111,7 +131,7 @@ def read(file):
         # Empty cells leave what is already there alone, so a Sinhala name typed in the admin pages
         # survives a later import of a sheet without one.
         fields = {'name': name[:100], 'name_si': cell('name_si')[:100], 'phone': phone,
-                  'seats': int(seats) if seats else None, 'side': side, 'notes': cell('notes')}
+                  'seats': seats, 'side': row_side, 'notes': cell('notes')}
         row['fields'] = {field: value for field, value in fields.items() if value not in ('', None)}
         existing = by_phone.get(phone) if phone else None
         if existing is None:

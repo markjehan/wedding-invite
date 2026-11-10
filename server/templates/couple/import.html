@@ -17,6 +17,15 @@
           <input type="file" name="sheet" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" required>
           <span class="file-name" aria-live="polite"></span>
         </label>
+        <div class="field">
+          <label for="import-side">Whose guests are these?</label>
+          <select name="side" id="import-side">
+            <option value="">As the sheet's Side column says</option>
+            <option value="bride">All from the bride's side</option>
+            <option value="groom">All from the groom's side</option>
+          </select>
+          <p class="help">A row whose Side cell says otherwise keeps what it says.</p>
+        </div>
         {% if error %}<p class="field-error">{{ error }}</p>{% endif %}
         <button class="button">Read the sheet</button>
       </form>

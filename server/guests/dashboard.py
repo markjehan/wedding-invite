@@ -300,7 +300,8 @@ def import_sheet(request):
             context['error'] = 'That file is larger than 4 MB, far more than a guest list needs. Is it the right one?'
         else:
             try:
-                rows, used = spreadsheet.read(upload)
+                side = request.POST.get('side', '')
+                rows, used = spreadsheet.read(upload, side if side in dict(SIDES) else '')
             except ValueError as error:
                 context['error'] = str(error)
             else:

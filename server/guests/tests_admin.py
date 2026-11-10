@@ -374,6 +374,21 @@ class ExcelTests(TestCase):
         self.assertEqual((added.phone, added.seats, added.side, added.notes), ('94772222222', 2, 'bride', 'cousins'))
         self.assertEqual(Guest.objects.count(), 2)
 
+    def test_one_sides_sheet_gives_that_side_to_rows_without_one(self):
+        upload = self.sheet(
+            ['Guest Names', 'Contact No', 'No. of Pax', 'Side'],
+            ['Chamini', 771111111, '2 pax', None],
+            ['Ruwan & Family', '0772222222 / 0713333333', 4.0, None],
+            ['Kasun', None, None, 'Groom'],
+        )
+        url = reverse('couple:import')
+        response = self.client.post(url, {'sheet': upload, 'side': 'bride'})
+        self.assertEqual((response.context['adding'], response.context['skipping']), (3, 0))
+        self.client.post(url, {'confirm': '1'})
+        guests = {guest.name: (guest.phone, guest.seats, guest.side) for guest in Guest.objects.all()}
+        self.assertEqual(guests, {'Chamini': ('94771111111', 2, 'bride'), 'Ruwan & Family': ('94772222222', 4, 'bride'),
+                                  'Kasun': ('', 1, 'groom')})
+
     def test_a_sheet_without_a_name_column(self):
         response = self.client.post(reverse('couple:import'), {'sheet': self.sheet(['Phone'], ['0771111111'])})
         self.assertContains(response, 'No &quot;Name&quot; column')
