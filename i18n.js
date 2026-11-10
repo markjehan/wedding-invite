@@ -31,7 +31,7 @@
   const J = '‍';
 
   const calendarLink = (title, note) => 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' +
-    encodeURIComponent(title) + '&dates=20261207T033000Z/20261207T101500Z&location=' + encodeURIComponent('Avenra Gardens, Negombo') +
+    encodeURIComponent(title) + '&dates=20261207T033000Z/20261207T101500Z&location=' + encodeURIComponent('Centrium Ballroom, Avenra Gardens, Negombo, Sri Lanka') +
     '&details=' + encodeURIComponent(note);
 
   // The words the scripts write for themselves.
@@ -47,7 +47,7 @@
       venueReal: 'See the real venue',
       venueSketch: 'Return to the sketch',
       nameMissing: 'Please enter your name.',
-      message: (name, answer, note) => `Dear Naveen & Dulanjani,\n\n${name} — ${answer}.\nWedding: 7 December 2026, Avenra Gardens, Negombo${note ? '\n\n' + note : ''}`,
+      message: (name, answer, note) => `Dear Naveen & Dulanjani,\n\n${name} — ${answer}.\nWedding: 7 December 2026, Centrium Ballroom, Avenra Gardens, Negombo${note ? '\n\n' + note : ''}`,
       subject: 'RSVP — Naveen & Dulanjani, 7 December 2026',
       ready: 'Your reply is ready. Choose how to send it.',
       opening: 'WhatsApp is opening with your reply. If it does not, press Send on WhatsApp below.',
@@ -80,7 +80,7 @@
       venueReal: 'සැබෑ ස්ථානය බලන්න',
       venueSketch: 'සිතුවම වෙත ආපසු',
       nameMissing: 'කරුණාකර ඔබගේ නම ඇතුළත් කරන්න.',
-      message: (name, answer, note) => `ආදරණීය නවීන් සහ දුලංජනී,\n\n${name} — ${answer}.\nවිවාහ මංගල්${J}යය: 2026 දෙසැම්බර් 7, ඇවෙන්රා ගාර්ඩ්න්ස්, මීගමුව${note ? '\n\n' + note : ''}`,
+      message: (name, answer, note) => `ආදරණීය නවීන් සහ දුලංජනී,\n\n${name} — ${answer}.\nවිවාහ මංගල්${J}යය: 2026 දෙසැම්බර් 7, සෙන්ට්${J}රියම් බෝල් රූම්, ඇවෙන්රා ගාර්ඩ්න්ස්, මීගමුව${note ? '\n\n' + note : ''}`,
       subject: 'පැමිණීම තහවුරු කිරීම — නවීන් සහ දුලංජනී, 2026 දෙසැම්බර් 7',
       ready: 'ඔබගේ පිළිතුර සූදානම්. එය යවන ආකාරය තෝරන්න.',
       opening: 'ඔබගේ පිළිතුර සමඟ WhatsApp විවෘත වේ. එය විවෘත නොවුණොත්, පහත ඇති “WhatsApp හරහා යවන්න” ඔබන්න.',
@@ -173,7 +173,7 @@
     'venue.drawing': `ඇවෙන්රා ගාර්ඩ්න්ස් හි සවිස්තර රන්වන් ගෘහනිර්${J}මාණ සිතුවම`,
     'venue.photo': 'සැබෑ ඇවෙන්රා ගාර්ඩ්න්ස් ගොඩනැගිල්ලේ ඡායාරූපය',
     'venue.redraw': 'නැවත අඳින්න',
-    'venue.address': `ඇවෙන්රා ගාර්ඩ්න්ස් හෝටලය<br>සෙන්ට්${J}රියම් බෝල් රූම්<br>මීගමුව, ශ්${J}රී ලංකාව`,
+    'venue.address': `සෙන්ට්${J}රියම් බෝල් රූම්<br>ඇවෙන්රා ගාර්ඩ්න්ස්<br>මීගමුව, ශ්${J}රී ලංකාව`,
     'venue.directions': 'මඟ පෙන්වීම ලබාගන්න',
     'venue.map': 'Google Maps හි ස්ථානය බලන්න',
 

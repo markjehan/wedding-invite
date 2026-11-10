@@ -358,7 +358,7 @@
     // folded the way the format asks: a break and a space, never inside a letter.
     const field = value => value.replace(/[\\;,]/g, m => '\\' + m);
     const fold = line => { let out = '', run = 0; for (const ch of line) { const size = new TextEncoder().encode(ch).length; if (run + size > 74) { out += '\r\n '; run = 1; } out += ch; run += size; } return out; };
-    const text = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Naveen and Dulanjani//Wedding//EN','CALSCALE:GREGORIAN','BEGIN:VEVENT','UID:naveen-dulanjani-20261204@invitation.local','DTSTAMP:' + stamp,'SEQUENCE:2','DTSTART:20261207T033000Z','DTEND:20261207T101500Z','SUMMARY:' + field(say('calendarTitle') || 'Naveen & Dulanjani Wedding'),'LOCATION:Avenra Gardens\\, Negombo\\, Sri Lanka','DESCRIPTION:' + field(say('calendarNote') || 'Arrival of the bride & groom 9.00 am, Poruwa ceremony 9.30 am, going away 3.45 pm.'),'END:VEVENT','END:VCALENDAR',''].map(fold).join('\r\n');
+    const text = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Naveen and Dulanjani//Wedding//EN','CALSCALE:GREGORIAN','BEGIN:VEVENT','UID:naveen-dulanjani-20261204@invitation.local','DTSTAMP:' + stamp,'SEQUENCE:2','DTSTART:20261207T033000Z','DTEND:20261207T101500Z','SUMMARY:' + field(say('calendarTitle') || 'Naveen & Dulanjani Wedding'),'LOCATION:Centrium Ballroom\\, Avenra Gardens\\, Negombo\\, Sri Lanka','DESCRIPTION:' + field(say('calendarNote') || 'Arrival of the bride & groom 9.00 am, Poruwa ceremony 9.30 am, going away 3.45 pm.'),'END:VEVENT','END:VCALENDAR',''].map(fold).join('\r\n');
     const url = URL.createObjectURL(new Blob([text], {type:'text/calendar;charset=utf-8'}));
     const a = document.createElement('a'); a.href = url; a.download = 'Naveen-and-Dulanjani-7-December-2026.ics'; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 30000);
   });
@@ -858,7 +858,7 @@
     const data=new FormData(e.target),note=(data.get('note')||'').trim();
     // The answer is quoted as the guest saw it, from its label, so a Sinhala reply stays Sinhala.
     const answer=e.target.querySelector('[name=attendance]:checked')?.parentElement.textContent.trim()||data.get('attendance');
-    const message=say('message',data.get('name').trim(),answer,note)||`Dear Naveen & Dulanjani,\n\n${data.get('name').trim()} — ${data.get('attendance')}.\nWedding: 7 December 2026, Avenra Gardens, Negombo${note?'\n\n'+note:''}`;
+    const message=say('message',data.get('name').trim(),answer,note)||`Dear Naveen & Dulanjani,\n\n${data.get('name').trim()} — ${data.get('attendance')}.\nWedding: 7 December 2026, Centrium Ballroom, Avenra Gardens, Negombo${note?'\n\n'+note:''}`;
     $('#reply-text').textContent=message;
     $('#send-whatsapp').href=whatsappLink(RSVP_WHATSAPP,message);
     $('#send-email').href='mailto:'+RSVP_EMAIL+'?subject='+encodeURIComponent(say('subject')||'RSVP — Naveen & Dulanjani, 7 December 2026')+'&body='+encodeURIComponent(message);
