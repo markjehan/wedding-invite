@@ -79,6 +79,9 @@ that run the way the drawing's own hatching runs. Where each part lies is set by
 
 The gallery no longer uses the seven crops above, and since 10 November 2026 nor does the link card.
 
-`naveen-dulanjani-share.jpg` (1200 by 630) is the picture WhatsApp shows with each guest's link. The
-couple were cut out of their photograph in white, Naveen holding Dulanjani from behind, and stood in
-the invitation's magnolia hall beside their monogram: `build_assets/share_card.py` says how.
+`naveen-dulanjani-sketch-share.jpg` (1200 by 630) is the picture WhatsApp shows with each guest's
+link. Weave's Nano Banana Pro (2K, 16:9, 11 credits, approved by the user) redrew the couple's photo in
+red at the white wall, the garden and blue-windowed building behind, as a graphite drawing on cream
+paper; it was then cropped in, faded at the edges and given their gold monogram and border on this
+computer (`build_assets/share_card.py`). It replaced, on 10 November 2026, a version with the couple's
+photo in white cut out onto the invitation's magnolia hall.
