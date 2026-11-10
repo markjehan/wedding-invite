@@ -329,8 +329,8 @@
   showIntro();languageChosen.then(()=>{if(!intro.hidden&&!opening)openButton.focus({preventScroll:true})});
   // Tells the safety net at the foot of index.html that the doors are in working order.
   window.invitationBooted=true;
-  // Only the date is confirmed. Calendar entries remain all-day until timing is supplied.
-  const weddingDay = new Date('2026-12-07T00:00:00+05:30').getTime();
+  // The day begins as the bride and groom arrive at 9.00 am and closes with the going away at 3.45 pm.
+  const weddingDay = new Date('2026-12-07T09:00:00+05:30').getTime();
   function countdown() {
     const delta = Math.max(0, Math.floor((weddingDay - Date.now()) / 1000));
     const values = [Math.floor(delta / 86400), Math.floor(delta / 3600) % 24, Math.floor(delta / 60) % 60, delta % 60];
@@ -357,7 +357,7 @@
     // folded the way the format asks: a break and a space, never inside a letter.
     const field = value => value.replace(/[\\;,]/g, m => '\\' + m);
     const fold = line => { let out = '', run = 0; for (const ch of line) { const size = new TextEncoder().encode(ch).length; if (run + size > 74) { out += '\r\n '; run = 1; } out += ch; run += size; } return out; };
-    const text = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Naveen and Dulanjani//Wedding//EN','CALSCALE:GREGORIAN','BEGIN:VEVENT','UID:naveen-dulanjani-20261204@invitation.local','DTSTAMP:' + stamp,'SEQUENCE:1','DTSTART;VALUE=DATE:20261207','DTEND;VALUE=DATE:20261208','SUMMARY:' + field(say('calendarTitle') || 'Naveen & Dulanjani Wedding'),'LOCATION:Avenra Gardens\\, Negombo\\, Sri Lanka','DESCRIPTION:' + field(say('calendarNote') || 'Ceremony time to be confirmed.'),'END:VEVENT','END:VCALENDAR',''].map(fold).join('\r\n');
+    const text = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Naveen and Dulanjani//Wedding//EN','CALSCALE:GREGORIAN','BEGIN:VEVENT','UID:naveen-dulanjani-20261204@invitation.local','DTSTAMP:' + stamp,'SEQUENCE:2','DTSTART:20261207T033000Z','DTEND:20261207T101500Z','SUMMARY:' + field(say('calendarTitle') || 'Naveen & Dulanjani Wedding'),'LOCATION:Avenra Gardens\\, Negombo\\, Sri Lanka','DESCRIPTION:' + field(say('calendarNote') || 'Arrival of the bride & groom 9.00 am, Poruwa ceremony 9.30 am, going away 3.45 pm.'),'END:VEVENT','END:VCALENDAR',''].map(fold).join('\r\n');
     const url = URL.createObjectURL(new Blob([text], {type:'text/calendar;charset=utf-8'}));
     const a = document.createElement('a'); a.href = url; a.download = 'Naveen-and-Dulanjani-7-December-2026.ics'; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 30000);
   });

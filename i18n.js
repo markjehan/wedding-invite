@@ -31,7 +31,7 @@
   const J = '‍';
 
   const calendarLink = (title, note) => 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' +
-    encodeURIComponent(title) + '&dates=20261207/20261208&location=' + encodeURIComponent('Avenra Gardens, Negombo') +
+    encodeURIComponent(title) + '&dates=20261207T033000Z/20261207T101500Z&location=' + encodeURIComponent('Avenra Gardens, Negombo') +
     '&details=' + encodeURIComponent(note);
 
   // The words the scripts write for themselves.
@@ -67,7 +67,7 @@
       failed: 'Your reply could not be sent. Please try again in a moment.',
       closed: 'Replies have closed. Please contact Naveen & Dulanjani directly.',
       calendarTitle: 'Naveen & Dulanjani Wedding',
-      calendarNote: 'Ceremony time to be confirmed.'
+      calendarNote: 'Arrival of the bride & groom 9.00 am, Poruwa ceremony 9.30 am, going away 3.45 pm.'
     },
     si: {
       soundOff: 'සංගීතය නවත්වන්න',
@@ -99,7 +99,7 @@
       failed: 'ඔබගේ පිළිතුර යැවීමට නොහැකි විය. කරුණාකර මඳ වේලාවකින් නැවත උත්සාහ කරන්න.',
       closed: 'පිළිතුරු ලබා ගැනීම අවසන් කර ඇත. කරුණාකර නවීන් හෝ දුලාංජනී අමතන්න.',
       calendarTitle: `නවීන් සහ දුලාංජනීගේ විවාහ මංගල්${J}යය`,
-      calendarNote: 'උත්සව වේලාව පසුව තහවුරු කෙරේ.'
+      calendarNote: `මනාලයා සහ මනාලියගේ පැමිණීම පෙ.ව. 9.00, පෝරුව චාරිත්${J}රය පෙ.ව. 9.30, සමුගැනීම ප.ව. 3.45.`
     }
   };
 
@@ -177,29 +177,33 @@
     'calendar.google.href': calendarLink(SAID.si.calendarTitle, SAID.si.calendarNote),
     'calendar.apple': `Apple දින දර්${J}ශනය / iCal`,
     'calendar.ics': 'wedding-si.ics',
-    'calendar.note': 'උත්සව වේලාව තහවුරු වන තුරු, දවස පුරා සිදුවීමක් ලෙස සුරැකේ.',
+    'calendar.note': `ශ්${J}රී ලංකා වේලාවෙන් පෙ.ව. 9.00 සිට ප.ව. 3.45 දක්වා සුරැකේ.`,
     'count.title': 'සුබ මොහොතට දින ගණිමින්',
     'count.label': 'විවාහ දිනය දක්වා ඉතිරි කාලය',
     'count.days': 'දින',
     'count.hours': 'පැය',
     'count.minutes': 'මිනිත්තු',
     'count.seconds': 'තත්පර',
-    'count.note': `ශ්${J}රී ලංකා වේලාවෙන් දෙසැම්බර් 7 මධ්${J}යම රාත්${J}රිය දක්වා.`,
+    'count.note': `ශ්${J}රී ලංකා වේලාවෙන් දෙසැම්බර් 7 පෙ.ව. 9.00 දක්වා.`,
 
     'agenda.title': 'මතක දහසක් රැඳෙන දවසක්',
-    'agenda.lead': 'සැමරුමේ පෙරදසුනක්. අවසන් වැඩසටහන පසුව දැනුම් දෙනු ඇත.',
-    'agenda.time': 'වේලාව පසුව දැනුම් දෙමු',
-    'agenda.1.title': 'උණුසුම් පිළිගැනීම',
-    'agenda.1.text': 'පැමිණ, සුවපහසුවෙන් අපගේ පවුල් සමඟ එක්වන්න.',
-    'agenda.2.title': `විවාහ චාරිත්${J}රය`,
-    'agenda.2.text': 'අපගේ ජීවිතයේ නව පරිච්ඡේදය ඇරඹෙන මොහොත.',
-    'agenda.3.title': 'සුබ පැතුම් සහ ඡායාරූප',
-    'agenda.3.text': 'ජීවිත කාලයක ආදරය සදා රැඳවීමට පුංචි මොහොතක්.',
-    'agenda.4.title': `භෝජන සංග්${J}රහය සහ සැමරුම`,
-    'agenda.4.text': 'ආහාරයක්, කතාවක් සහ එකමුතුවට සුබ පැතුමක් බෙදාගන්න.',
+    'agenda.lead': 'මුල් මොහොතේ සිට සෙනෙහෙබර සමුගැනීම දක්වා, අපගේ දවස.',
+    'agenda.1.time': 'පෙ.ව. 9.00',
+    'agenda.1.title': 'මනාලයා සහ මනාලියගේ පැමිණීම',
+    'agenda.1.text': 'අප ආදරය කරන ඔබ සැම මැද, නවීන් සහ දුලාංජනී පැමිණෙන මොහොතේ ඔබගේ ආසනයේ රැඳී සිටින්න.',
+    'agenda.2.time': 'පෙ.ව. 9.30',
+    'agenda.2.title': `පෝරුව චාරිත්${J}රය`,
+    'agenda.2.text': `සම්ප්${J}රදායේත් අපගේ පවුල්වලත් ආශීර්${J}වාදය මැද, පෝරුව මත හදවත් දෙකක් එක් වන මොහොත.`,
+    'agenda.3.time': 'පෙ.ව. 11.45',
+    'agenda.3.title': 'සුබ පැතුම් සහ බාර් එක විවෘත කිරීම',
+    'agenda.3.text': 'ආදරයට, සිනහවට සහ සදා සතුටට අප සමඟ වීදුරුවක් ඔසවන්න.',
+    'agenda.4.time': 'ප.ව. 12.30',
+    'agenda.4.title': `දිවා භෝජන සංග්${J}රහය`,
+    'agenda.4.text': 'මේසය වටා එක්ව, ආහාරයක්, කතාවක් සහ මේ දවසේ සතුට බෙදාගන්න.',
+    'agenda.5.time': 'ප.ව. 3.45',
     'agenda.5.title': 'සුන්දර සමුගැනීම',
-    'agenda.5.text': 'අපි නැවත එක්ව අලුත් මතකයක් තනන තුරු.',
-    'agenda.note': 'යෝජිත වැඩසටහන — යුවළගේ අවසන් වැඩසටහන සහ වේලාවන් මෙය වෙනුවට යෙදෙනු ඇත.',
+    'agenda.5.text': 'අපගේ සදාකාලික ගමන ඇරඹෙන විට, ඔබගේ ආදරයෙන් අපට සමු දෙන්න.',
+    'agenda.note': `සියලු වේලාවන් ශ්${J}රී ලංකා වේලාවෙනි. අප පැමිණෙන විට ඔබ ආසනගතව සිටින පරිදි, කරුණාකර පෙ.ව. 9.00 ට පෙර පැමිණෙන්න.`,
 
     'venue.title': 'ඇවන්රා ගාඩන්ස් හිදී අපව හමුවන්න',
     'venue.lead': 'අපගේ සැමරුම පණ ලබන තැන.',
