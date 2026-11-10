@@ -33,6 +33,19 @@
 .scratch-card{width:min(100%,360px,calc((100svh - 110px) * .84))}
 .architecture{max-width:min(100vw,1000px,calc((100svh - 110px) * 1100 / 709))}
 
+/* Nothing is wider than the screen either. On a phone the invitation was 20 to 40px wider than the
+   screen, so it slid sideways under the thumb and every section sat off centre. All of it came from the
+   pile of prints. Each print further down the pile lay 3px further right, so the twelve hidden under the
+   top three stretched off the right edge, invisible but still there; the deepest are now kept under the
+   third, where nobody can tell them apart. The pile was also cut a few pixels wider than its column on a
+   phone, and a margin of auto only centres what fits, so it is centred on its column by measure. A print
+   thrown aside flies past the edge of the screen on purpose; the page is clipped there so the flight never
+   widens it. Clip and not hidden: hidden would make the page a scroll box of its own, and on older
+   iPhones without clip the only cost is that brief flight. */
+.stack-print:not(.is-thrown):not([data-depth="0"],[data-depth="1"],[data-depth="2"]){translate:6px 8px}
+.print-stack{margin-inline:calc((100% - var(--table)) / 2)}
+main{overflow-x:clip}
+
 /* ---------- A phone on its side ----------
    The screen is wide and very short, 320 to 430px, less the browser's bars. The arrival is one screen
    as it is held upright, the sections close up, and everything meant to be seen whole is sized to the
