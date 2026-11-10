@@ -553,7 +553,15 @@
       <form class="reply-card" id="rsvp">
         <h3 data-i18n="rsvp.heading">Confirm your attendance</h3>
         <label class="name-field" data-i18n-text="rsvp.name">Your full name<input name="name" autocomplete="name" required maxlength="100" placeholder="Name and surname" data-i18n-attr="placeholder:rsvp.name.hint"></label>
-        
+
+        <!-- Personal links only, once a reply is saved: what they answered, and the way back to change it. -->
+        <div class="reply-answer" id="reply-answer" hidden>
+          <span data-i18n="rsvp.yours">Your reply</span>
+          <strong id="reply-answer-word"></strong>
+          <p id="reply-answer-detail"></p>
+          <button class="button secondary" type="button" id="reply-change" data-i18n="rsvp.change">Change my reply</button>
+        </div>
+
         <fieldset>
           <legend data-i18n="rsvp.question">Will you be celebrating with us?</legend>
           <label class="choice" data-i18n-text="rsvp.accept"><input type="radio" name="attendance" value="Joyfully accepts" data-reply="yes" required>Joyfully accepts</label>

@@ -936,7 +936,22 @@
     $('#seats-count').textContent=me.seats;$('#seats-kept').hidden=false;
     if(me.reply){choice(me.reply).checked=true;form.elements.namedItem('note').value=me.message||'';}
     const lock=()=>{if(!me.open)[...form.elements].forEach(el=>el.disabled=true)};
+    // Once a reply is saved the form gives way to what they answered, accepted or declined, with a
+    // button that brings the form back to change it. With replies closed there is nothing to change.
+    let editing=!me.reply;
+    $('#reply-change').addEventListener('click',()=>{
+      editing=true;$('#prepared').hidden=true;paint();
+      choice(me.reply).focus({preventScroll:true});
+    });
     function paint(){
+      const answered=!!me.reply&&!editing;
+      form.classList.toggle('is-answered',answered);
+      $('#reply-answer').hidden=!answered;$('#reply-answer').dataset.reply=me.reply;
+      $('#reply-change').hidden=!me.open;
+      if(answered){
+        $('#reply-answer-word').textContent=say('answered',me.reply);
+        $('#reply-answer-detail').textContent=me.open?say('canChange',me.reply):say('closed');
+      }
       // The first words after the doors greet them by name. i18n.js has just set the plain line for
       // the language; this replaces it, in the same frame, every time the language changes.
       $('.welcome-wording').textContent=say('welcome',name());
@@ -944,7 +959,7 @@
       const words=[...button.childNodes].find(node=>node.nodeType===3&&node.nodeValue.trim());
       if(words)words.nodeValue=say(me.reply?'update':'send')+' ';
       const saved=me.reply?say('already',choice(me.reply).parentElement.textContent.trim(),me.people):'';
-      status.textContent=me.open?saved:`${saved} ${say('closed')}`.trim();
+      status.textContent=answered?'':me.open?saved:`${saved} ${say('closed')}`.trim();
     }
     paint();lock();
     document.addEventListener('invitation:language',paint);
@@ -990,7 +1005,7 @@
         }
         if(sent.status===403){me.open=false;paint();lock();return;}
         if(!sent.ok)throw new Error(sent.status);
-        Object.assign(me,await sent.json());paint();
+        Object.assign(me,await sent.json());editing=false;paint();
         status.textContent=`${say('thanks',name())} ${to?say('opening'):say('ready')}`;
       }catch{status.textContent=say('failed')}
       finally{if(me.open)button.disabled=false}
