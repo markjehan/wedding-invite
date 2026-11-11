@@ -1,0 +1,114 @@
+# Checks the live invitation every 15 minutes, day and night, until the wedding (7 Dec 2026).
+# If anything is wrong, this run fails and GitHub emails the repository owner straight away.
+#
+# What it checks:
+#   - the invitation opens and is the real page (not an error or a placeholder)
+#   - every file the page loads (pictures, music, fonts, scripts) is there
+#   - www and the old vercel.app addresses still lead to naveenwedsdulanjani.com
+#   - the security certificate has at least 14 days left
+#   - every 3 hours (and on a manual run): the guest list answers, by opening one guest's
+#     personal link. The guest's name is kept in the CHECK_GUEST_NAME secret, not here,
+#     because this repository is public. Only every 3 hours so the free database can sleep.
+#
+# It only reads pages. Opening a link this way never marks a guest as "opened" (that needs a phone).
+
+name: Watch the wedding site
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+    - cron: '7 */3 * * *'
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: site-watch
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Check the invitation
+        env:
+          GUEST: ${{ secrets.CHECK_GUEST_NAME }}
+          FULL: ${{ github.event_name == 'workflow_dispatch' || github.event.schedule == '7 */3 * * *' }}
+        run: |
+          set -u
+          SITE=https://naveenwedsdulanjani.com
+
+          # After the wedding there is nothing left to watch.
+          if [ "$(date -u +%Y%m%d)" -gt 20261208 ]; then echo "The wedding is over. Nothing to check."; exit 0; fi
+
+          problems=0
+          bad() { echo "::error::$1"; problems=$((problems+1)); }
+
+          # Ask up to 3 times, 20 s apart, so one slow moment is not reported as the site being down.
+          # check URL EXPECTED_CODE [HEAD]
+          check() {
+            local url=$1 want=$2 how=${3:-} code=
+            for try in 1 2 3; do
+              if [ "$how" = HEAD ]; then
+                code=$(curl -sS -I -m 25 -o /dev/null -w '%{http_code}' "$url" 2>/dev/null)
+              else
+                code=$(curl -sS -m 25 -o page.html -w '%{http_code}' "$url" 2>/dev/null)
+              fi
+              [ "$code" = "$want" ] && { echo "ok   $code  $url"; return 0; }
+              sleep 20
+            done
+            bad "$url answered ${code:-nothing} (expected $want)"
+            return 1
+          }
+
+          # 1. The invitation itself.
+          if check "$SITE/" 200; then
+            grep -q 'The Wedding of Naveen' page.html || bad "The invitation opened but is not the wedding page"
+            cp page.html home.html
+          fi
+
+          # 2. Every file the page loads.
+          if [ -f home.html ]; then
+            files=$(grep -oE '(src|href)="[^"#]+"' home.html | sed -E 's/^(src|href)="//; s/"$//' \
+                    | grep -vE '^(https?:|mailto:|tel:|data:|//)' | sort -u)
+            [ -n "$files" ] || bad "Could not find the files the invitation loads"
+            for f in $files; do
+              case "$f" in /*) url="$SITE$f";; *) url="$SITE/$f";; esac
+              check "$url" 200 HEAD || true
+            done
+            img=$(grep -oE 'og:image" content="[^"]+"' home.html | sed -E 's/.*content="//; s/"$//')
+            [ -n "$img" ] && { check "$img" 200 HEAD || true; }
+          fi
+
+          # 3. The other addresses lead to the real one.
+          for alt in https://www.naveenwedsdulanjani.com/ https://wedding-invite-ten-orcin-20.vercel.app/ https://wedding-invite-mark-6689.vercel.app/; do
+            to=$(curl -sS -I -m 25 -o /dev/null -w '%{redirect_url}' "$alt" 2>/dev/null)
+            case "$to" in "$SITE"/*) echo "ok   moves to $to  $alt";; *) bad "$alt no longer leads to $SITE (goes to '${to}')";; esac
+          done
+
+          # 4. Security certificate.
+          end=$(echo | openssl s_client -connect naveenwedsdulanjani.com:443 -servername naveenwedsdulanjani.com 2>/dev/null \
+                | openssl x509 -noout -enddate 2>/dev/null | cut -d= -f2)
+          if [ -z "$end" ]; then bad "Could not read the security certificate"
+          else
+            days=$(( ( $(date -d "$end" +%s) - $(date +%s) ) / 86400 ))
+            echo "ok   certificate good for $days more days"
+            [ "$days" -ge 14 ] || bad "The security certificate runs out in $days days"
+          fi
+
+          # 5. The guest list (every 3 hours, or on a manual run).
+          if [ "$FULL" = true ]; then
+            if [ -z "$GUEST" ]; then
+              echo "::warning::CHECK_GUEST_NAME secret is not set yet, so the guest list was not checked"
+            elif check "$SITE/?name=$(python3 -c 'import sys,urllib.parse;print(urllib.parse.quote_plus(sys.argv[1]))' "$GUEST")" 200; then
+              if grep -qE '"mode": *"guest"' page.html; then echo "ok   guest list answers"
+              else bad "The guest list did not answer: a guest's own link opened as a plain invitation (database asleep, full or down?)"; fi
+            fi
+            check "$SITE/accounts/login/" 200 || true
+          fi
+
+          if [ "$problems" -gt 0 ]; then
+            echo "::error::$problems problem(s) found on $SITE"
+            exit 1
+          fi
+          echo "All good."

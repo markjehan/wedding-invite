@@ -80,3 +80,6 @@
 /assets/materials/ribbon-moire.jpg
 /assets/materials/ribbon-moire.png
 /assets/materials/ribbon-moire.png.json
+
+# GitHub site watcher (not part of the site)
+.github
