@@ -218,6 +218,15 @@ main{overflow-x:clip}
    and dragged on purpose. */
 :root[data-ios] :is(.door-intro,.language-gate,.scratch-card,.stack-table){-webkit-touch-callout:none}
 :root[data-ios] :is(.door-intro,.language-gate,.scratch-card){-webkit-user-select:none;user-select:none}
+/* The wax seal on the doors was missing on iPhones: the doors stood shut with their handles showing
+   and only the ring round the place the seal belongs. Each half of the seal lies flat on its door
+   leaf, and the leaves are set in real depth so they can swing. An iPhone sorts everything in that
+   depth by distance, and a seal lying exactly in the surface of the door lost to the door itself and
+   was painted underneath it; the soft shadow it carried made it a separate sheet, which is what put
+   it into that contest. Here the seal is raised a hair off the door, so it is plainly in front, the
+   shadow that set it apart is left off, and its width is given in so many words rather than worked
+   out from its height, which iPhones before iOS 15 could not do and drew as nothing at all. */
+:root[data-ios] .door-leaf .seal-half{width:33.38%;transform:translateZ(2px);filter:none}
 /* The same again by the engine's own mark, for an iPhone browser that hides its name. */
 @supports(-webkit-touch-callout:none){
   html,body{touch-action:manipulation}

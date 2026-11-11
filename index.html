@@ -348,9 +348,14 @@
 
           <!-- The initials, laid down in the order they are read, and the only filled mass here.
                Everything else in this mark is a line; that is what makes them the subject. -->
-          <text class="wc-letter" data-i18n="mono.n" data-i18n-attr="x:mono.n.x,y:mono.y,font-size:mono.size" mask="url(#wc-ink-n)" x="50.6" y="120" font-size="34">N</text>
-          <text class="wc-letter wc-amp" data-i18n="mono.amp" data-i18n-attr="x:mono.amp.x,y:mono.amp.y,font-size:mono.amp.size" mask="url(#wc-ink-amp)" x="107.1" y="108.6" font-size="17" text-anchor="middle">&amp;</text>
-          <text class="wc-letter" data-i18n="mono.d" data-i18n-attr="x:mono.d.x,y:mono.y,font-size:mono.size" mask="url(#wc-ink-d)" x="115.8" y="120" font-size="34">D</text>
+          <!-- Each initial sits in a group with an unseen square the size of the plate, and the ink front is
+               on the group. On an iPhone a mask put on the letter itself cut the letter to the box it is
+               set in, and a script capital is mostly flourish outside that box: the N and the D lost
+               their sweeps and stood small and apart. The square makes the group as large as the plate,
+               so nothing is cut. -->
+          <g mask="url(#wc-ink-n)"><rect width="200" height="200" fill="none" stroke="none"/><text class="wc-letter" data-i18n="mono.n" data-i18n-attr="x:mono.n.x,y:mono.y,font-size:mono.size" x="50.6" y="120" font-size="34">N</text></g>
+          <g mask="url(#wc-ink-amp)"><rect width="200" height="200" fill="none" stroke="none"/><text class="wc-letter wc-amp" data-i18n="mono.amp" data-i18n-attr="x:mono.amp.x,y:mono.amp.y,font-size:mono.amp.size" x="107.1" y="108.6" font-size="17" text-anchor="middle">&amp;</text></g>
+          <g mask="url(#wc-ink-d)"><rect width="200" height="200" fill="none" stroke="none"/><text class="wc-letter" data-i18n="mono.d" data-i18n-attr="x:mono.d.x,y:mono.y,font-size:mono.size" x="115.8" y="120" font-size="34">D</text></g>
           <!-- The Sinhala mark's diamond, under the ampersand's ink front so it arrives on the same beat. The mask
                sits on an untransformed group: a userSpaceOnUse mask on the translated group would move
                with it and sweep in the wrong place. -->
