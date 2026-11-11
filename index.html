@@ -77,6 +77,26 @@
     }
     // Again on resize: a window dragged to another monitor, or a phone that has unfolded, is a new screen.
     try{sense();addEventListener('resize',sense)}catch(e){}
+    // iPhones and iPads only (every browser on them is Safari underneath); nothing here runs on Android.
+    // The language page and the doors each fill the screen and are answered with one press. A pinch
+    // on them enlarged the scene and left the guest inside it: the doors then opened onto an
+    // invitation two sizes too big. gesturestart is an event only Safari sends, and it is refused
+    // only while those two are up; the invitation itself can still be pinched larger to read.
+    // And if the screen is somehow enlarged at the moment a language or the seal is pressed, it is
+    // set back to fit: the limit is put on for a moment, which makes Safari return to its true size,
+    // and then taken off again.
+    try{if(/iPhone|iPod|iPad/.test(ua)||(/Macintosh/.test(ua)&&touches>1)){
+      root.setAttribute('data-ios','');
+      var locked=function(){return !!document.body&&/(^| )intro-locked( |$)/.test(document.body.className)};
+      document.addEventListener('gesturestart',function(e){if(locked())e.preventDefault()},{passive:false});
+      document.addEventListener('click',function(){
+        var view=window.visualViewport,meta=document.querySelector('meta[name=viewport]');
+        if(!locked()||!view||!meta||!(view.scale>1.02)||meta.getAttribute('data-fitting'))return;
+        var was=meta.getAttribute('content');
+        meta.setAttribute('data-fitting','1');meta.setAttribute('content',was+',maximum-scale=1');
+        setTimeout(function(){meta.setAttribute('content',was);meta.removeAttribute('data-fitting')},400);
+      },true);
+    }}catch(e){}
   })();</script>
 </head>
 <body class="intro-locked">

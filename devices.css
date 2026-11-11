@@ -199,3 +199,26 @@ main{overflow-x:clip}
   :root[data-device=desktop] .welcome h1{font-size:clamp(58px,min(6.4vw,11.4svh),140px)}
   :root[data-device=desktop] .welcome-crest{width:min(280px,21svh)}
 }
+
+/* ---------- iPhones and iPads only ----------
+   Every browser on an iPhone - Safari, Chrome, Firefox, the one inside WhatsApp - is Safari underneath,
+   and the head of index.html marks them data-ios, so these rules are read there and nowhere else:
+   Android and desktop browsers skip them whole.
+
+   Two quick taps anywhere on a page make an iPhone "smart zoom" into whatever is under the finger. A
+   guest who tapped the doors twice, or tapped the arrival while the names were still being written, was
+   left looking at the invitation enlarged by two thirds: the names wider than the screen, the welcome
+   line pushed off the top, and nothing to say a second double tap would undo it. Android does not zoom
+   on a double tap on a page fitted to the phone, which is why it only ever went wrong on iPhones.
+   manipulation takes the double tap away and leaves scrolling and the two-finger pinch as they were;
+   the buttons and links already had it, the page around them did not. */
+:root[data-ios],:root[data-ios] body{touch-action:manipulation}
+/* A finger held on the doors, the language panels, the foil or a print brought up Safari's own
+   sheet - save image, copy, the magnifier - over a part of the invitation that is pressed, rubbed
+   and dragged on purpose. */
+:root[data-ios] :is(.door-intro,.language-gate,.scratch-card,.stack-table){-webkit-touch-callout:none}
+:root[data-ios] :is(.door-intro,.language-gate,.scratch-card){-webkit-user-select:none;user-select:none}
+/* The same again by the engine's own mark, for an iPhone browser that hides its name. */
+@supports(-webkit-touch-callout:none){
+  html,body{touch-action:manipulation}
+}
