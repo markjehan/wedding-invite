@@ -31,9 +31,9 @@ fs.mkdirSync(out, { recursive: true });
   p.on('console', m => { if (m.type() === 'error') console.log('ERR', m.text().slice(0, 200)); });
   p.on('pageerror', e => console.log('PAGEERR', String(e).slice(0, 200)));
   // Warm the cache in real time first, then load again with the clock frozen.
-  await p.goto('http://127.0.0.1:4173/' + query); await sleep(5000);
+  await p.goto((process.env.SITE || 'https://naveenwedsdulanjani.com/') + query); await sleep(5000);
   await p.clock.pauseAt(START + 60000);
-  await p.goto('http://127.0.0.1:4173/' + query);
+  await p.goto((process.env.SITE || 'https://naveenwedsdulanjani.com/') + query);
   await p.addStyleTag({ content: '#__tap{position:fixed;left:0;top:0;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(255,255,255,.55);box-shadow:0 0 0 1.5px rgba(150,115,55,.7),0 2px 10px rgba(90,60,20,.25);pointer-events:none;z-index:2147483647;opacity:0}html{scrollbar-width:none}::-webkit-scrollbar{display:none}' });
   await p.evaluate(() => { const d = document.createElement('div'); d.id = '__tap'; document.documentElement.appendChild(d); });
 

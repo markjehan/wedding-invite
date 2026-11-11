@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The making of the invitation</title>
+<!-- The drawn scenes of the keepsake film for Naveen & Dulanjani.
+     ?scene=making   the title, then the desk: Mark at his laptop in his headphones, Ashan ringing
+                     on the phone beside him with ideas, Claude building each one, and the
+                     invitation coming to life on the monitor, which the camera finally enters.
+     ?scene=closing  the camera comes back out of the monitor, then the thank-you card.
+     ?scene=sinhala  the small label laid over the Sinhala glimpse (transparent page).
+     Laid out for a 360 x 640 window and filmed at three times that. Every movement is a function
+     of the time since the page loaded, on the 2.4 second bar of the invitation's own music. -->
+<style>
+@font-face{font-family:Italiana;src:url('../assets/fonts/italiana-regular.ttf')}
+@font-face{font-family:Manrope;src:url('../assets/fonts/manrope-regular.ttf')}
+@font-face{font-family:Script;src:url('../assets/fonts/pinyon-script.ttf')}
+@font-face{font-family:Hand;src:url('../assets/fonts/greatvibes.ttf')}
+@font-face{font-family:SinhalaSerif;src:url('../assets/fonts/noto-serif-sinhala-light.woff')}
+:root{--gold:#ae8d55;--deep:#6d5228;--ink:#5b4a30;--paper:#f7f2e8;--claude:#d97757}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:360px;height:640px;overflow:hidden;background:var(--paper)}
+body{font-family:Manrope,sans-serif;color:var(--ink);position:relative}
+body::before{content:"";position:absolute;inset:0;background:url('../assets/magnolia-suite/paper-plain.webp') center/cover;opacity:.9}
+body::after{content:"";position:absolute;inset:14px;border:1px solid rgba(174,141,85,.38);pointer-events:none}
+html[data-scene=sinhala],body[data-scene=sinhala]{background:transparent}
+body[data-scene=sinhala]::before,body[data-scene=sinhala]::after{display:none}
+.film{display:none}
+body[data-scene=making] .film.making,body[data-scene=closing] .film.closing,body[data-scene=sinhala] .film.sinhala{display:block}
+
+/* Something is on stage from --in to --out (seconds). */
+.s,.ev{opacity:0;animation:in .6s calc(var(--in)*1s) cubic-bezier(.2,.7,.2,1) both,out .45s calc(var(--out)*1s - .45s) ease-in forwards}
+.s.stay,.ev.stay{animation:in .6s calc(var(--in)*1s) cubic-bezier(.2,.7,.2,1) both}
+.s{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 34px}
+@keyframes in{from{opacity:0}to{opacity:1}}
+@keyframes out{from{opacity:1}to{opacity:0}}
+.up{opacity:0;animation:up .9s calc((var(--in) + var(--d,0))*1s) cubic-bezier(.16,1,.3,1) both}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.pop{opacity:0;animation:pop .9s calc((var(--in) + var(--d,0))*1s) cubic-bezier(.16,1,.3,1) both}
+@keyframes pop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+
+.eyebrow{font-family:Manrope;font-size:9.5px;letter-spacing:.34em;text-transform:uppercase;color:var(--gold)}
+.script{font-family:Script,cursive;color:var(--deep);line-height:1.05}
+.serif{font-family:Italiana,serif;color:var(--ink)}
+.rule{width:56px;height:1px;background:var(--gold);margin:18px auto;transform-origin:center;animation:draw 1s calc((var(--in) + var(--d,0))*1s) cubic-bezier(.3,.7,.2,1) both}
+@keyframes draw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.crest{width:118px;height:118px;margin-bottom:22px}
+.small{font-size:11.5px;line-height:1.7;letter-spacing:.04em;color:var(--ink)}
+
+/* The desk: the 3D picture fills the frame and the words sit over it. */
+.desk{position:absolute;inset:0}
+.desk canvas{position:absolute;inset:0;width:360px;height:640px;display:block}
+.desk .eyebrow{position:absolute;left:0;right:0;top:40px;text-align:center}
+.bubble{position:absolute;left:0;top:0;background:#fffdf7;border:1px solid rgba(174,141,85,.6);padding:9px 13px;font-family:Italiana,serif;font-size:14.5px;line-height:1.28;color:var(--ink);box-shadow:0 8px 20px rgba(70,48,16,.16);white-space:nowrap;text-align:left}
+/* Ashan speaks from the phone; the bubble's corner points down at it. */
+.bubble.ashan{border-radius:16px 16px 4px 16px;translate:min(calc(336px - 100%),calc(var(--px)*1px - 62%)) calc(var(--py)*1px - 100% - 34px)}
+.bubble.ashan::before{content:"Ashan";display:block;font:8px Manrope;letter-spacing:.24em;text-transform:uppercase;color:#1f9d55;margin-bottom:3px}
+/* Mark thinks; the little circles lead down to his head. */
+.bubble.think{border-radius:20px;translate:max(24px,calc(var(--hx)*1px - 100% - 16px)) calc(var(--hy)*1px - 100% - 22px)}
+.bubble.think i{position:absolute;background:#fffdf7;border:1px solid rgba(174,141,85,.6);border-radius:50%;width:11px;height:11px;right:-4px;bottom:-12px}
+.bubble.think i+i{width:6px;height:6px;right:-14px;bottom:-22px}
+/* The call, shown beside the phone. */
+.callpill{position:absolute;left:0;top:0;display:flex;align-items:center;gap:7px;background:#0d3b33;color:#fff;border-radius:999px;padding:6px 12px 6px 6px;font-size:10px;letter-spacing:.03em;white-space:nowrap;box-shadow:0 8px 18px rgba(10,50,40,.3);translate:min(calc(336px - 100%),calc(var(--px)*1px - 62%)) calc(var(--py)*1px - 100% - 34px)}
+.callpill b{position:relative;width:24px;height:24px;border-radius:50%;background:#25d366;display:flex;align-items:center;justify-content:center}
+.callpill b svg{width:13px;height:13px;fill:#fff}
+.callpill.ringing b::after,.callpill.ringing b::before{content:"";position:absolute;inset:0;border-radius:50%;border:1.5px solid #25d366;animation:ringout 1.2s calc(var(--in)*1s) ease-out infinite}
+.callpill.ringing b::before{animation-delay:calc(var(--in)*1s + .6s)}
+@keyframes ringout{from{transform:scale(1);opacity:.9}to{transform:scale(2.1);opacity:0}}
+.callpill small{display:block;font-size:7.5px;letter-spacing:.14em;text-transform:uppercase;color:#9fd8c2}
+.callpill.live{padding:4px 10px 4px 4px;font-size:9px;translate:min(calc(336px - 100%),calc(var(--px)*1px - 50%)) calc(var(--py)*1px + 34px)}
+.callpill.live b{width:16px;height:16px}.callpill.live b svg{width:9px;height:9px}
+/* What Mark asks Claude, and what Claude answers: the laptop's screen, large enough to read. */
+.term{position:absolute;left:30px;right:30px;top:498px;background:#2a2117;border-radius:10px;padding:10px 13px 11px;font:10px/1.55 ui-monospace,Consolas,Menlo,monospace;color:#f3e9d2;box-shadow:0 12px 26px rgba(70,48,16,.3);text-align:left;white-space:nowrap}
+.term .ask{display:block;width:max-content;clip-path:inset(0 100% 0 0);animation:type calc(var(--n)*.035s) calc((var(--in) + .25)*1s) steps(var(--n)) forwards}
+@keyframes type{to{clip-path:inset(0 0 0 0)}}
+.term .ask::before{content:"› ";color:var(--gold)}
+.term .does{display:flex;align-items:center;gap:6px;color:#e9b9a3;opacity:0;animation:in .35s calc((var(--in) + var(--w,1.5))*1s) both}
+.term .does svg{width:11px;height:11px;flex:none;animation:spin 2.4s calc(var(--in)*1s) linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.term .ok{color:#9fd8a8}
+.note{position:absolute;left:0;right:0;top:566px;text-align:center;font-family:Italiana,serif;font-size:19px;color:var(--ink)}
+
+/* The thank-you card. */
+.portrait{width:176px;margin-bottom:12px}
+.card .script{font-size:37px;white-space:nowrap}
+.withlove{font-family:Hand,cursive;font-size:30px;color:var(--deep);line-height:1.1;margin-top:22px}
+
+/* The label over the Sinhala glimpse. */
+.tag{position:absolute;left:50%;bottom:54px;translate:-50% 0;background:rgba(255,253,247,.95);border:1px solid rgba(174,141,85,.7);border-radius:999px;padding:9px 20px 10px;white-space:nowrap;font:10px Manrope;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);box-shadow:0 10px 24px rgba(70,48,16,.2)}
+.tag span{font:19px SinhalaSerif,serif;letter-spacing:0;text-transform:none;color:var(--deep);margin-left:8px;vertical-align:-2px}
+</style>
+</head>
+<body>
+<script>document.body.dataset.scene=document.documentElement.dataset.scene=new URLSearchParams(location.search).get('scene')||'making'</script>
+<svg width="0" height="0" style="position:absolute"><defs>
+  <symbol id="spark" viewBox="0 0 24 24"><g stroke="#d97757" stroke-width="2.6" stroke-linecap="round"><path d="M12 2v20M2 12h20M4.9 4.9l14.2 14.2M19.1 4.9 4.9 19.1M7.2 2.9l9.6 18.2M16.8 2.9 7.2 21.1"/></g></symbol>
+  <symbol id="handset" viewBox="0 0 24 24"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.6 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .6 3.6 1 1 0 0 1-.25 1z"/></symbol>
+</defs></svg>
+
+<!-- ───────── The making: the title (3.6 s), then the desk (28.8 s) ───────── -->
+<div class="film making">
+  <section class="s" style="--in:.2;--out:3.6">
+    <img class="crest pop" style="--d:.1" src="../assets/logo/nd-monogram.svg" alt="">
+    <p class="eyebrow up" style="--d:.5">A keepsake for</p>
+    <p class="script up" style="--d:.8;font-size:50px;margin-top:16px;line-height:.92">Naveen<span style="display:block;font-size:.5em;line-height:1;margin:-2px 0 0">&amp;</span>Dulanjani</p>
+    <div class="rule" style="--d:1.2"></div>
+    <p class="serif up" style="--d:1.4;font-size:19px;line-height:1.35">How your wedding invitation<br>came to life</p>
+  </section>
+
+  <div class="desk ev stay" style="--in:3.4">
+    <canvas id="desk3d"></canvas>
+    <p class="eyebrow ev" style="--in:4;--out:10.6">11 September 2026</p>
+
+    <!-- The first idea is his own. -->
+    <p class="bubble think ev" style="--in:5.2;--out:9.2">What if their invitation<br>opened like a real door?<i></i><i></i></p>
+    <div class="term ev" style="--in:6.2;--out:10.7"><span class="ask" style="--n:44">Claude, build doors that open onto a garden</span><span class="does"><svg><use href="#spark"/></svg>Claude is building the doors…</span></div>
+
+    <!-- The phone on its stand rings. -->
+    <div class="callpill ringing ev" style="--in:10.8;--out:13"><b><svg><use href="#handset"/></svg></b><span><small>WhatsApp voice call</small>Ashan is calling…</span></div>
+    <div class="callpill live ev" style="--in:12.9;--out:30"><b><svg><use href="#handset"/></svg></b>Ashan · on call</div>
+    <p class="note ev" style="--in:11;--out:13.1">Then Ashan called, with ideas.</p>
+
+    <p class="bubble ashan ev" style="--in:13.2;--out:16.6">Give them a monogram<br>of their own!</p>
+    <div class="term ev" style="--in:14;--out:16.9"><span class="ask" style="--n:34">Claude, draw an N &amp; D monogram</span><span class="does" style="--w:1.3"><svg><use href="#spark"/></svg>Claude is drawing the monogram…</span></div>
+
+    <p class="bubble ashan ev" style="--in:16.8;--out:20.2">Their portrait should<br>draw itself.</p>
+    <div class="term ev" style="--in:17.6;--out:20.5"><span class="ask" style="--n:44">Claude, sketch their portrait, line by line</span><span class="does" style="--w:1.5"><svg><use href="#spark"/></svg>Claude is sketching the portrait…</span></div>
+
+    <p class="bubble ashan ev" style="--in:20.4;--out:23.8">It has to speak<br>Sinhala too.</p>
+    <div class="term ev" style="--in:21.2;--out:24.1"><span class="ask" style="--n:38">Claude, write it in Sinhala as well</span><span class="does" style="--w:1.4"><svg><use href="#spark"/></svg>Claude is writing in English and Sinhala…</span></div>
+
+    <p class="bubble ashan ev" style="--in:24;--out:27.4">And greet every guest<br>by name.</p>
+    <div class="term ev" style="--in:24.8;--out:27.7"><span class="ask" style="--n:36">Claude, greet each guest by name</span><span class="does" style="--w:1.4"><svg><use href="#spark"/></svg>Claude is adding every guest's name…</span></div>
+
+    <div class="term ev" style="--in:27.7;--out:30.2"><span class="ask" style="--n:30">Claude, is it ready?</span><span class="does ok" style="--w:1">✓ 61 days · 103 versions · ready to send</span></div>
+    <p class="bubble ashan ev" style="--in:28.3;--out:30.2">Let's see it!</p>
+  </div>
+</div>
+
+<!-- ───────── The closing: back out of the monitor (3.2 s), then the card ───────── -->
+<div class="film closing">
+  <div class="desk ev" style="--in:0;--out:3.6">
+    <canvas id="desk3d-close"></canvas>
+    <div class="callpill live ev" style="--in:.6;--out:3.4"><b><svg><use href="#handset"/></svg></b>Ashan · on call</div>
+    <p class="bubble ashan ev" style="--in:1.2;--out:3.4">It's beautiful.<br>Send it!</p>
+    <div class="term ev" style="--in:1.5;--out:3.4"><span class="ask" style="--n:30">Claude, send it to every guest</span><span class="does ok" style="--w:1">✓ Invitations sent · 11 November 2026</span></div>
+  </div>
+  <section class="s stay card" style="--in:3.2">
+    <img class="portrait up" style="--d:.2" src="../assets/couple/couple-drawing-62650de152.webp" alt="">
+    <p class="script up" style="--d:.8">Naveen <span style="font-size:.6em">&amp;</span> Dulanjani</p>
+    <div class="rule" style="--d:1.3;margin:12px auto"></div>
+    <p class="eyebrow up" style="--d:1.6">Monday · 7 December 2026</p>
+    <p class="small up" style="--d:1.9;margin-top:6px">Centrium Ballroom, Avenra Gardens, Negombo</p>
+    <p class="withlove up" style="--d:2.8">Made with love</p>
+    <p class="serif up" style="--d:3.3;font-size:16px;line-height:1.5;margin-top:4px">for the two of you,<br>by Ashan and Mark</p>
+    <p class="small up" style="--d:4.4;margin-top:16px;font-size:9px;letter-spacing:.2em;color:var(--gold);display:flex;align-items:center;gap:6px"><svg width="10" height="10"><use href="#spark"/></svg>BUILT WITH CLAUDE</p>
+  </section>
+</div>
+
+<div class="film sinhala"><p class="tag">Also in<span>සිංහල</span></p></div>
+
+<script type="module">
+// The desk, in three dimensions: a small clay-like Mark seen from behind and above, his laptop, the
+// monitor beyond it, the phone on its stand at his right hand. Everything is a function of the
+// film's time in seconds, so any frame can be drawn on request (window.renderAt).
+import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js';
+const mode = document.body.dataset.scene;
+const canvas = document.getElementById(mode === 'closing' ? 'desk3d-close' : 'desk3d');
+if (canvas && (mode === 'making' || mode === 'closing')) {
+  const W = 360, H = 640, T0 = 3.6;
+  const picture = src => new Promise(ok => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => ok(null); i.src = src; });
+  const [doors, monogram, couple] = await Promise.all(['../assets/magnolia-suite/doors.webp', '../assets/logo/nd-monogram-compact.svg', '../assets/couple/couple-drawing-62650de152.webp'].map(picture));
+  await Promise.all(['40px Italiana', '40px Script', '40px Hand', '40px SinhalaSerif', '20px Manrope'].map(f => document.fonts.load(f, 'Aආ')));
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
+  renderer.setPixelRatio(3); renderer.setSize(W, H, false);
+  renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.1;
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(36, W / H, .05, 50);
+  const mat = (color, rough = .82) => new THREE.MeshStandardMaterial({ color, roughness: rough, metalness: 0 });
+  const M = { skin: mat(0xc8956a, .7), hair: mat(0x231911, .9), knit: mat(0x7a4f2b, .95), jeans: mat(0x4a4338, .9), shoe: mat(0x2a211a, .6),
+    wood: mat(0xb98f5c, .7), cream: mat(0xe9dcc2, .8), gold: mat(0xae8d55, .5), dark: mat(0x1b1b1e, .55), soft: mat(0x2a2a2e, .9), mug: mat(0xf4ecdc, .4) };
+  const add = (geo, m, x, y, z, parent = scene) => { const o = new THREE.Mesh(geo, m); o.position.set(x, y, z); o.castShadow = o.receiveShadow = true; parent.add(o); return o; };
+  const Y = new THREE.Vector3(0, 1, 0);
+  const limb = (a, b, r, m, parent = scene) => { const A = new THREE.Vector3(...a), B = new THREE.Vector3(...b), d = B.clone().sub(A);
+    const o = add(new THREE.CapsuleGeometry(r, d.length(), 8, 20), m, 0, 0, 0, parent); o.position.copy(A).addScaledVector(d, .5); o.quaternion.setFromUnitVectors(Y, d.normalize()); return o; };
+  const screen = (w, h, pw, ph) => { const c = document.createElement('canvas'); c.width = pw; c.height = ph; const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: t, toneMapped: false })); return { c, pen: c.getContext('2d'), t, mesh }; };
+
+  // floor: only its shadows show, so the paper of the page is the ground
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(14, 14), new THREE.ShadowMaterial({ opacity: .2, color: 0x4a3310 }));
+  floor.rotation.x = -Math.PI / 2; floor.receiveShadow = true; scene.add(floor);
+  // desk
+  add(new THREE.BoxGeometry(2, .05, .9), M.wood, 0, .745, -.62);
+  for (const [x, z] of [[-.92, -1], [.92, -1], [-.92, -.24], [.92, -.24]]) add(new THREE.CylinderGeometry(.025, .02, .72, 16), M.cream, x, .36, z);
+  // the monitor, beyond the laptop
+  const MON = { x: 0, y: 1.42, z: -.95, w: .8, h: .45 };
+  add(new THREE.BoxGeometry(MON.w + .03, MON.h + .03, .025), M.dark, MON.x, MON.y, MON.z);
+  limb([0, .78, -1], [0, 1.3, -1], .018, M.dark); add(new THREE.BoxGeometry(.3, .014, .2), M.dark, 0, .777, -.98);
+  const mon = screen(MON.w, MON.h, 1280, 720); mon.mesh.position.set(MON.x, MON.y, MON.z + .0135); scene.add(mon.mesh);
+  // the laptop
+  add(new THREE.BoxGeometry(.4, .016, .27), M.cream, 0, .778, -.46);
+  const lid = new THREE.Group(); lid.position.set(0, .786, -.595); lid.rotation.x = -.32; scene.add(lid);
+  add(new THREE.BoxGeometry(.4, .27, .012), M.cream, 0, .135, 0, lid);
+  const lap = screen(.37, .24, 640, 416); lap.mesh.position.set(0, .135, .0065); lid.add(lap.mesh);
+  // the phone, on its stand at his right hand, turned towards him
+  const PH = { x: .5, y: .9, z: -.38 };
+  const stand = new THREE.Group(); stand.position.set(PH.x, .77, PH.z); stand.rotation.y = -.35; scene.add(stand);
+  add(new THREE.BoxGeometry(.09, .012, .1), M.cream, 0, .006, 0, stand);
+  const rest = add(new THREE.BoxGeometry(.07, .12, .01), M.cream, 0, .065, -.03, stand); rest.rotation.x = -.3;
+  const phone = new THREE.Group(); phone.position.set(0, .112, -.012); phone.rotation.x = -.3; stand.add(phone);
+  add(new THREE.BoxGeometry(.078, .162, .009), M.dark, 0, 0, 0, phone);
+  const ph = screen(.07, .152, 256, 556); ph.mesh.position.set(0, 0, .0052); phone.add(ph.mesh);
+  // mug and lamp, on his left
+  add(new THREE.CylinderGeometry(.04, .035, .09, 24), M.mug, -.5, .815, -.36); add(new THREE.TorusGeometry(.027, .008, 10, 20), M.mug, -.545, .815, -.36);
+  add(new THREE.CylinderGeometry(.07, .08, .02, 24), M.gold, -.8, .78, -.85);
+  limb([-.8, .79, -.85], [-.8, 1.14, -.85], .011, M.gold); limb([-.8, 1.14, -.85], [-.64, 1.28, -.72], .011, M.gold);
+  const shadeMat = M.gold.clone(); shadeMat.side = THREE.DoubleSide;
+  const shade = add(new THREE.ConeGeometry(.085, .12, 24, 1, true), shadeMat, -.61, 1.255, -.695); shade.rotation.set(.55, 0, -.75);
+  // chair
+  add(new THREE.CylinderGeometry(.24, .24, .06, 32), M.cream, 0, .47, .22);
+  add(new THREE.CylinderGeometry(.03, .03, .4, 16), M.gold, 0, .25, .22);
+  for (let i = 0; i < 5; i++) { const a = i / 5 * Math.PI * 2; limb([0, .06, .22], [Math.sin(a) * .26, .035, .22 + Math.cos(a) * .26], .018, M.gold); }
+  const back = add(new THREE.BoxGeometry(.4, .34, .05), M.cream, 0, .82, .47); back.rotation.x = .12;
+  limb([0, .48, .44], [0, .68, .47], .02, M.gold);
+  // Mark, facing the desk (towards -z)
+  const body = new THREE.Group(); scene.add(body);
+  limb([0, .62, .22], [0, .98, .14], .165, M.knit, body);
+  limb([-.19, 1.06, .15], [.19, 1.06, .15], .075, M.knit, body);
+  add(new THREE.CylinderGeometry(.05, .055, .1, 16), M.skin, 0, 1.17, .12, body);
+  const head = new THREE.Group(); head.position.set(0, 1.32, .1); body.add(head);
+  add(new THREE.SphereGeometry(.135, 40, 32), M.skin, 0, 0, 0, head);
+  const hair = add(new THREE.SphereGeometry(.143, 40, 32, 0, Math.PI * 2, 0, Math.PI * .56), M.hair, 0, .012, .014, head); hair.rotation.x = .5;
+  // his headphones: a black band over the head and two deep oval cups
+  const band = add(new THREE.TorusGeometry(.152, .013, 14, 48, Math.PI), M.dark, 0, .005, .012, head); band.rotation.x = -.12;
+  add(new THREE.TorusGeometry(.152, .017, 14, 24, Math.PI * .34), M.soft, 0, .005, .012, head).rotation.set(-.12, 0, Math.PI * .33);
+  for (const s of [-1, 1]) {
+    const cup = add(new THREE.SphereGeometry(.062, 28, 22), M.dark, s * .15, -.012, .008, head); cup.scale.set(.5, 1.12, .92);
+    const pad = add(new THREE.SphereGeometry(.058, 24, 18), M.soft, s * .132, -.012, .008, head); pad.scale.set(.4, 1.08, .9);
+  }
+  const arms = [];
+  for (const s of [-1, 1]) {
+    limb([s * .23, 1.04, .14], [s * .27, .86, -.06], .058, M.knit, body);
+    const fore = new THREE.Group(); fore.position.set(s * .27, .86, -.06); body.add(fore);
+    limb([0, 0, 0], [s * -.14, -.045, -.28], .05, M.knit, fore);
+    add(new THREE.SphereGeometry(.048, 20, 16), M.skin, s * -.15, -.05, -.32, fore);
+    arms.push(fore);
+    limb([s * .1, .54, .2], [s * .12, .54, -.18], .078, M.jeans, body);
+    limb([s * .12, .5, -.2], [s * .12, .1, -.24], .062, M.jeans, body);
+    limb([s * .12, .045, -.2], [s * .12, .045, -.34], .045, M.shoe, body);
+  }
+  // light
+  scene.add(new THREE.HemisphereLight(0xfff3dd, 0xd9c2a0, 1.15));
+  const sun = new THREE.DirectionalLight(0xffe9c8, 2.1); sun.position.set(2.4, 3.6, 2.2); sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048); sun.shadow.radius = 6; sun.shadow.bias = -.0004;
+  Object.assign(sun.shadow.camera, { left: -2.2, right: 2.2, top: 2.6, bottom: -1.2, near: .5, far: 10 }); scene.add(sun);
+  const lampLight = new THREE.PointLight(0xffc878, 1.3, 2.2, 1.6); lampLight.position.set(-.58, 1.2, -.66); scene.add(lampLight);
+  const glow = new THREE.PointLight(0xfff0d0, .55, 1.8, 1.5); glow.position.set(0, 1.1, -.5); scene.add(glow);
+
+  // ── what the three screens show ──
+  const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x)), ease = x => { x = clamp(x); return x * x * (3 - 2 * x); };
+  // The pieces arrive on the monitor at these moments (seconds into the desk scene).
+  const AT = { doors: 4.1, monogram: 11.3, portrait: 14.9, tongues: 18.5, dear: 22.1, done: 24.6 };
+  const LIST = [['Doors', AT.doors + 1.6], ['Monogram', AT.monogram + 1.6], ['Portrait', AT.portrait + 1.8], ['English + සිංහල', AT.tongues + 1.4], ['Guest names', AT.dear + 1.4]];
+  const PV = { x: 448, y: 22, w: 384, h: 676 };   // the preview: a phone-shaped page in the middle of the monitor
+  function cover(pen, img, x, y, w, h, zoom = 1) { if (!img) return; const r = Math.max(w / img.width, h / img.height) * zoom, dw = img.width * r, dh = img.height * r; pen.drawImage(img, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh); }
+  function drawMonitor(t, finale) {
+    const p = mon.pen; p.fillStyle = '#e9e0cf'; p.fillRect(0, 0, 1280, 720);
+    // left: what has been built so far
+    p.textBaseline = 'middle'; p.fillStyle = '#ae8d55'; p.font = '600 17px Manrope'; p.fillText('B U I L D I N G', 60, 70);
+    p.font = '30px Italiana'; p.fillStyle = '#5b4a30'; p.fillText('The Wedding of', 60, 118); p.font = '46px Script'; p.fillStyle = '#6d5228'; p.fillText('Naveen & Dulanjani', 56, 170);
+    LIST.forEach(([name, at], i) => { const on = finale || t > at, y = 262 + i * 62; p.globalAlpha = on ? 1 : .32;
+      p.strokeStyle = '#ae8d55'; p.lineWidth = 2.5; p.beginPath(); p.arc(76, y, 16, 0, 7); p.stroke();
+      if (on) { p.fillStyle = '#ae8d55'; p.beginPath(); p.arc(76, y, 16, 0, 7); p.fill(); p.strokeStyle = '#fffdf7'; p.lineWidth = 3.5; p.beginPath(); p.moveTo(68, y); p.lineTo(74, y + 6); p.lineTo(85, y - 6); p.stroke(); }
+      p.fillStyle = '#5b4a30'; p.font = '27px Italiana, SinhalaSerif'; p.fillText(name, 110, y + 1); p.globalAlpha = 1; });
+    // right: the palette and the day
+    [['#f7f2e8', 'Ivory'], ['#ae8d55', 'Gold'], ['#6d5228', 'Bronze']].forEach(([c, n], i) => { p.fillStyle = c; p.strokeStyle = '#cdb98f'; p.lineWidth = 2; p.beginPath(); p.arc(930 + i * 110, 110, 34, 0, 7); p.fill(); p.stroke(); p.fillStyle = '#8a7650'; p.font = '17px Manrope'; p.textAlign = 'center'; p.fillText(n, 930 + i * 110, 168); });
+    p.textAlign = 'center'; p.fillStyle = '#ae8d55'; p.font = '600 17px Manrope'; p.fillText('T H E   D A Y', 1040, 270); p.fillStyle = '#6d5228'; p.font = '120px Italiana'; p.fillText('07', 1040, 370);
+    p.fillStyle = '#5b4a30'; p.font = '28px Italiana'; p.fillText('December 2026', 1040, 452); p.font = '19px Manrope'; p.fillStyle = '#8a7650'; p.fillText('Avenra Gardens, Negombo', 1040, 494); p.textAlign = 'left';
+    // middle: the page itself
+    p.save(); p.shadowColor = 'rgba(70,48,16,.3)'; p.shadowBlur = 30; p.shadowOffsetY = 12; p.fillStyle = '#fbf7ee'; p.beginPath(); p.roundRect(PV.x, PV.y, PV.w, PV.h, 22); p.fill(); p.restore();
+    p.save(); p.beginPath(); p.roundRect(PV.x, PV.y, PV.w, PV.h, 22); p.clip();
+    const cx = PV.x + PV.w / 2, layer = (at, until, paint) => { const a = ease((t - at) / .7) * (1 - ease((t - until) / .5)); if (a > .003) { p.save(); p.globalAlpha = a; paint(clamp((t - at) / 2.2)); p.restore(); } };
+    if (finale) { cover(p, doors, PV.x, PV.y, PV.w, PV.h); }
+    else {
+      if (t < AT.doors + .6) { p.fillStyle = '#b9a47c'; p.font = '22px Manrope'; p.textAlign = 'center'; p.fillText('invitation.html', cx, PV.y + PV.h / 2 - 16); if (Math.floor(t * 2.5) % 2) p.fillRect(cx - 1, PV.y + PV.h / 2 + 8, 2, 26); p.textAlign = 'left'; }
+      layer(AT.doors, AT.monogram, k => cover(p, doors, PV.x, PV.y, PV.w, PV.h, 1.14 - .14 * ease(k)));
+      layer(AT.monogram, AT.portrait, k => { p.strokeStyle = '#ae8d55'; p.lineWidth = 2.5; p.lineCap = 'round'; p.beginPath(); p.arc(cx, PV.y + 310, 150, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * ease(k * 1.3)); p.stroke();
+        p.globalAlpha *= ease((k - .3) * 2.5); if (monogram) p.drawImage(monogram, cx - 132, PV.y + 178, 264, 264); });
+      layer(AT.portrait, AT.tongues, k => { if (!couple) return; const w = 330, h = w * couple.height / couple.width, x = cx - w / 2, y = PV.y + 100, e = ease(k * 1.15); p.save(); p.beginPath(); p.rect(x, y, w, h * e); p.clip(); p.drawImage(couple, x, y, w, h); p.restore();
+        if (e < 1) { p.strokeStyle = '#ae8d55'; p.lineWidth = 2; p.beginPath(); p.moveTo(x, y + h * e); p.lineTo(x + w, y + h * e); p.stroke(); } });
+      layer(AT.tongues, AT.dear, k => { p.textAlign = 'center'; p.fillStyle = '#5b4a30'; p.font = '74px Italiana'; p.fillText('Welcome', cx, PV.y + 262); p.strokeStyle = '#ae8d55'; p.lineWidth = 2; p.beginPath(); p.moveTo(cx - 50, PV.y + 330); p.lineTo(cx + 50, PV.y + 330); p.stroke();
+        p.globalAlpha *= ease((k - .25) * 3); p.fillStyle = '#6d5228'; p.font = '66px SinhalaSerif'; p.fillText('ආයුබෝවන්', cx, PV.y + 408); p.textAlign = 'left'; });
+      layer(AT.dear, AT.done, k => { p.textAlign = 'center'; p.fillStyle = '#5b4a30'; p.font = '50px Italiana'; p.fillText('Dear', cx, PV.y + 280); const w = 250, e = ease(k * 1.6); p.save(); p.beginPath(); p.rect(cx - w / 2, PV.y + 300, w * e, 120); p.clip(); p.fillStyle = '#6d5228'; p.font = '84px Hand'; p.fillText('Guest,', cx, PV.y + 360); p.restore(); p.textAlign = 'left'; });
+      layer(AT.done, 99, k => cover(p, doors, PV.x, PV.y, PV.w, PV.h));
+    }
+    p.restore(); mon.t.needsUpdate = true;
+  }
+  // The laptop: Mark's asks and Claude's work, a line at a time.
+  const ASKS = [[2.6, 'build doors that open'], [10.4, 'draw an N & D monogram'], [14, 'sketch their portrait'], [17.6, 'write it in Sinhala too'], [21.2, 'greet each guest by name'], [24.1, 'is it ready?']];
+  function drawLaptop(t, finale) {
+    const p = lap.pen; p.fillStyle = '#231c14'; p.fillRect(0, 0, 640, 416); p.textBaseline = 'top'; p.textAlign = 'left';
+    p.strokeStyle = '#d97757'; p.lineWidth = 4; p.lineCap = 'round'; for (let i = 0; i < 6; i++) { const a = i * Math.PI / 6 + t * .6; p.beginPath(); p.moveTo(40 - Math.cos(a) * 14, 36 - Math.sin(a) * 14); p.lineTo(40 + Math.cos(a) * 14, 36 + Math.sin(a) * 14); p.stroke(); }
+    p.fillStyle = '#f3e9d2'; p.font = '600 26px Manrope'; p.fillText('Claude', 66, 21);
+    p.font = '21px Consolas, ui-monospace, monospace'; const shown = ASKS.filter(([at]) => finale || t > at).slice(-4); let y = 84;
+    for (const [at, text] of shown) { const n = finale ? 99 : Math.floor((t - at) * 30); p.fillStyle = '#d9b877'; p.fillText('›', 26, y); p.fillStyle = '#f3e9d2'; p.fillText(text.slice(0, n), 50, y); y += 30;
+      if (n > text.length + 12) { p.fillStyle = finale || t > at + 2.6 ? '#9fd8a8' : '#e9b9a3'; p.fillText(finale || t > at + 2.6 ? '  ✓ done' : '  ✳ working…', 26, y); } y += 44; }
+    lap.t.needsUpdate = true;
+  }
+  // The phone: dark until it rings, then the call.
+  function drawPhone(t, finale) {
+    const p = ph.pen, ringing = !finale && t > 7.2 && t < 9.3, live = finale || t >= 9.3;
+    p.fillStyle = '#0c0c0e'; p.fillRect(0, 0, 256, 556); if (!ringing && !live) { ph.t.needsUpdate = true; return; }
+    const g = p.createLinearGradient(0, 0, 0, 556); g.addColorStop(0, '#13493f'); g.addColorStop(1, '#092823'); p.fillStyle = g; p.fillRect(0, 0, 256, 556);
+    p.textAlign = 'center'; p.textBaseline = 'middle'; p.fillStyle = '#a9d6c8'; p.font = '15px Manrope'; p.fillText('WhatsApp voice call', 128, 52);
+    if (ringing) for (let i = 0; i < 2; i++) { const k = ((t * .85 + i * .5) % 1); p.strokeStyle = `rgba(120,230,170,${.8 * (1 - k)})`; p.lineWidth = 3; p.beginPath(); p.arc(128, 190, 58 + k * 44, 0, 7); p.stroke(); }
+    const a = p.createLinearGradient(70, 130, 186, 250); a.addColorStop(0, '#d8bd86'); a.addColorStop(1, '#a5834a'); p.fillStyle = a; p.beginPath(); p.arc(128, 190, 58, 0, 7); p.fill();
+    p.fillStyle = '#fffaf0'; p.font = '64px Italiana'; p.fillText('A', 128, 194); p.fillStyle = '#fff'; p.font = '44px Italiana'; p.fillText('Ashan', 128, 300);
+    p.fillStyle = '#bfe3d6'; p.font = '17px Manrope'; const secs = Math.max(0, Math.floor((t - 9.3) * 6)); p.fillText(ringing ? 'Incoming call…' : finale ? '12:07' : `0${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`, 128, 340);
+    if (ringing) { p.fillStyle = '#e5484d'; p.beginPath(); p.arc(72, 470, 34, 0, 7); p.fill(); p.fillStyle = '#25d366'; p.beginPath(); p.arc(184, 470, 34 + Math.sin(t * 9) * 3, 0, 7); p.fill(); }
+    else { p.fillStyle = '#e5484d'; p.beginPath(); p.arc(128, 470, 34, 0, 7); p.fill(); }
+    p.textAlign = 'left'; ph.t.needsUpdate = true;
+  }
+
+  // ── the camera: wide over his shoulder, or close on the monitor's page ──
+  const WIDE = { pos: new THREE.Vector3(1.5, 2.55, 2.75), look: new THREE.Vector3(-.06, 1.06, -.55) };
+  const pvCx = MON.x + ((PV.x + PV.w / 2) / 1280 - .5) * MON.w, pvCy = MON.y + (.5 - (PV.y + PV.h / 2) / 720) * MON.h, pvH = PV.h / 720 * MON.h;
+  const NEAR = { pos: new THREE.Vector3(pvCx, pvCy, MON.z + .0135 + (pvH / 2) / Math.tan(THREE.MathUtils.degToRad(18)) * .985), look: new THREE.Vector3(pvCx, pvCy, MON.z) };
+  const stage = canvas.parentElement, v = new THREE.Vector3();
+  const pin = (name, x, y, z) => { v.set(x, y, z).project(camera); stage.style.setProperty('--' + name + 'x', ((v.x + 1) / 2 * W).toFixed(1)); stage.style.setProperty('--' + name + 'y', ((1 - v.y) / 2 * H).toFixed(1)); };
+
+  window.renderAt = seconds => {
+    let t, zoom, finale = false;
+    if (mode === 'making') { t = seconds - T0; if (t < -.4) return; zoom = ease((t - 26.4) / 2.4); }
+    else { t = seconds; if (t > 4) return; zoom = 1 - ease((t - .1) / 2.5); finale = true; }
+    drawMonitor(t, finale); drawLaptop(t, finale); drawPhone(t, finale);
+    const drift = mode === 'making' ? ease(t / 26) : 1, wide = WIDE.pos.clone().add(v.set(-.3 * drift, -.12 * drift, -.25 * drift));
+    camera.position.lerpVectors(wide, NEAR.pos, zoom); camera.position.y += Math.sin(Math.PI * zoom) * .16;
+    camera.lookAt(v.lerpVectors(WIDE.look, NEAR.look, zoom));
+    // he types; he looks up to think; he turns to the phone when Ashan speaks
+    const typing = finale ? 0 : (Math.sin(t * 3.1) > -.5 ? 1 : 0);
+    arms.forEach((arm, i) => { arm.rotation.x = Math.max(0, Math.sin(t * 21 + i * 2.1)) * .05 * typing; });
+    const beat = finale ? 1 : [9.6, 13.2, 16.8, 20.4, 24.7].reduce((m, at) => Math.max(m, t > at - .2 && t < at + 1.5 ? Math.sin((t - at + .2) / 1.7 * Math.PI) : 0), t > 7.2 && t < 9.4 ? Math.sin((t - 7.2) / 2.2 * Math.PI) : 0);
+    const think = !finale && t > 1.4 && t < 3.6 ? Math.sin((t - 1.4) / 2.2 * Math.PI) : 0;
+    head.rotation.set(Math.sin(t * 1.3) * .03 + think * .2 + .06, Math.sin(t * .7) * .04 - beat * .55, 0);
+    body.rotation.x = Math.sin(t * .9) * .008;
+    stand.position.x = PH.x + (!finale && t > 7.2 && t < 9.3 ? Math.sin(t * 60) * .0025 : 0);
+    glow.intensity = .55 + Math.sin(t * 5) * .04;
+    renderer.render(scene, camera);
+    pin('h', 0, 1.5, .1); pin('p', PH.x, PH.y + .1, PH.z);
+  };
+  window.renderAt(mode === 'making' ? T0 : 0);
+  // Played live in a browser rather than filmed: keep time by the clock.
+  const began = performance.now(); (function tick() { if (!window.__filmed) { window.renderAt((performance.now() - began) / 1000); requestAnimationFrame(tick); } })();
+  window.__deskReady = true;
+}
+</script>
+</body>
+</html>

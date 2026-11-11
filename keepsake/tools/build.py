@@ -1,47 +1,62 @@
-# Joins the filmed pieces into the keepsake film and lays the invitation's own music under it.
-import json, subprocess, sys, os
-FPS = 30; BEAT = 0.6; BAR = 2.4
+# Joins the keepsake film: the title and desk story, a 30-second showing of the English invitation
+# cut from the full filmed walk-through, a glimpse of the Sinhala one, then the ending and the card,
+# with the invitation's own music underneath.
+import json, os, subprocess, sys
+FPS = 30
 S = os.path.dirname(os.path.abspath(__file__))
-out = sys.argv[1]
-def n(d): return len([f for f in os.listdir(os.path.join(S, d)) if f.startswith('f') and f.endswith('.jpg')])
-XF = 0.6  # every join is a one-beat dissolve
-# Each walk-through is trimmed at its start so that its seal press lands on a bar of the music.
-parts = [['mk', 0, n('mk') / FPS]]
-t = parts[0][2] - XF
-plan = []
-for d, nxt in (('en', 'sc'), ('si', 'cl')):
-    m = json.load(open(os.path.join(S, d, 'marks.json')))
-    press = m['seal'] - 8 / FPS          # the frame the seal is actually pressed
-    target = -(-(t + press) // BAR) * BAR  # the next bar line
-    wait = target - (t + press); start = 0   # the scene before is held until then
-    parts[-1][2] += wait; t += wait
-    dur = n(d) / FPS - start
-    parts.append([d, start, dur]); t += dur - XF
-    parts.append([nxt, 0, n(nxt) / FPS]); t += parts[-1][2] - XF
-total = t + XF
-print('parts', parts, 'total', round(total, 2))
-cmd = ['ffmpeg', '-y', '-v', 'error']
-for d, start, dur in parts:
-    have = n(d) / FPS
-    cmd += ['-framerate', str(FPS), '-start_number', str(round(start * FPS)), '-i', os.path.join(S, d, 'f%05d.jpg')]
-fc = []; 
-for i, (d, start, dur) in enumerate(parts):
-    have = n(d) / FPS - start
-    pad = max(0, dur - have)
-    fc.append(f'[{i}:v]tpad=stop_mode=clone:stop_duration={pad + 0.2:.3f},trim=duration={dur:.4f},setpts=PTS-STARTPTS,scale=in_range=pc:out_range=tv,format=yuv420p,settb=AVTB,fps={FPS}[v{i}]')
-last = 'v0'; acc = parts[0][2]
-for i in range(1, len(parts)):
-    fc.append(f'[{last}][v{i}]xfade=transition=fade:duration={XF}:offset={acc - XF:.4f}[x{i}]')
-    last = f'x{i}'; acc += parts[i][2] - XF
-fc.append(f'[{last}]fade=t=in:d=0.8,fade=t=out:st={total - 1.6:.3f}:d=1.6[vout]')
-# Music: the recording from its start, then round and round its sixteen-bar loop (60 s to 98.4 s).
-music = os.path.join(S, '..', 'music.mp3') if False else sys.argv[2]
-k = len(parts)
-cmd += ['-i', music, '-stream_loop', '-1', '-ss', '60', '-t', '38.4', '-i', music]
-loops = int(max(0, total - 98.4) // 38.4) + 1
-fc.append(f'[{k}:a]atrim=0:98.4,asetpts=PTS-STARTPTS[a0]')
-fc.append(f'[{k+1}:a]atrim=0:{loops * 38.4:.2f},asetpts=PTS-STARTPTS[a1]')
-fc.append(f'[a0][a1]concat=n=2:v=0:a=1,atrim=0:{total:.3f},volume=10dB,alimiter=limit=0.9,afade=t=in:d=1.2,afade=t=out:st={total - 3.2:.3f}:d=3.2[aout]')
+out, music = sys.argv[1], sys.argv[2]
+tmp = os.path.join(S, 'segs'); os.makedirs(tmp, exist_ok=True)
+run = lambda cmd: subprocess.run(cmd, check=True)
+count = lambda d: len([f for f in os.listdir(os.path.join(S, d)) if f.startswith('f') and f.endswith('.jpg')])
+def length(path):
+    return float(subprocess.run(['ffprobe', '-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', path], capture_output=True, text=True).stdout.strip())
+
+def seg(name, d, start, end, speed=1.0, tag=False):
+    """A stretch of filmed frames, from `start` to `end` seconds, played at `speed`."""
+    path = os.path.join(tmp, name + '.mp4')
+    first = max(0, round(start * FPS)); n = min(count(d) - first, round((end - start) * FPS))
+    cmd = ['ffmpeg', '-y', '-v', 'error', '-framerate', str(FPS), '-start_number', str(first), '-i', os.path.join(S, d, 'f%05d.jpg')]
+    vf = f'setpts=PTS/{speed},fps={FPS},scale=in_range=pc:out_range=tv,format=yuv420p'
+    if tag:
+        cmd += ['-loop', '1', '-i', os.path.join(S, 'tag.png')]
+        cmd += ['-filter_complex', f'[0:v]trim=end_frame={n},{vf}[v];[1:v]format=rgba,fade=t=in:st=0.15:d=0.5:alpha=1[t];[v][t]overlay=shortest=1[o]', '-map', '[o]']
+    else:
+        cmd += ['-frames:v', str(n), '-vf', vf] if speed == 1 else ['-filter_complex', f'[0:v]trim=end_frame={n},{vf}[o]', '-map', '[o]']
+    run(cmd + ['-c:v', 'libx264', '-preset', 'fast', '-crf', '12', '-pix_fmt', 'yuv420p', '-color_range', 'tv', '-r', str(FPS), path])
+    return path
+
+en = json.load(open(os.path.join(S, 'en', 'marks.json'))); si = json.load(open(os.path.join(S, 'si', 'marks.json')))
+seal, sc, date, venue, agenda, closing = en['seal'], en['scroll'], en['date'], en['venue'], en['agenda'], en['closing']
+# (piece, dissolve into it in seconds; 0 = a straight continuation)
+pieces = [
+    (seg('mk', 'mk', 0, count('mk') / FPS), 0),
+    (seg('e1', 'en', seal - 1.0, seal + 5.2), .6),                 # the seal, the doors, walking in
+    (seg('e2', 'en', seal + 5.2, sc - .2, 2.4), 0),                # the monogram and their names, written
+    (seg('e3', 'en', sc + .6, sc + 11.5, 2.6), .4),                # the quotation and their portrait, drawn
+    (seg('e4', 'en', sc + 11.9, sc + 15.3, 1.4), .4),              # the letter
+    (seg('e5', 'en', sc + 17.3, sc + 22.4, 1.5), .4),              # the photographs
+    (seg('e6', 'en', date + 2.3, date + 8.0, 1.5), .4),            # the gold foil, scratched
+    (seg('e7', 'en', venue + 1.6, venue + 8.6, 2.2), .4),          # the venue, drawn
+    (seg('e8', 'en', agenda + 2.6, agenda + 6.9, 1.4), .4),        # the programme
+    (seg('e9', 'en', closing + .8, en['end'] - .1, 1.5), .4),      # the closing
+    (seg('s1', 'si', si['seal'] + 8.6, si['scroll'] - .3, 2.5, tag=True), .5),   # Sinhala: the names
+    (seg('s2', 'si', si['scroll'] + 11.9, si['scroll'] + 15.3, 1.6, tag=True), .4),  # Sinhala: the letter
+    (seg('cl', 'cl', 0, count('cl') / FPS), .6),
+]
+cmd = ['ffmpeg', '-y', '-v', 'error']; fc = []
+for p, _ in pieces: cmd += ['-i', p]
+for i in range(len(pieces)): fc.append(f'[{i}:v]fps={FPS},settb=AVTB,setpts=PTS-STARTPTS[n{i}]')
+last = 'n0'; acc = length(pieces[0][0])
+for i in range(1, len(pieces)):
+    p, x = pieces[i]; d = length(p)
+    if x: fc.append(f'[{last}][n{i}]xfade=transition=fade:duration={x}:offset={acc - x:.4f}[x{i}]'); acc += d - x
+    else: fc.append(f'[{last}][n{i}]concat=n=2:v=1:a=0,fps={FPS},settb=AVTB[x{i}]'); acc += d
+    last = f'x{i}'
+total = acc
+fc.append(f'[{last}]fade=t=in:d=0.6,fade=t=out:st={total - 1.4:.3f}:d=1.4,format=yuv420p[vout]')
+k = len(pieces); cmd += ['-i', music]
+fc.append(f'[{k}:a]atrim=0:{total:.3f},volume=10dB,alimiter=limit=0.9,afade=t=in:d=1,afade=t=out:st={total - 3:.3f}:d=3[aout]')
 cmd += ['-filter_complex', ';'.join(fc), '-map', '[vout]', '-map', '[aout]', '-c:v', 'libx264', '-preset', 'slow', '-crf', '17', '-pix_fmt', 'yuv420p', '-color_range', 'tv', '-colorspace', 'bt709', '-r', str(FPS),
-        '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', '-metadata', 'title=Naveen & Dulanjani — the making of your wedding invitation', out]
-subprocess.run(cmd, check=True)
+        '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', '-metadata', 'title=Naveen & Dulanjani: how your wedding invitation came to life', out]
+run(cmd)
+print('total', round(total, 2), 'seconds')

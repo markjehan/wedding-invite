@@ -9,19 +9,21 @@ fs.mkdirSync(out, { recursive: true });
   const START = Date.parse('2026-11-12T09:00:00+05:30');
   await c.clock.install({ time: START });
   const p = await c.newPage();
-  const url = 'http://127.0.0.1:4173/keepsake/making-of.html?scene=' + scene;
+  const url = 'http://127.0.0.1:4173/keepsake/film.html?scene=' + scene;
   await p.goto(url); await new Promise(r => setTimeout(r, 2500));
   await p.clock.pauseAt(START + 60000);
   await p.goto(url);
   await p.evaluate(() => document.fonts.ready);
   await new Promise(r => setTimeout(r, 800));
-  await p.evaluate(() => { for (const a of document.getAnimations()) { a.pause(); a.currentTime = 0; } });
+  p.on('console', m => { if (m.type() === 'error') console.log('ERR', m.text().slice(0, 300)); }); p.on('pageerror', e => console.log('PAGEERR', String(e).slice(0, 300)));
+  if (scene !== 'sinhala') await p.waitForFunction(() => window.__deskReady, null, { timeout: 20000 }).catch(() => console.log('no 3D scene'));
+  await p.evaluate(() => { window.__filmed = true; for (const a of document.getAnimations()) { a.pause(); a.currentTime = 0; } });
   const stills = only ? only.split(',').map(Number) : null;
   const total = Math.round(seconds * FPS);
   for (let n = 0; n < total; n++) {
     const t = n * DT;
     if (stills && !stills.includes(n)) continue;
-    await p.evaluate(t => { for (const a of document.getAnimations()) a.currentTime = t; }, t);
+    await p.evaluate(t => { for (const a of document.getAnimations()) a.currentTime = t; if (window.renderAt) window.renderAt(t / 1000); }, t);
     await p.screenshot({ path: `${out}/f${String(n).padStart(5, '0')}.jpg`, type: 'jpeg', quality: 93 });
   }
   console.log(scene, 'done'); await b.close();
