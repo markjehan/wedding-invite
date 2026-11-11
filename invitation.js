@@ -983,7 +983,7 @@
       // WhatsApp opens now, inside the press, or the phone holds it back; the panel stays as the
       // fallback. It goes whether or not the save below works, so the couple hear either way.
       // The server says whose WhatsApp it goes to: the bride's for her side, the groom's for his.
-      const message=say('message',name(),say('party',picked.parentElement.textContent.trim(),count),note),to=me.whatsapp||RSVP_WHATSAPP;
+      const message=say('message',name(),say('party',picked.parentElement.textContent.trim(),count),note,answer==='yes'),to=me.whatsapp||RSVP_WHATSAPP;
       $('#reply-text').textContent=message;
       $('#send-whatsapp').href=whatsappLink(to,message);
       $('#send-email').href='mailto:'+RSVP_EMAIL+'?subject='+encodeURIComponent(say('subject'))+'&body='+encodeURIComponent(message);
