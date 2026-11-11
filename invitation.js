@@ -896,8 +896,9 @@
     if(!e.target.reportValidity())return;
     const data=new FormData(e.target),note=(data.get('note')||'').trim();
     // The answer is quoted as the guest saw it, from its label, so a Sinhala reply stays Sinhala.
-    const answer=e.target.querySelector('[name=attendance]:checked')?.parentElement.textContent.trim()||data.get('attendance');
-    const message=say('message',data.get('name').trim(),answer,note)||`Dear Naveen & Dulanjani,\n\n${data.get('name').trim()} — ${data.get('attendance')}.\nWedding: 7 December 2026, Centrium Ballroom, Avenra Gardens, Negombo${note?'\n\n'+note:''}`;
+    const picked=e.target.querySelector('[name=attendance]:checked');
+    const answer=picked?.parentElement.textContent.trim()||data.get('attendance');
+    const message=say('message',data.get('name').trim(),answer,note,picked?.dataset.reply==='yes')||`Dear Naveen & Dulanjani,\n\n${data.get('name').trim()} — ${data.get('attendance')}.\nWedding: 7 December 2026, Centrium Ballroom, Avenra Gardens, Negombo${note?'\n\n'+note:''}`;
     $('#reply-text').textContent=message;
     $('#send-whatsapp').href=whatsappLink(RSVP_WHATSAPP,message);
     $('#send-email').href='mailto:'+RSVP_EMAIL+'?subject='+encodeURIComponent(say('subject')||'RSVP — Naveen & Dulanjani, 7 December 2026')+'&body='+encodeURIComponent(message);

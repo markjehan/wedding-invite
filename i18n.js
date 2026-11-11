@@ -47,7 +47,17 @@
       venueReal: 'See the real venue',
       venueSketch: 'Return to the sketch',
       nameMissing: 'Please enter your name.',
-      message: (name, answer, note) => `Dear Naveen & Dulanjani,\n\n${name} — ${answer}.\nWedding: 7 December 2026, Centrium Ballroom, Avenra Gardens, Negombo${note ? '\n\n' + note : ''}`,
+      // The reply a guest sends to the couple: a warm line that depends on the answer, the answer
+      // itself, the day at a glance, their note, and their name to close.
+      message: (name, answer, note, yes) => [
+        '💌 Dear Naveen & Dulanjani,',
+        yes ? 'I am so happy to say yes. I will be there to celebrate with you both! 🥂'
+            : 'Thank you so much for inviting me. I am sorry I will not be able to be there, but my love and best wishes are with you both. 🤍',
+        `${yes ? '✅' : '🙏'} ${answer}`,
+        '💍 The wedding of Naveen & Dulanjani\n📅 Monday, 7 December 2026\n⏰ Poruwa ceremony at 9.30 am\n📍 Centrium Ballroom, Avenra Gardens, Negombo',
+        note && `💬 “${note}”`,
+        `${yes ? 'With love, see you there,' : 'With warm wishes,'}\n${name}`
+      ].filter(Boolean).join('\n\n'),
       subject: 'RSVP — Naveen & Dulanjani, 7 December 2026',
       ready: 'Your reply is ready. Choose how to send it.',
       opening: 'WhatsApp is opening with your reply. If it does not, press Send on WhatsApp below.',
@@ -81,7 +91,15 @@
       venueReal: 'සැබෑ ස්ථානය බලන්න',
       venueSketch: 'සිතුවම වෙත ආපසු',
       nameMissing: 'කරුණාකර ඔබගේ නම ඇතුළත් කරන්න.',
-      message: (name, answer, note) => `ආදරණීය නවීන් සහ දුලංජනී,\n\n${name} — ${answer}.\nවිවාහ මංගල්${J}යය: 2026 දෙසැම්බර් 7, සෙන්ට්${J}රියම් බෝල් රූම්, ඇවෙන්රා ගාර්ඩ්න්ස්, මීගමුව${note ? '\n\n' + note : ''}`,
+      message: (name, answer, note, yes) => [
+        '💌 ආදරණීය නවීන් සහ දුලංජනී,',
+        yes ? `ඔබ දෙදෙනාගේ විවාහ මංගල්${J}යය සමරන්නට මා ඉතා සතුටින් පැමිණෙමි! 🥂`
+            : 'ආරාධනාවට බොහෝම ස්තූතියි. පැමිණීමට නොහැකි වීම ගැන කණගාටුයි, නමුත් මගේ ආදරය සහ සුබ පැතුම් සැමදා ඔබ දෙදෙනා සමඟයි. 🤍',
+        `${yes ? '✅' : '🙏'} ${answer}`,
+        `💍 නවීන් සහ දුලංජනීගේ විවාහ මංගල්${J}යය\n📅 2026 දෙසැම්බර් 7, සඳුදා\n⏰ පෝරුව චාරිත්${J}රය පෙ.ව. 9.30\n📍 සෙන්ට්${J}රියම් බෝල් රූම්, ඇවෙන්රා ගාර්ඩ්න්ස්, මීගමුව`,
+        note && `💬 “${note}”`,
+        `${yes ? 'ආදරයෙන්, එදින හමුවෙමු,' : 'සුබ පැතුම් සමඟ,'}\n${name}`
+      ].filter(Boolean).join('\n\n'),
       subject: 'පැමිණීම තහවුරු කිරීම — නවීන් සහ දුලංජනී, 2026 දෙසැම්බර් 7',
       ready: 'ඔබගේ පිළිතුර සූදානම්. එය යවන ආකාරය තෝරන්න.',
       opening: 'ඔබගේ පිළිතුර සමඟ WhatsApp විවෘත වේ. එය විවෘත නොවුණොත්, පහත ඇති “WhatsApp හරහා යවන්න” ඔබන්න.',
