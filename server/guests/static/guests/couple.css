@@ -23,9 +23,13 @@
 
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scrollbar-color:var(--line) transparent}
-body{margin:0;min-height:100vh;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);
+body{margin:0;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);
   font:400 17px/1.55 Manrope,system-ui,sans-serif;-webkit-font-smoothing:antialiased;caret-color:var(--action);
-  -webkit-tap-highlight-color:transparent}
+  -webkit-tap-highlight-color:transparent;
+  /* On a phone held sideways, nothing sits under the notch or the rounded corners. */
+  padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+/* A tap is a tap at once: no waiting to see if it was a double-tap zoom. */
+a,button,summary,label,select,input{touch-action:manipulation}
 ::selection{background:#ecdfc3;color:var(--ink)}
 a{color:var(--action);text-underline-offset:3px;text-decoration-thickness:1px}
 a:hover{color:var(--action-deep)}
@@ -43,7 +47,7 @@ table{font-variant-numeric:tabular-nums}
   font:600 14px/1.5 Manrope,sans-serif;text-align:center;font-variant-numeric:tabular-nums;letter-spacing:0;vertical-align:.1em}
 
 /* ---------- The bar ---------- */
-.bar{position:sticky;top:0;z-index:10;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:0 28px;
+.bar{position:sticky;top:0;z-index:10;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:0 28px;
   padding:0 max(24px,calc((100vw - 1180px)/2 + 24px));background:var(--sheet);border-bottom:1px solid var(--rule)}
 .brand{grid-column:1;display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;font:400 22px/1 Italiana,serif;letter-spacing:.02em;white-space:nowrap}
 .brand img{width:36px;height:36px;border-radius:50%}
@@ -56,9 +60,9 @@ table{font-variant-numeric:tabular-nums}
 .sign-out{grid-column:3;grid-row:1}
 
 .page{width:100%;max-width:1180px;margin:0 auto;padding:30px 24px 56px;flex:1}
-.foot{width:100%;max-width:1180px;margin:0 auto;padding:22px 24px 40px;border-top:1px solid var(--rule);
+.foot{width:100%;max-width:1180px;margin:0 auto;padding:22px 24px calc(40px + env(safe-area-inset-bottom));border-top:1px solid var(--rule);
   display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;font-size:15px;color:var(--ink-soft)}
-.foot a{display:inline-flex;align-items:center;gap:7px;font-weight:500}
+.foot a{display:inline-flex;align-items:center;gap:7px;min-height:44px;font-weight:500}
 .foot .icon{width:18px;height:18px}
 
 /* ---------- Notices: what just happened, in a sentence ---------- */
@@ -96,7 +100,7 @@ table{font-variant-numeric:tabular-nums}
 .text-button:hover{text-decoration-thickness:2px}
 
 /* ---------- The diamond, and where a guest is ---------- */
-.diamond{display:inline-block;flex:none;width:9px;height:9px;rotate:45deg;border:1.5px solid var(--gold);background:var(--gold)}
+.diamond{display:inline-block;flex:none;width:9px;height:9px;transform:rotate(45deg);border:1.5px solid var(--gold);background:var(--gold)}
 .stage{display:inline;font-size:16px;color:var(--ink-soft)}
 .stage .diamond{margin:0 9px 0 1px;vertical-align:.06em}
 .stage small{margin-left:8px;font-size:14px;color:var(--ink-soft);font-weight:400;white-space:nowrap}
@@ -124,9 +128,9 @@ table{font-variant-numeric:tabular-nums}
 .search input,.side-pick select,.field input,.field select,.field textarea,.fix-coming select{width:100%;min-height:var(--tap);padding:10px 14px;
   border:1.5px solid var(--line);border-radius:var(--radius);background:#fff;color:var(--ink);font:400 17px/1.4 Manrope,sans-serif;
   transition:border-color .15s ease,box-shadow .15s ease}
-.search input{padding-left:44px}
+.search input{padding-left:44px;-webkit-appearance:none;appearance:none}
 .search input::placeholder,.field input::placeholder{color:#8a765a}
-.side-pick select,.field select,.fix-coming select{appearance:none;padding-right:38px;cursor:pointer;
+.side-pick select,.field select,.fix-coming select{-webkit-appearance:none;appearance:none;padding-right:38px;cursor:pointer;
   background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236a563c' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m7 10 5 5 5-5'/%3E%3C/svg%3E") right 12px center/20px no-repeat}
 .side-pick select{width:auto;min-width:180px}
 .search input:focus,.side-pick select:focus,.field input:focus,.field select:focus,.field textarea:focus,.fix-coming select:focus{
@@ -134,7 +138,7 @@ table{font-variant-numeric:tabular-nums}
 
 /* The answer first: how many people are coming, large, with the other three parts of the list beside
    it, each with its number, its flower and where it leads. The garden lies under them. */
-.summary{margin-bottom:22px;padding:0}
+.summary{margin-bottom:22px;padding:0;overflow:hidden}
 .summary-top{display:grid;grid-template-columns:minmax(300px,1fr) minmax(0,2fr)}
 .summary-top:not(:last-child){border-bottom:1px solid var(--rule)}
 .summary-main{padding:28px 30px 26px;border-right:1px solid var(--rule)}
@@ -163,8 +167,8 @@ table{font-variant-numeric:tabular-nums}
 .key-text{grid-area:text;display:grid;gap:1px}
 .key-label{font-size:17px;font-weight:600}
 .key-note{font-size:15px;color:var(--ink-soft)}
-.key-go{grid-area:go;width:20px;height:20px;rotate:180deg;color:var(--action);transition:translate .2s var(--ease-out)}
-@media (hover:hover){.key:hover{background:var(--tint);color:var(--ink)}.key:hover .key-go{translate:3px 0}}
+.key-go{grid-area:go;width:20px;height:20px;transform:rotate(180deg);color:var(--action);transition:transform .2s var(--ease-out)}
+@media (hover:hover){.key:hover{background:var(--tint);color:var(--ink)}.key:hover .key-go{transform:translateX(3px) rotate(180deg)}}
 
 /* The garden: one magnolia per invitation on a champagne ground line, drawn in _flowers.html. Each
    stage sets its own colours here, so the bed, the key and a live bloom share one drawing. */
@@ -196,7 +200,7 @@ table{font-variant-numeric:tabular-nums}
 .flower.is-blooming .flower-tip{opacity:1;translate:calc(-50% + var(--nudge,0px)) 0;scale:1}
 
 /* A reply that arrives while Home is open: a card in the corner with the flower that just bloomed. */
-.garden-news{position:fixed;right:20px;bottom:20px;z-index:20;display:grid;gap:10px;width:min(390px,calc(100vw - 32px))}
+.garden-news{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom));z-index:20;display:grid;gap:10px;width:min(390px,calc(100vw - 32px))}
 .news{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:4px 12px;padding:12px 10px 12px 14px;background:var(--sheet);
   border:1px solid var(--rule);border-radius:12px;box-shadow:0 1px 1px #58452c0a,0 18px 40px -22px #58452c80;
   transition:opacity .3s ease-out,translate .3s var(--ease-out)}
@@ -322,7 +326,7 @@ a.side-name:hover{text-decoration:underline}
 .js .list-sheet .guest-table:not(.is-selecting) .who{padding-left:60px}
 .guest-table.is-selecting .who{padding-left:16px}
 .guest-table.is-selecting .who .swatch{display:none}
-.guest-table .is-open .icon{width:16px;height:16px;rotate:180deg}
+.guest-table .is-open .icon{width:16px;height:16px;transform:rotate(180deg)}
 .guest-table .who .name{white-space:normal;overflow:visible}
 .guest-table,.preview-table{width:100%;border-collapse:separate;border-spacing:0;background:var(--sheet);border:1px solid var(--rule);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
 .guest-table thead th,.preview-table thead th{padding:12px 16px;background:var(--tint);border-bottom:1px solid var(--rule);text-align:left;font-size:14.5px;font-weight:600;color:var(--ink-soft)}
@@ -365,7 +369,7 @@ a.side-name:hover{text-decoration:underline}
 .guest-hero{margin-bottom:22px;padding:26px 28px 22px}
 .hero-top{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:14px 22px}
 .hero-flower{width:54px;height:81px;overflow:visible}
-.guest-hero .stage{display:inline-flex;align-items:center;flex-wrap:wrap;padding:5px 14px 5px 12px;border-radius:99px;background:var(--wash);font-size:16px;font-weight:600}
+.guest-hero .stage{display:inline-block;padding:5px 14px 5px 12px;border-radius:99px;background:var(--wash);font-size:16px;font-weight:600}
 .guest-hero .stage.is-coming{background:var(--coming-wash)}
 .guest-hero .stage.is-declined{background:var(--declined-wash)}
 .guest-hero .stage.is-opened,.guest-hero .stage.is-sent{background:var(--waiting-wash)}
@@ -441,8 +445,8 @@ a.side-name:hover{text-decoration:underline}
   font-weight:600;font-size:17px;cursor:pointer;list-style:none}
 .faq summary::-webkit-details-marker{display:none}
 .faq summary::after{content:'';flex:none;width:10px;height:10px;margin-right:6px;border-right:2px solid var(--action);border-bottom:2px solid var(--action);
-  rotate:45deg;translate:0 -3px;transition:rotate .2s var(--ease-out),translate .2s var(--ease-out)}
-.faq details[open] summary::after{rotate:225deg;translate:0 3px}
+  transform:translateY(-3px) rotate(45deg);transition:transform .2s var(--ease-out)}
+.faq details[open] summary::after{transform:translateY(3px) rotate(225deg)}
 .faq summary:hover{color:var(--action-deep)}
 .faq details > :not(summary){max-width:64ch;color:var(--ink)}
 .faq details p{margin:0 0 12px}
@@ -487,7 +491,7 @@ a.side-name:hover{text-decoration:underline}
 .tick input:focus-visible + span{outline:3px solid var(--gold);outline-offset:2px}
 .select-toggle[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--sheet)}
 
-.bulk-bar{position:sticky;bottom:12px;z-index:5;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 18px;
+.bulk-bar{position:sticky;bottom:calc(12px + env(safe-area-inset-bottom));z-index:5;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 18px;
   margin-top:14px;padding:12px 16px;background:var(--sheet);border:1px solid var(--line);border-radius:12px;
   box-shadow:0 1px 1px #58452c0a,0 18px 40px -18px #58452c66;transition:opacity .18s ease,translate .22s var(--ease-out)}
 .js .bulk-bar:not(.is-open){display:none}
@@ -501,8 +505,8 @@ a.side-name:hover{text-decoration:underline}
 .bulk-menu{position:relative}
 .bulk-menu summary{list-style:none}
 .bulk-menu summary::-webkit-details-marker{display:none}
-.bulk-menu summary .icon{width:16px;height:16px;rotate:-90deg;transition:rotate .15s ease}
-.bulk-menu[open] summary .icon{rotate:90deg}
+.bulk-menu summary .icon{width:16px;height:16px;transform:rotate(-90deg);transition:transform .15s ease}
+.bulk-menu[open] summary .icon{transform:rotate(90deg)}
 .bulk-menu-list{position:absolute;bottom:calc(100% + 6px);left:0;min-width:190px;display:grid;padding:6px;background:var(--sheet);
   border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow)}
 .bulk-menu-item{min-height:42px;padding:0 12px;border:0;border-radius:7px;background:none;color:var(--ink);text-align:left;
@@ -514,6 +518,10 @@ a.side-name:hover{text-decoration:underline}
 @media (max-width:1080px) and (min-width:761px){
   .bar{gap:0 16px}
   .sections a{flex-direction:column;justify-content:center;gap:2px;padding:0 9px;font-size:14px}
+}
+/* A phone on its side or a small tablet: the monogram alone, so the tabs and Sign out never touch. */
+@media (max-width:900px) and (min-width:761px){
+  .brand > span{display:none}
 }
 @media (max-width:1020px){
   .overview,.import-layout,.numbers-layout{grid-template-columns:minmax(0,1fr)}
@@ -531,11 +539,15 @@ a.side-name:hover{text-decoration:underline}
 }
 @media (max-width:760px){
   body{font-size:17px}
-  .bar{grid-template-columns:1fr auto;gap:0 12px;padding:10px 16px 0}
-  .brand{font-size:20px}
+  /* Scrolling down, the names and Sign out slide away and only the five tabs stay at the top, so the
+     page keeps most of a small screen. The row above them is 10 + 40 + 8 = 58px tall. */
+  .bar{grid-template-columns:minmax(0,1fr) auto;gap:0 12px;padding:calc(10px + env(safe-area-inset-top)) 16px 0;top:-58px}
+  .brand{min-width:0;font-size:20px}
+  .brand > span{min-width:0;overflow:hidden;text-overflow:ellipsis}
   .brand img{width:32px;height:32px}
+  .sign-out .button{min-height:40px}
   /* Five tabs share the width under the names, each a word under its picture. */
-  .sections{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(5,1fr);margin:8px -16px 0;gap:0}
+  .sections{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));margin:8px -16px 0;gap:0}
   .sections a{flex-direction:column;justify-content:center;gap:3px;min-height:62px;padding:6px 2px;font-size:13px;line-height:1.15;text-align:center;white-space:normal}
   .sections .icon{width:22px;height:22px}
   .sign-out{grid-column:2;grid-row:1}
@@ -544,6 +556,8 @@ a.side-name:hover{text-decoration:underline}
   .foot{padding:20px 16px 32px;flex-direction:column}
   .hello h1,.page-head h1{font-size:26px}
   .sheet{padding:20px 18px;border-radius:11px}
+  .sheet.list-sheet{padding:0}
+  .drop > .button{width:100%}
   .finder.is-home{flex:1 1 100%}
   .summary{padding:0}
   .summary-main{padding:22px 18px 20px}
@@ -565,15 +579,20 @@ a.side-name:hover{text-decoration:underline}
   /* On Home the box and its button share one line, as on any search page. */
   .finder.is-home .search{flex:1 1 0;min-width:0}
   .finder.is-home > .button{flex:none}
-  .stage-tabs{gap:6px}
-  .stage-tabs a{min-height:42px;padding:0 13px;font-size:15px}
+  /* The five steps stay on one line that slides sideways, rather than filling the screen; the edge
+     fades to show there is more. */
+  .stage-tabs{position:relative;flex-wrap:nowrap;gap:6px;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;-webkit-mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 18px),transparent);
+    mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 18px),transparent)}
+  .stage-tabs::-webkit-scrollbar{display:none}
+  .stage-tabs a{flex:none;min-height:44px;padding:0 13px;font-size:15px}
   .head-download{display:none}
   .foot-download{display:block;margin-top:16px}
   .foot-download .button{width:100%}
   .garden{--w:40px;--h:60px}
   .garden.is-dense{--w:31px;--h:46px}
   .garden.is-crowded{--w:22px;--h:33px}
-  .garden-news{left:16px;right:16px;bottom:16px;width:auto}
+  .garden-news{left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));width:auto}
   .setup-note{grid-template-columns:auto minmax(0,1fr)}
   .setup-note .button{grid-column:1/-1}
   .side-pick{flex:1 1 auto}
@@ -594,19 +613,22 @@ a.side-name:hover{text-decoration:underline}
   .seats .unit{display:inline}
   .guest-table .note{grid-area:note;display:block;max-width:none}
   .guest-table .note:empty{display:none}
-  .guest-table .actions{grid-area:actions;display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:8px;margin-top:6px;text-align:left}
+  /* The next thing to do (Send, Remind, Add their number) gets the whole width; Copy link and Open
+     share the line under it, so no word is ever squeezed out of its button. */
+  .guest-table .actions{grid-area:actions;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:6px;text-align:left}
   .guest-table .actions > *{margin:0}
+  .guest-table .actions > .send-form,.guest-table .actions > .add-number{grid-column:1/-1}
   .guest-table .actions .button,.guest-table .send-form .button{width:100%;padding:0 6px;gap:6px;font-size:15.5px}
   .guest-table .is-open{display:inline-flex}
   .guest-table.is-selecting tbody tr{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"pick who seats" "pick where where" "pick note note"}
   .guest-table.is-selecting .actions{display:none}
   .guest-table .pick{grid-area:pick;width:auto;align-self:start;padding:0}
   .guest-table .tick{margin:-8px 0 0 -10px}
-  .bulk-bar{bottom:8px;margin:14px -6px 0;padding:12px}
+  .bulk-bar{bottom:calc(8px + env(safe-area-inset-bottom));margin:14px -6px 0;padding:12px}
   .bulk-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
   .bulk-actions .button,.bulk-menu summary{width:100%;padding:0 8px}
   .bulk-menu-list{left:auto;right:0}
-  .preview-table{display:block;overflow-x:auto}
+  .preview-table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
 
   .mini-list li{grid-template-columns:minmax(0,1fr);grid-template-areas:"name" "stage" "action";gap:4px}
   .mini-list .send-form{margin-top:6px}
@@ -614,6 +636,7 @@ a.side-name:hover{text-decoration:underline}
   .guest-name{font-size:27px}
   .guest-hero{padding:20px 18px 18px}
   .hero-top{gap:12px 14px}
+  .guest-hero .stage{border-radius:12px}
   .hero-flower{width:40px;height:60px;align-self:start}
   /* On a phone their walk runs down the page instead. */
   .steps{grid-auto-flow:row;margin-top:20px}
@@ -641,8 +664,24 @@ a.side-name:hover{text-decoration:underline}
   .fix-coming select,.fix-actions .button{width:100%}
   .form-actions .button{flex:1}
 }
-@media (max-width:340px){
-  .sign-out .button{padding:0 10px}
+/* Small phones (iPhone SE, older Androids): the names get a little smaller so Sign out still fits beside them. */
+@media (max-width:400px){
+  .brand{gap:8px;font-size:18px}
+  .brand img{width:28px;height:28px}
+  .sign-out .button{padding:0 11px}
+  .page{padding-top:18px}
+  .hello h1,.page-head h1{font-size:24px}
+  .guest-name{font-size:25px}
+  .summary-figure{font-size:50px}
+}
+@media (max-width:360px){
+  .brand img{display:none}
+  .sections a{font-size:12px}
+  .stage-tabs a{padding:0 11px}
+}
+/* A phone on its side has little height: the bar scrolls away with the page instead of covering it. */
+@media (max-height:500px) and (orientation:landscape){
+  .bar{position:relative;top:auto}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{transition-duration:0s!important}

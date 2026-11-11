@@ -33,5 +33,15 @@
     </main>
   {% endblock body %}
   {% block extra_body %}{% endblock extra_body %}
+  <script>
+    // On a phone: no capital letter or "correction" forced into the username, and the six-digit code
+    // brings up the number pad.
+    document.querySelectorAll('input[name=login], input[name=username]').forEach(box => {
+      box.setAttribute('autocapitalize', 'none'); box.setAttribute('autocorrect', 'off'); box.spellcheck = false;
+    });
+    document.querySelectorAll('input[name=code]').forEach(box => {
+      box.setAttribute('inputmode', 'numeric'); box.setAttribute('autocomplete', 'one-time-code');
+    });
+  </script>
 </body>
 </html>

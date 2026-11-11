@@ -22,7 +22,7 @@
   </label>
   <label class="side-pick">
     <span class="visually-hidden">Side</span>
-    <select name="side" onchange="this.form.requestSubmit()">
+    <select name="side" onchange="this.form.requestSubmit ? this.form.requestSubmit() : this.form.submit()">
       <option value="">Both sides</option>
       {% for key, label in sides %}<option value="{{ key }}"{% if side == key %} selected{% endif %}>{{ label }}</option>{% endfor %}
     </select>

@@ -20,7 +20,7 @@
     const button = event.target.closest('.copy-link');
     if (!button) return;
     const link = new URL(button.dataset.link, location.origin).href;
-    button.label ??= button.getAttribute('aria-label');
+    if (button.label === undefined) button.label = button.getAttribute('aria-label');
     try {
       await navigator.clipboard.writeText(link);
     } catch {
@@ -137,6 +137,13 @@
     update();
   }
 
+  // On a phone the guest list's steps sit on one sliding line: the one being shown starts in view.
+  const tabs = document.querySelector('.stage-tabs');
+  const current = tabs?.querySelector('[aria-current]');
+  if (current && tabs.scrollWidth > tabs.clientWidth) {
+    tabs.scrollLeft = current.offsetLeft - (tabs.clientWidth - current.offsetWidth) / 2;
+  }
+
   // The Excel picker shows which file was chosen.
   const sheet = document.querySelector('.drop-zone input[type=file]');
   if (sheet) sheet.addEventListener('change', () => {
@@ -162,13 +169,15 @@
       setTimeout(() => garden()?.classList.remove('is-growing'), 700 + 40 * 18 + 200);
     }
 
-    // A name near either edge of the screen is nudged back inside it.
+    // A name near either edge of the garden is nudged back inside it (the sheet clips anything past
+    // its edges, so the page never slides sideways on a phone).
     const place = event => {
       const tip = event.target.closest?.('.flower')?.querySelector('.flower-tip');
       if (!tip) return;
       tip.style.setProperty('--nudge', '0px');
-      const box = tip.getBoundingClientRect(), room = document.documentElement.clientWidth - 12;
-      const nudge = box.left < 12 ? 12 - box.left : box.right > room ? room - box.right : 0;
+      const box = tip.getBoundingClientRect(), edge = summary.getBoundingClientRect();
+      const left = edge.left + 8, room = edge.right - 8;
+      const nudge = box.left < left ? left - box.left : box.right > room ? room - box.right : 0;
       tip.style.setProperty('--nudge', `${Math.round(nudge)}px`);
     };
     summary.addEventListener('pointerover', place);

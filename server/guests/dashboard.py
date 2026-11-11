@@ -188,7 +188,12 @@ class GuestForm(forms.ModelForm):
                       'name_si': 'Shown when they read it in Sinhala. Left empty, the name above is used.',
                       'phone': 'Any way it is written: 077 123 4567, +94 77 123 4567.',
                       'seats': '', 'notes': 'Only for the two of you. Guests never see this.'}
-        widgets = {'notes': forms.Textarea(attrs={'rows': 3}), 'seats': forms.NumberInput(attrs={'min': 1, 'max': 50})}
+        # On a phone each box brings up the right keyboard: number pad for the number and the seats,
+        # capital letters for names.
+        widgets = {'name': forms.TextInput(attrs={'autocapitalize': 'words', 'autocomplete': 'off'}),
+                   'phone': forms.TextInput(attrs={'type': 'tel', 'inputmode': 'tel', 'autocomplete': 'off'}),
+                   'seats': forms.NumberInput(attrs={'min': 1, 'max': 50, 'inputmode': 'numeric'}),
+                   'notes': forms.Textarea(attrs={'rows': 3})}
         error_messages = {'name': {'required': 'Type their name first, the way the invitation should greet them.'},
                           'seats': {'required': 'Type how many seats to keep for them.',
                                     'invalid': 'Type the number of seats as a number, like 2.'}}
