@@ -48,11 +48,14 @@
       venueSketch: 'Return to the sketch',
       nameMissing: 'Please enter your name.',
       // The reply a guest sends to the couple: a warm line that depends on the answer, the answer
-      // itself, the day at a glance, their note, and their name to close.
-      message: (name, answer, note, yes) => [
+      // itself, the day at a glance, their note, and their name to close. A guest with more than one
+      // seat kept for them answers as "we".
+      message: (name, answer, note, yes, we) => [
         '💌 Dear Naveen & Dulanjani,',
-        yes ? 'I am so happy to say yes. I will be there to celebrate with you both! 🥂'
-            : 'Thank you so much for inviting me. I am sorry I will not be able to be there, but my love and best wishes are with you both. 🤍',
+        we ? (yes ? 'We are so happy to say yes. We will be there to celebrate with you both! 🥂'
+                  : 'Thank you so much for inviting us. We are sorry we will not be able to be there, but our love and best wishes are with you both. 🤍')
+           : (yes ? 'I am so happy to say yes. I will be there to celebrate with you both! 🥂'
+                  : 'Thank you so much for inviting me. I am sorry I will not be able to be there, but my love and best wishes are with you both. 🤍'),
         `${yes ? '✅' : '🙏'} ${answer}`,
         '💍 The wedding of Naveen & Dulanjani\n📅 Monday, 7 December 2026\n⏰ Poruwa ceremony at 9.30 am\n📍 Centrium Ballroom, Avenra Gardens, Negombo',
         note && `💬 “${note}”`,
@@ -91,10 +94,12 @@
       venueReal: 'සැබෑ ස්ථානය බලන්න',
       venueSketch: 'සිතුවම වෙත ආපසු',
       nameMissing: 'කරුණාකර ඔබගේ නම ඇතුළත් කරන්න.',
-      message: (name, answer, note, yes) => [
+      message: (name, answer, note, yes, we) => [
         '💌 ආදරණීය නවීන් සහ දුලංජනී,',
-        yes ? `ඔබ දෙදෙනාගේ විවාහ මංගල්${J}යය සමරන්නට මා ඉතා සතුටින් පැමිණෙමි! 🥂`
-            : 'ආරාධනාවට බොහෝම ස්තූතියි. පැමිණීමට නොහැකි වීම ගැන කණගාටුයි, නමුත් මගේ ආදරය සහ සුබ පැතුම් සැමදා ඔබ දෙදෙනා සමඟයි. 🤍',
+        we ? (yes ? `ඔබ දෙදෙනාගේ විවාහ මංගල්${J}යය සමරන්නට අපි ඉතා සතුටින් පැමිණෙන්නෙමු! 🥂`
+                  : 'ආරාධනාවට බොහෝම ස්තූතියි. පැමිණීමට නොහැකි වීම ගැන අපි කණගාටු වෙමු, නමුත් අපගේ ආදරය සහ සුබ පැතුම් සැමදා ඔබ දෙදෙනා සමඟයි. 🤍')
+           : (yes ? `ඔබ දෙදෙනාගේ විවාහ මංගල්${J}යය සමරන්නට මා ඉතා සතුටින් පැමිණෙමි! 🥂`
+                  : 'ආරාධනාවට බොහෝම ස්තූතියි. පැමිණීමට නොහැකි වීම ගැන කණගාටුයි, නමුත් මගේ ආදරය සහ සුබ පැතුම් සැමදා ඔබ දෙදෙනා සමඟයි. 🤍'),
         `${yes ? '✅' : '🙏'} ${answer}`,
         `💍 නවීන් සහ දුලංජනීගේ විවාහ මංගල්${J}යය\n📅 2026 දෙසැම්බර් 7, සඳුදා\n⏰ පෝරුව චාරිත්${J}රය පෙ.ව. 9.30\n📍 සෙන්ට්${J}රියම් බෝල් රූම්, ඇවෙන්රා ගාර්ඩ්න්ස්, මීගමුව`,
         note && `💬 “${note}”`,
