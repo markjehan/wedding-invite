@@ -83,3 +83,6 @@
 
 # GitHub site watcher (not part of the site)
 .github
+
+# The keepsake film for the couple (not part of the site)
+/keepsake/

@@ -39,3 +39,6 @@ dist/
 
 # Quick-tunnel log from share.py links
 tunnel.log
+
+# The keepsake film itself: too large for GitHub, kept on this computer
+keepsake/*.mp4

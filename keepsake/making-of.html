@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The making of the invitation</title>
+<!-- The drawn scenes of the keepsake film for Naveen & Dulanjani: the title, the making of the
+     invitation, the card between the two languages, and the closing. Open with ?scene=making,
+     ?scene=sinhala or ?scene=closing. Laid out for a 360 x 640 window (filmed at three times that).
+     Every movement is a CSS animation counted from the moment the page loads, on a 2.4 second bar,
+     the tempo of the invitation's own music. -->
+<style>
+@font-face{font-family:Italiana;src:url('../assets/fonts/italiana-regular.ttf')}
+@font-face{font-family:Manrope;src:url('../assets/fonts/manrope-regular.ttf')}
+@font-face{font-family:Script;src:url('../assets/fonts/pinyon-script.ttf')}
+@font-face{font-family:Hand;src:url('../assets/fonts/greatvibes.ttf')}
+@font-face{font-family:SinhalaSerif;src:url('../assets/fonts/noto-serif-sinhala-light.woff')}
+@font-face{font-family:SinhalaScript;src:url('../assets/fonts/sinhala-script.woff')}
+:root{--gold:#ae8d55;--deep:#6d5228;--ink:#5b4a30;--paper:#f7f2e8}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:360px;height:640px;overflow:hidden;background:var(--paper)}
+body{font-family:Manrope,sans-serif;color:var(--ink);position:relative}
+body::before{content:"";position:absolute;inset:0;background:url('../assets/magnolia-suite/paper-plain.webp') center/cover;opacity:.9}
+body::after{content:"";position:absolute;inset:14px;border:1px solid rgba(174,141,85,.38);pointer-events:none}
+.film{display:none}
+body[data-scene=making] .film.making,body[data-scene=sinhala] .film.sinhala,body[data-scene=closing] .film.closing{display:block}
+
+/* A scene is on stage from --in to --out (seconds). */
+.s{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 34px;opacity:0;
+  animation:in .7s calc(var(--in)*1s) cubic-bezier(.2,.7,.2,1) both,out .5s calc(var(--out)*1s - .5s) ease-in forwards}
+.s.stay{animation:in .7s calc(var(--in)*1s) cubic-bezier(.2,.7,.2,1) both}
+@keyframes in{from{opacity:0}to{opacity:1}}
+@keyframes out{from{opacity:1}to{opacity:0}}
+/* A part of a scene arrives --d seconds after the scene does. */
+.up{opacity:0;animation:up .9s calc((var(--in) + var(--d,0))*1s) cubic-bezier(.16,1,.3,1) both}
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.pop{opacity:0;animation:pop .9s calc((var(--in) + var(--d,0))*1s) cubic-bezier(.16,1,.3,1) both}
+@keyframes pop{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:none}}
+
+.eyebrow{font-family:Manrope;font-size:9.5px;letter-spacing:.34em;text-transform:uppercase;color:var(--gold)}
+.script{font-family:Script,cursive;color:var(--deep);line-height:1.05}
+.serif{font-family:Italiana,serif;color:var(--ink)}
+.rule{width:56px;height:1px;background:var(--gold);margin:18px auto;transform-origin:center;animation:draw 1s calc((var(--in) + var(--d,0))*1s) cubic-bezier(.3,.7,.2,1) both}
+@keyframes draw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.crest{width:118px;height:118px;margin-bottom:22px}
+.caption{font-family:Italiana,serif;font-size:22px;line-height:1.25;margin-top:26px;color:var(--ink)}
+.count{font-family:Manrope;font-size:9.5px;letter-spacing:.34em;color:var(--gold);margin-bottom:22px}
+
+/* The editor: the first lines, typed. */
+.editor{width:292px;border-radius:10px;background:#2f2619;box-shadow:0 18px 40px rgba(70,48,16,.28);text-align:left;overflow:hidden}
+.editor header{display:flex;gap:6px;align-items:center;padding:11px 13px;border-bottom:1px solid rgba(255,255,255,.07)}
+.editor header i{width:8px;height:8px;border-radius:50%;background:#6d5a3c}
+.editor header span{margin-left:8px;font:9.5px Manrope;letter-spacing:.08em;color:#b9a47c}
+.editor pre{padding:14px 14px 18px;font:10.5px/1.75 ui-monospace,Consolas,Menlo,monospace;color:#eadfc8;white-space:pre}
+.editor .l{display:inline-block;vertical-align:top;width:max-content;clip-path:inset(0 100% 0 0);animation:type calc(var(--n)*.045s) calc((var(--in) + var(--t))*1s) steps(var(--n)) forwards}
+@keyframes type{to{clip-path:inset(0 0 0 0)}}
+.editor .k{color:#d9b877}.editor .v{color:#f3e9d2}.editor .c{color:#8e7b58}
+
+/* The pieces. */
+.piece{width:206px;height:274px;border-radius:6px;overflow:hidden;box-shadow:0 16px 36px rgba(70,48,16,.22);background:#fbf7ee;display:flex;align-items:center;justify-content:center;position:relative}
+.piece img{width:100%;height:100%;object-fit:cover;display:block}
+.piece.plain{box-shadow:none;background:none;overflow:visible}
+.zoom img{animation:zoom 2.6s calc(var(--in)*1s) ease-out both}
+@keyframes zoom{from{transform:scale(1.12)}to{transform:scale(1)}}
+.sketch img{object-fit:contain;clip-path:inset(0 0 100% 0);animation:sketch 1.9s calc((var(--in) + .2)*1s) cubic-bezier(.4,0,.3,1) forwards}
+@keyframes sketch{to{clip-path:inset(0 0 0 0)}}
+.ring{width:190px;height:190px}
+.ring circle{fill:none;stroke:var(--gold);stroke-width:1.2;stroke-linecap:round;stroke-dasharray:600;stroke-dashoffset:600;transform:rotate(-90deg);transform-origin:center;animation:ring 1.5s calc(var(--in)*1s) cubic-bezier(.4,0,.2,1) forwards}
+@keyframes ring{to{stroke-dashoffset:0}}
+.ring-wrap{position:relative;width:190px;height:190px}
+.ring-wrap img{position:absolute;inset:14px;width:162px;height:162px}
+.tongues p{font-size:44px;line-height:1.2}
+.tongues .si{font-family:SinhalaSerif,serif;font-size:38px;color:var(--deep)}
+.dear{font-family:Italiana,serif;font-size:30px;display:flex;align-items:flex-end;gap:10px;color:var(--ink)}
+.dear b{font-family:Hand,cursive;font-weight:400;font-size:40px;color:var(--deep);line-height:.9;clip-path:inset(-10px 100% -10px 0);animation:write 1.1s calc((var(--in) + .5)*1s) cubic-bezier(.4,0,.3,1) forwards}
+@keyframes write{to{clip-path:inset(-10px -6px -10px 0)}}
+
+.stats{display:flex;flex-direction:column;gap:20px}
+.stat b{display:block;font-family:Italiana,serif;font-weight:400;font-size:46px;line-height:1;color:var(--deep)}
+.stat span{font-size:9.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold)}
+
+.portrait{width:196px;margin-bottom:14px}
+.closing .script{font-size:37px}
+.small{font-size:11.5px;line-height:1.7;letter-spacing:.04em;color:var(--ink)}
+</style>
+</head>
+<body>
+<script>document.body.dataset.scene=new URLSearchParams(location.search).get('scene')||'making'</script>
+
+<!-- ───────── The making of: 12 bars, 28.8 seconds ───────── -->
+<div class="film making">
+
+  <section class="s" style="--in:.2;--out:4.8">
+    <img class="crest pop" style="--d:.1" src="../assets/logo/nd-monogram.svg" alt="">
+    <p class="eyebrow up" style="--d:.7">A keepsake for</p>
+    <p class="script up" style="--d:1.1;font-size:50px;margin-top:16px;line-height:.92">Naveen<span style="display:block;font-size:.5em;line-height:1;margin:-2px 0 0">&amp;</span>Dulanjani</p>
+    <div class="rule" style="--d:1.7"></div>
+    <p class="serif up" style="--d:2;font-size:19px;line-height:1.35">How your wedding invitation<br>came to life</p>
+  </section>
+
+  <section class="s" style="--in:4.8;--out:12">
+    <p class="eyebrow up" style="--d:.1;margin-bottom:22px">11 September 2026</p>
+    <div class="editor pop" style="--d:.2">
+      <header><i></i><i></i><i></i><span>invitation.html</span></header>
+<pre><span class="l c" style="--n:28;--t:.9">&lt;!-- for two dear friends --&gt;</span>
+<span class="l" style="--n:7;--t:2.2"><span class="k">&lt;title&gt;</span></span>
+<span class="l v" style="--n:38;--t:2.6">  The Wedding of Naveen &amp; Dulanjani</span>
+<span class="l" style="--n:8;--t:4.2"><span class="k">&lt;/title&gt;</span></span>
+<span class="l" style="--n:1;--t:4.5"> </span>
+<span class="l" style="--n:34;--t:4.7"><span class="k">const</span> day = <span class="v">'7 December 2026'</span>;</span>
+<span class="l" style="--n:13;--t:5.9"><span class="k">doors</span>.open();</span></pre>
+    </div>
+    <p class="caption up" style="--d:1">It began with a single line.</p>
+  </section>
+
+  <section class="s" style="--in:12;--out:14.4">
+    <p class="count up">01</p>
+    <div class="piece zoom pop"><img src="../assets/magnolia-suite/doors.webp" alt=""></div>
+    <p class="caption up" style="--d:.3">Doors that open<br>onto a garden</p>
+  </section>
+
+  <section class="s" style="--in:14.4;--out:16.8">
+    <p class="count up">02</p>
+    <div class="ring-wrap"><svg class="ring" viewBox="0 0 190 190"><circle cx="95" cy="95" r="93"/></svg><img class="pop" style="--d:.5" src="../assets/logo/nd-monogram-compact.svg" alt=""></div>
+    <p class="caption up" style="--d:.3">A monogram<br>of your own</p>
+  </section>
+
+  <section class="s" style="--in:16.8;--out:19.2">
+    <p class="count up">03</p>
+    <div class="piece plain sketch"><img src="../assets/couple/couple-drawing-62650de152.webp" alt=""></div>
+    <p class="caption up" style="--d:.3">Your portrait,<br>drawn line by line</p>
+  </section>
+
+  <section class="s" style="--in:19.2;--out:21.6">
+    <p class="count up">04</p>
+    <div class="tongues">
+      <p class="serif up" style="--d:.15">Welcome</p>
+      <div class="rule" style="--d:.4;margin:10px auto"></div>
+      <p class="si up" style="--d:.6">ආයුබෝවන්</p>
+    </div>
+    <p class="caption up" style="--d:.3">Written in English<br>and in <span style="font-family:SinhalaSerif;font-size:.9em">සිංහල</span></p>
+  </section>
+
+  <section class="s" style="--in:21.6;--out:24">
+    <p class="count up">05</p>
+    <p class="dear up" style="--d:.1">Dear <b>you,</b></p>
+    <p class="caption up" style="--d:.3;margin-top:40px">Every guest<br>greeted by name</p>
+  </section>
+
+  <section class="s" style="--in:24;--out:27">
+    <div class="stats">
+      <p class="stat up" style="--d:.1"><b>61</b><span>days in the making</span></p>
+      <p class="stat up" style="--d:.5"><b>103</b><span>versions saved</span></p>
+      <p class="stat up" style="--d:.9"><b>2</b><span>languages</span></p>
+      <p class="stat up" style="--d:1.3"><b>1</b><span>wedding</span></p>
+    </div>
+  </section>
+
+  <section class="s stay" style="--in:27">
+    <p class="serif up" style="--d:.1;font-size:27px;line-height:1.3">And then,<br>it was ready.</p>
+    <div class="rule" style="--d:.5"></div>
+    <p class="eyebrow up" style="--d:.8">Your invitation · English</p>
+  </section>
+</div>
+
+<!-- ───────── Between the two languages: 2 bars ───────── -->
+<div class="film sinhala">
+  <section class="s stay" style="--in:.1">
+    <p class="eyebrow up" style="--d:.1">And once more, in</p>
+    <p class="up" style="--d:.5;font-family:SinhalaSerif,serif;font-size:58px;color:var(--deep);margin-top:16px;line-height:1.2">සිංහල</p>
+    <div class="rule" style="--d:.9"></div>
+    <p class="eyebrow up" style="--d:1.2">Your invitation · Sinhala</p>
+  </section>
+</div>
+
+<!-- ───────── The closing: 5 bars, 12 seconds ───────── -->
+<div class="film closing">
+  <section class="s stay" style="--in:.2">
+    <img class="portrait up" style="--d:.2" src="../assets/couple/couple-drawing-62650de152.webp" alt="">
+    <p class="script up" style="--d:1.2;white-space:nowrap">Naveen <span style="font-size:.6em">&amp;</span> Dulanjani</p>
+    <div class="rule" style="--d:1.8;margin:14px auto"></div>
+    <p class="eyebrow up" style="--d:2.2">Monday · 7 December 2026</p>
+    <p class="small up" style="--d:2.6;margin-top:8px">Centrium Ballroom, Avenra Gardens, Negombo</p>
+    <p class="serif up" style="--d:4.4;font-size:17px;line-height:1.45;margin-top:26px">May you open this years from now,<br>and smile.</p>
+    <p class="small up" style="--d:6.2;margin-top:18px;color:var(--gold);letter-spacing:.14em">Made with love, by Ashan and Mark</p>
+  </section>
+</div>
+</body>
+</html>
