@@ -227,6 +227,13 @@ main{overflow-x:clip}
    shadow that set it apart is left off, and its width is given in so many words rather than worked
    out from its height, which iPhones before iOS 15 could not do and drew as nothing at all. */
 :root[data-ios] .door-leaf .seal-half{width:33.38%;transform:translateZ(2px);filter:none}
+/* Raising it was not enough on a real iPhone: the seal was still not there. So on iPhones the seal
+   no longer depends on the swinging leaves at all. The round button the guest presses stands flat in
+   front of the whole scene, exactly over the place the two halves meet, and an iPhone has always
+   drawn it - its ring was the one thing left showing. The whole seal is drawn on that button, so it
+   is there on every iPhone whatever its version makes of the doors' depth. When the seal is pressed
+   the button fades as it always did, and the doors open from under it. */
+:root[data-ios] .seal-press::before{content:'';position:absolute;inset:0;border-radius:50%;background:url('assets/materials/brass-seal-monogram-512.webp') center/100% 100% no-repeat;filter:drop-shadow(0 4px 7px #3a2a1245)}
 /* The same again by the engine's own mark, for an iPhone browser that hides its name. */
 @supports(-webkit-touch-callout:none){
   html,body{touch-action:manipulation}
