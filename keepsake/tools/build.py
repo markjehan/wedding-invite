@@ -53,9 +53,9 @@ for i in range(1, len(pieces)):
     else: fc.append(f'[{last}][n{i}]concat=n=2:v=1:a=0,fps={FPS},settb=AVTB[x{i}]'); acc += d
     last = f'x{i}'
 total = acc
-fc.append(f'[{last}]fade=t=in:d=0.6,fade=t=out:st={total - 1.4:.3f}:d=1.4,format=yuv420p[vout]')
-k = len(pieces); cmd += ['-i', music]
-fc.append(f'[{k}:a]atrim=0:{total:.3f},volume=10dB,alimiter=limit=0.9,afade=t=in:d=1,afade=t=out:st={total - 3:.3f}:d=3[aout]')
+fc.append(f'[{last}]fade=t=in:d=0.6,fade=t=out:st={total - 2:.3f}:d=2,format=yuv420p[vout]')
+k = len(pieces); cmd += ['-i', music, '-stream_loop', '-1', '-ss', '60', '-t', '38.4', '-i', music]
+fc.append(f'[{k}:a]atrim=0:98.4,asetpts=PTS-STARTPTS[a0];[{k + 1}:a]atrim=0:{max(1, total - 98.4 + 1):.2f},asetpts=PTS-STARTPTS[a1];[a0][a1]concat=n=2:v=0:a=1,atrim=0:{total:.3f},volume=10dB,alimiter=limit=0.9,afade=t=in:d=1,afade=t=out:st={total - 3.5:.3f}:d=3.5[aout]')
 cmd += ['-filter_complex', ';'.join(fc), '-map', '[vout]', '-map', '[aout]', '-c:v', 'libx264', '-preset', 'slow', '-crf', '17', '-pix_fmt', 'yuv420p', '-color_range', 'tv', '-colorspace', 'bt709', '-r', str(FPS),
         '-c:a', 'aac', '-b:a', '192k', '-movflags', '+faststart', '-metadata', 'title=Naveen & Dulanjani: how your wedding invitation came to life', out]
 run(cmd)

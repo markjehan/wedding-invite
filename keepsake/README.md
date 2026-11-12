@@ -16,7 +16,7 @@ what Mark has asked for, and what is still not right.
 
 ## 1. The story the film tells
 
-About 1 minute 47 seconds in all. Mark's limit is 2 minutes.
+About 1 minute 51 seconds in all. Mark's limit is 2 minutes.
 
 | Part | About | What is on screen |
 |---|---|---|
@@ -132,7 +132,7 @@ Everything is made from web pages, filmed one frame at a time, and joined with f
 
 **Order of work**
 
-1. `node scene.cjs making mk 54` and `node scene.cjs closing cl 16.8`
+1. `node scene.cjs making mk 54` and `node scene.cjs closing cl 21`
 2. Start Chrome as in section 3, then `CDP=http://127.0.0.1:9333 node rec.cjs en en`; start Chrome again, then the same with `si si`
 3. `node tag.cjs`
 4. `python build.py …` then make the WhatsApp copy:
