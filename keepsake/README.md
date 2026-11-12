@@ -16,7 +16,7 @@ what Mark has asked for, and what is still not right.
 
 ## 1. The story the film tells
 
-About 1 minute 51 seconds in all. Mark's limit is 2 minutes.
+About 2 minutes in all. Mark's limit is 2 minutes.
 
 | Part | About | What is on screen |
 |---|---|---|
@@ -107,8 +107,10 @@ Without `CDP` set, `rec.cjs` falls back to WebKit; do not use that for the invit
 
 Other known gaps:
 
-- The 30-odd second showing is still a cut-down: nine stretches of the walk-through, some played at
-  1.4 to 2 times speed, joined with dissolves. The cut list is `pieces` in `tools/build.py`.
+- The English invitation is one unbroken take made for the film (`SHOW=1 CDP=… node rec.cjs en en`).
+  Scrolls play at true speed; only the still moments (names, portrait, venue being drawn) are sped up,
+  3.6 times. Mark asked for this: wait for both names, wait for the whole venue, smooth movement.
+- The film is right at Mark's 2-minute limit. Anything added must be paid for by trimming elsewhere.
 - The title, desk and ending scenes (`film.html`) are still filmed in WebKit. They look right there.
 - The reply form is not shown. The plain address has none, only a note; a guest's own link has it.
 - The couple's page on the monitor and on Naveen's phone is a drawing with made-up rows. The real

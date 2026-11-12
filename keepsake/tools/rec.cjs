@@ -98,6 +98,30 @@ fs.mkdirSync(out, { recursive: true });
     if (!done) { console.log('foil not cleared by the strokes; revealing by key'); await p.evaluate(() => document.querySelector('#scratch').dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }))); }
     for (let i = 0; i < 8; i++) { await finger(x, y, 1 - (i + 1) / 8); await frame(); }
   }
+  // SHOW=1: the take made for the film. One unbroken walk through the invitation: every scroll is
+  // filmed to be played at its true speed, and only the still moments (while something is being
+  // written or drawn) are marked to be played faster. marks.segs lists [first frame, last frame, speed].
+  const segs = [];
+  const part = async (speed, fn) => { const from = n; await fn(); segs.push([from, n, speed]); };
+  if (process.env.SHOW) {
+    await frames(1.2);
+    await tap(`.gate-choice[data-language="${lang}"]`);
+    await frames(3.2);
+    await part(1, async () => { await frames(.4); await tap('#open-doors'); await p.mouse.move(2, 2); await frames(5.2); });
+    await part(3, () => frames(lang === 'en' ? 12.4 : 15));                    // the monogram, then both names written out in full
+    await part(1, async () => { await frames(.5); await to('#couple-drawing', -70, 2.4); });
+    await part(3, () => frames(7.6));                                          // the portrait, drawn to the end
+    await part(1, async () => { await frames(.4); await to('.letter-label', -60, 1.9); await frames(1.2); await to('#print-stack', -110, 1.9); await frames(2.5); await to('#date-title', -90, 1.9); await frames(.4); });
+    await part(1.5, () => scratchFoil());
+    await part(1, async () => { await frames(1.6); await to('#venue-title', -110, 2.3); });
+    await part(3, () => frames(9));                                            // the venue, drawn to the end
+    await part(1, async () => { await frames(1); await to('#agenda-title', -80, 2.3); await to('.timeline li:last-child', -300, 2.8); await to('footer.closing', 9999, 3.2); });
+    await part(1.5, () => frames(3.4));
+    marks.segs = segs; marks.end = n / FPS;
+    fs.writeFileSync(`${out}/marks.json`, JSON.stringify(marks));
+    console.log('done', n, 'frames', JSON.stringify(segs));
+    await c.close(); process.exit(0);
+  }
   try {
     await frames(lang === 'en' ? 2.0 : 1.4);
     await tap(`.gate-choice[data-language="${lang}"]`);
@@ -106,7 +130,7 @@ fs.mkdirSync(out, { recursive: true });
     await tap('#open-doors');
     mark('seal');
     await p.mouse.move(2, 2);   // a resting mouse over the photographs would hold them still
-    await frames(lang === 'en' ? 13.4 : 15.8);
+    await frames(lang === 'en' ? 17 : 19.5);
     mark('scroll');
     await to('#invitation', 0, 1.8); await rest(1.4);
     await to('#couple-drawing', -70, 1.5); await frames(7.4);

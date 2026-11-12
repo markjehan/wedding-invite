@@ -26,22 +26,13 @@ def seg(name, d, start, end, speed=1.0, tag=False):
     return path
 
 en = json.load(open(os.path.join(S, 'en', 'marks.json'))); si = json.load(open(os.path.join(S, 'si', 'marks.json')))
-seal, sc, date, venue, agenda, closing = en['seal'], en['scroll'], en['date'], en['venue'], en['agenda'], en['closing']
 # (piece, dissolve into it in seconds; 0 = a straight continuation)
 pieces = [
     (seg('mk', 'mk', 0, count('mk') / FPS), 0),
-    (seg('e1', 'en', seal - 1.0, seal + 5.2), .6),                 # the seal, the doors, walking in
-    (seg('e2', 'en', seal + 5.2, sc - .2, 2.0), 0),                # the monogram and their names, written
-    (seg('e3', 'en', sc + .6, sc + 11.5, 2.0), .4),                # the quotation and their portrait, drawn
-    (seg('e4', 'en', sc + 11.9, sc + 15.3, 1.4), .4),              # the letter
-    (seg('e5', 'en', sc + 17.3, sc + 22.4, 1.5), .4),              # the photographs
-    (seg('e6', 'en', date + 2.3, date + 8.0, 1.5), .4),            # the gold foil, scratched
-    (seg('e7', 'en', venue + 1.6, venue + 8.6, 1.8), .4),          # the venue, drawn
-    (seg('e8', 'en', agenda + 2.6, agenda + 6.9, 1.4), .4),        # the programme
-    (seg('e9', 'en', closing + .8, en['end'] - .1, 1.5), .4),      # the closing
-    (seg('s1', 'si', si['seal'] + 8.6, si['scroll'] - .3, 2.5, tag=True), .5),   # Sinhala: the names
-    (seg('s2', 'si', si['scroll'] + 11.9, si['scroll'] + 15.3, 1.6, tag=True), .4),  # Sinhala: the letter
-    (seg('cl', 'cl', 0, count('cl') / FPS), .6),
+    # the English invitation: one unbroken take; scrolls at true speed, still moments faster
+    *[(seg(f'e{i}', 'en', f0 / FPS, f1 / FPS, 3.6 if sp == 3 else sp), .6 if i == 0 else 0) for i, (f0, f1, sp) in enumerate(en['segs'])],
+    (seg('s1', 'si', si['scroll'] - 8.5, si['scroll'] - .2, 2.5, tag=True), .6),   # Sinhala: the names
+    (seg('cl', 'cl', 0, count('cl') / FPS - 1.8), .6),
 ]
 cmd = ['ffmpeg', '-y', '-v', 'error']; fc = []
 for p, _ in pieces: cmd += ['-i', p]
