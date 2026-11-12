@@ -30,9 +30,9 @@ en = json.load(open(os.path.join(S, 'en', 'marks.json'))); si = json.load(open(o
 pieces = [
     (seg('mk', 'mk', 0, count('mk') / FPS), 0),
     # the English invitation: one unbroken take; scrolls at true speed, still moments faster
-    *[(seg(f'e{i}', 'en', f0 / FPS, f1 / FPS, 3.6 if sp == 3 else sp), .6 if i == 0 else 0) for i, (f0, f1, sp) in enumerate(en['segs'])],
+    *[(seg(f'e{i}', 'en', f0 / FPS, f1 / FPS, 4 if sp == 3 else sp), .6 if i == 0 else 0) for i, (f0, f1, sp) in enumerate(en['segs'])],
     (seg('s1', 'si', si['scroll'] - 8.5, si['scroll'] - .2, 2.5, tag=True), .6),   # Sinhala: the names
-    (seg('cl', 'cl', 0, count('cl') / FPS - 1.8), .6),
+    (seg('cl', 'cl', 0, count('cl') / FPS - 2.2), .6),
 ]
 cmd = ['ffmpeg', '-y', '-v', 'error']; fc = []
 for p, _ in pieces: cmd += ['-i', p]

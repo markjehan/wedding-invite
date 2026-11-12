@@ -110,7 +110,7 @@ fs.mkdirSync(out, { recursive: true });
     await part(1, async () => { await frames(.4); await tap('#open-doors'); await p.mouse.move(2, 2); await frames(5.2); });
     await part(3, () => frames(lang === 'en' ? 12.4 : 15));                    // the monogram, then both names written out in full
     await part(1, async () => { await frames(.5); await to('#couple-drawing', -70, 2.4); });
-    await part(3, () => frames(7.6));                                          // the portrait, drawn to the end
+    await part(3, () => frames(13));                                           // the portrait, drawn to the end
     await part(1, async () => { await frames(.4); await to('.letter-label', -60, 1.9); await frames(1.2); await to('#print-stack', -110, 1.9); await frames(2.5); await to('#date-title', -90, 1.9); await frames(.4); });
     await part(1.5, () => scratchFoil());
     await part(1, async () => { await frames(1.6); await to('#venue-title', -110, 2.3); });
