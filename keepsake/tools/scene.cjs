@@ -9,7 +9,13 @@ fs.mkdirSync(out, { recursive: true });
   const START = Date.parse('2026-11-12T09:00:00+05:30');
   await c.clock.install({ time: START });
   const p = await c.newPage();
-  const url = 'http://127.0.0.1:4173/keepsake/film.html?scene=' + scene;
+  // No local server: the film's own page is handed to the browser as if it sat on the official site,
+  // so every picture and font it uses is fetched from naveenwedsdulanjani.com itself. Only the two
+  // small monogram drawings, which the site does not publish as files, come from the project folder.
+  const ROOT = 'C:/Users/markj/Desktop/NW/';
+  await c.route('**/keepsake/film.html*', r => r.fulfill({ path: ROOT + 'keepsake/film.html', contentType: 'text/html; charset=utf-8' }));
+  await c.route('**/assets/logo/*.svg', r => r.fulfill({ path: ROOT + 'assets/logo/' + new URL(r.request().url()).pathname.split('/').pop(), contentType: 'image/svg+xml' }));
+  const url = 'https://naveenwedsdulanjani.com/keepsake/film.html?scene=' + scene;
   await p.goto(url); await new Promise(r => setTimeout(r, 2500));
   await p.clock.pauseAt(START + 60000);
   await p.goto(url);

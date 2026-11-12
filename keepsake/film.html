@@ -56,6 +56,12 @@ body[data-scene=making] .film.making,body[data-scene=closing] .film.closing,body
 /* Ashan speaks from the phone; the bubble's corner points down at it. */
 .bubble.ashan{border-radius:16px 16px 4px 16px;translate:min(calc(336px - 100%),calc(var(--px)*1px - 62%)) calc(var(--py)*1px - 100% - 34px)}
 .bubble.ashan::before{content:"Ashan";display:block;font:8px Manrope;letter-spacing:.24em;text-transform:uppercase;color:#1f9d55;margin-bottom:3px}
+.bubble.naveen{border-radius:16px 16px 4px 16px;translate:min(calc(336px - 100%),calc(var(--px)*1px - 62%)) calc(var(--py)*1px - 100% - 34px)}
+.bubble.naveen::before{content:"Naveen";display:block;font:8px Manrope;letter-spacing:.24em;text-transform:uppercase;color:#b0703a;margin-bottom:3px}
+.bubble.hi{translate:min(calc(336px - 100%),calc(var(--px)*1px - 62%)) calc(var(--py)*1px - 100% - 104px)}
+/* Mark speaks: beside his head, like his thoughts but without the little circles. */
+.bubble.mark{border-radius:16px 16px 16px 4px;translate:max(24px,calc(var(--hx)*1px - 100% - 10px)) calc(var(--hy)*1px - 100% - 16px)}
+.bubble.mark::before{content:"Mark";display:block;font:8px Manrope;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-bottom:3px}
 /* Mark thinks; the little circles lead down to his head. */
 .bubble.think{border-radius:20px;translate:max(24px,calc(var(--hx)*1px - 100% - 16px)) calc(var(--hy)*1px - 100% - 22px)}
 .bubble.think i{position:absolute;background:#fffdf7;border:1px solid rgba(174,141,85,.6);border-radius:50%;width:11px;height:11px;right:-4px;bottom:-12px}
@@ -81,6 +87,66 @@ body[data-scene=making] .film.making,body[data-scene=closing] .film.closing,body
 .term .ok{color:#9fd8a8}
 .note{position:absolute;left:0;right:0;top:566px;text-align:center;font-family:Italiana,serif;font-size:19px;color:var(--ink)}
 
+/* Cut scenes: a phone held up against the paper, hiding the desk for a moment. */
+.cut{background:var(--paper) url('../assets/magnolia-suite/paper-plain.webp') center/cover;z-index:3}
+.handset{width:214px;height:412px;border-radius:32px;background:#1d1710;padding:7px;box-shadow:0 22px 44px rgba(70,48,16,.3)}
+.handset>div{height:100%;border-radius:26px;overflow:hidden;text-align:left}
+.chat{background:#efe7dd;display:flex;flex-direction:column}
+.chat header{background:#0d5c4f;color:#fff;padding:22px 12px 9px;display:flex;align-items:center;gap:8px;font-size:12px}
+.chat header .face{width:26px;height:26px;border-radius:50%;background:linear-gradient(145deg,#d8bd86,#a5834a);display:flex;align-items:center;justify-content:center;font:15px Italiana,serif}
+.chat header b{font-weight:600}.chat header small{font-size:8.5px;color:#bfe3d6;margin-left:-2px}
+.msgs{flex:1;padding:10px 9px;display:flex;flex-direction:column;gap:8px}
+.msg{max-width:82%;border-radius:10px;padding:4px 4px 3px;font-size:10.5px;line-height:1.35;color:#1f2a25;box-shadow:0 1px 1px rgba(0,0,0,.12)}
+.msg.out{align-self:flex-end;background:#d9fdd3;transform-origin:100% 100%}
+.msg.in{align-self:flex-start;background:#fff;transform-origin:0 100%}
+.msg p{padding:3px 5px 0}.msg time{display:block;text-align:right;font-size:7.5px;color:#667781;padding:0 4px}
+.meme{position:relative;display:block;border-radius:7px;overflow:hidden;width:150px;height:186px}
+.meme img{width:100%;height:100%;object-fit:cover;object-position:50% 30%;display:block}
+.card-pic{display:block;width:138px;border-radius:7px}
+.meme em{position:absolute;left:0;right:0;top:6px;text-align:center;font:800 11.5px/1.1 Manrope,sans-serif;font-style:normal;text-transform:uppercase;letter-spacing:.02em;color:#fff;text-shadow:0 0 3px #000,0 1px 2px #000,0 0 6px rgba(0,0,0,.7)}
+.meme em+em{top:auto;bottom:7px}
+.admin{background:#f7f2e8;padding:26px 12px 0}
+.admin small{font-size:8px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold)}
+.admin h3{font:400 27px Italiana,serif;color:var(--ink);margin:2px 0 10px}
+.admin ol{list-style:none;display:flex;flex-direction:column;gap:7px}
+.admin li{display:flex;align-items:center;gap:8px;background:#fffdf7;border:1px solid #e3d6ba;border-radius:10px;padding:8px 8px}
+.admin li i{width:22px;height:22px;border-radius:50%;background:linear-gradient(145deg,#d8bd86,#a5834a);flex:none}
+.admin li b{flex:1;font:400 13px Italiana,serif;color:var(--ink);white-space:nowrap}
+.admin li span{position:relative;width:66px;height:22px;flex:none}
+.admin li u{position:absolute;inset:0;border-radius:11px;text-decoration:none;font-size:8.5px;display:flex;align-items:center;justify-content:center;white-space:nowrap}
+/* each row: Send (pressed) -> Sent -> what came back */
+.admin li u:nth-child(1){background:#25d366;color:#fff;animation:press .5s calc((var(--in) + 1 + var(--r)*.38)*1s) ease-in-out both,out .2s calc((var(--in) + 1.4 + var(--r)*.38)*1s) forwards}
+.admin li u:nth-child(2){background:#f3e7cc;color:#8a6a36;opacity:0;animation:in .2s calc((var(--in) + 1.45 + var(--r)*.38)*1s) forwards,out .25s calc((var(--in) + 3.1 + var(--r)*.2)*1s) forwards}
+.admin li u:nth-child(3){background:#dcefdc;color:#2f7d43;opacity:0;animation:in .25s calc((var(--in) + 3.2 + var(--r)*.2)*1s) forwards}
+@keyframes press{0%,100%{transform:scale(1)}50%{transform:scale(.86)}}
+
+/* The opening cut scenes: a smaller phone, a call screen, and what is said beneath it. */
+.handset.sm{width:176px;height:338px;border-radius:28px;padding:6px}
+.handset.sm>div{border-radius:22px}
+.handset>.callscr{background:linear-gradient(170deg,#12463d,#0a2a25 70%);color:#fff;display:flex;flex-direction:column;align-items:center;padding-top:24px;text-align:center;position:relative}
+.callscr small{font-size:8px;letter-spacing:.08em;color:#a9d6c8}
+.faces{display:flex;gap:8px;margin-top:30px}
+.who{position:relative;width:66px;height:66px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:34px Italiana,serif;color:#fffaf0;background:linear-gradient(145deg,#d8bd86,#a5834a)}
+.faces .who:not(:only-child){width:46px;height:46px;font-size:24px}
+.who.n{background:linear-gradient(145deg,#c9895a,#8a5230)}.who.m{background:linear-gradient(145deg,#8a6a36,#4f3a1a)}
+.who.ringing{animation:none;opacity:1}
+.who.ringing::before,.who.ringing::after{content:"";position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(120,230,170,.75);animation:ringout 1.2s calc(var(--in)*1s) ease-out infinite}
+.who.ringing::after{animation-delay:calc(var(--in)*1s + .6s)}
+.callscr h3{font:400 28px Italiana,serif;margin-top:14px;white-space:nowrap}
+.callscr .status{position:relative;width:100%;height:16px;margin-top:4px;font-size:10px;color:#bfe3d6}
+.callscr .status span{position:absolute;inset:0}
+.callscr .ringing{animation:out .3s calc((var(--in) + 1.2)*1s) forwards}
+.callscr .talking{opacity:0;animation:in .3s calc((var(--in) + 1.3)*1s) forwards}
+.callscr .keys{position:absolute;bottom:22px;left:0;right:0;display:flex;justify-content:center;gap:44px}
+.callscr .keys i{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#25d366}
+.callscr .keys i.no{background:#e5484d}.callscr .keys i.no svg{transform:rotate(135deg)}
+.callscr .keys svg{width:18px;height:18px;fill:#fff}
+.callscr .keys.ringing .no{animation:out .3s calc((var(--in) + 1.2)*1s) forwards}
+.line{align-self:flex-start;margin-top:10px;background:#fffdf7;border:1px solid rgba(174,141,85,.6);border-radius:16px 16px 16px 4px;padding:8px 13px;font-family:Italiana,serif;font-size:14.5px;line-height:1.28;color:var(--ink);box-shadow:0 8px 20px rgba(70,48,16,.12);text-align:left;transform-origin:0 100%}
+.line.me{align-self:flex-end;border-radius:16px 16px 4px 16px;transform-origin:100% 100%}
+.line b{display:block;font:400 8px Manrope;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin-bottom:3px}
+.line b.n{color:#b0703a}.line b.a{color:#1f9d55}
+
 /* The thank-you card. */
 .portrait{width:176px;margin-bottom:12px}
 .card .script{font-size:37px;white-space:nowrap}
@@ -98,9 +164,9 @@ body[data-scene=making] .film.making,body[data-scene=closing] .film.closing,body
   <symbol id="handset" viewBox="0 0 24 24"><path d="M6.6 10.8a15 15 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.6 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.4 11.4 0 0 0 .6 3.6 1 1 0 0 1-.25 1z"/></symbol>
 </defs></svg>
 
-<!-- ───────── The making: the title (3.6 s), then the desk (28.8 s) ───────── -->
+<!-- ───────── The making: the title (3.6 s), how it began (9.6 s), then the desk (40.8 s), with a cut to Ashan's phone ───────── -->
 <div class="film making">
-  <section class="s" style="--in:.2;--out:3.6">
+  <section class="s" style="--in:0.2;--out:3.6">
     <img class="crest pop" style="--d:.1" src="../assets/logo/nd-monogram.svg" alt="">
     <p class="eyebrow up" style="--d:.5">A keepsake for</p>
     <p class="script up" style="--d:.8;font-size:50px;margin-top:16px;line-height:.92">Naveen<span style="display:block;font-size:.5em;line-height:1;margin:-2px 0 0">&amp;</span>Dulanjani</p>
@@ -108,45 +174,141 @@ body[data-scene=making] .film.making,body[data-scene=closing] .film.closing,body
     <p class="serif up" style="--d:1.4;font-size:19px;line-height:1.35">How your wedding invitation<br>came to life</p>
   </section>
 
-  <div class="desk ev stay" style="--in:3.4">
+
+  <!-- How it began: Mark is away from his desk when Naveen rings. -->
+  <section class="s cut" style="--in:3.4;--out:7.5">
+    <p class="eyebrow up" style="--d:.2;margin-bottom:14px">It began with a phone call</p>
+    <div class="handset sm pop" style="--d:.1">
+      <div class="callscr">
+        <small>WhatsApp voice call</small>
+        <div class="faces"><span class="who n ringing">N</span></div>
+        <h3>Naveen</h3>
+        <p class="status"><span class="ringing">Incoming call…</span><span class="talking">00:03</span></p>
+        <div class="keys ringing"><i class="no"><svg viewBox="0 0 24 24"><use href="#handset"/></svg></i><i class="yes"><svg viewBox="0 0 24 24"><use href="#handset"/></svg></i></div>
+      </div>
+    </div>
+    <p class="line pop" style="--d:1.5"><b class="n">Naveen</b>Mark! We’re getting married.<br>Will you make our invitation?</p>
+    <p class="line me pop" style="--d:2.7"><b>Mark</b>Of course! Let me get Ashan.</p>
+  </section>
+
+  <!-- The three of them on a call. -->
+  <section class="s cut" style="--in:7.3;--out:10.9">
+    <p class="eyebrow up" style="--d:.2;margin-bottom:14px">So the three of them got on a call</p>
+    <div class="handset sm pop" style="--d:.1">
+      <div class="callscr">
+        <small>WhatsApp group call</small>
+        <div class="faces"><span class="who a">A</span><span class="who n">N</span><span class="who m">M</span></div>
+        <h3 style="font-size:16.5px;margin-top:18px">Ashan · Naveen · Mark</h3>
+        <p class="status"><span>02:14</span></p>
+        <div class="keys"><i class="no"><svg viewBox="0 0 24 24"><use href="#handset"/></svg></i></div>
+      </div>
+    </div>
+    <p class="line pop" style="--d:.9"><b class="a">Ashan</b>Let’s make it one they’ll never forget.</p>
+    <p class="line pop" style="--d:2"><b class="n">Naveen</b>I’ll send you all the details.</p>
+  </section>
+
+  <!-- Naveen sends the details. -->
+  <section class="s cut" style="--in:10.7;--out:13.5">
+    <p class="eyebrow up" style="--d:.2;margin-bottom:14px">Naveen sent the details</p>
+    <div class="handset sm pop" style="--d:.1">
+      <div class="chat">
+        <header><span class="face">N</span><b>Naveen</b><small>online</small></header>
+        <div class="msgs">
+          <div class="msg in pop" style="--d:.5"><p>Naveen &amp; Dulanjani ❤️</p></div>
+          <div class="msg in pop" style="--d:.9"><p>Monday, 7 December 2026</p></div>
+          <div class="msg in pop" style="--d:1.3"><p>Avenra Gardens, Negombo</p></div>
+          <div class="msg in pop" style="--d:1.7"><span class="meme" style="width:104px;height:120px"><img src="../assets/couple/album/album-01.webp" alt=""></span></div>
+          <div class="msg out pop" style="--d:2.2"><p>Got it. Starting tonight 💪</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="desk ev stay" style="--in:13">
     <canvas id="desk3d"></canvas>
-    <p class="eyebrow ev" style="--in:4;--out:10.6">11 September 2026</p>
+    <p class="eyebrow ev" style="--in:13.6;--out:19.4">11 September 2026</p>
 
     <!-- The first idea is his own. -->
-    <p class="bubble think ev" style="--in:5.2;--out:9.2">What if their invitation<br>opened like a real door?<i></i><i></i></p>
-    <div class="term ev" style="--in:6.2;--out:10.7"><span class="ask" style="--n:44">Claude, build doors that open onto a garden</span><span class="does"><svg><use href="#spark"/></svg>Claude is building the doors…</span></div>
+    <p class="bubble think ev" style="--in:14.4;--out:17.8">What if their invitation<br>opened like a real door?<i></i><i></i></p>
+    <div class="term ev" style="--in:15.6;--out:19.6"><span class="ask" style="--n:44">Claude, build doors that open onto a garden</span><span class="does" style="--w:1.5"><svg><use href="#spark"/></svg>Claude is building the doors…</span></div>
 
     <!-- The phone on its stand rings. -->
-    <div class="callpill ringing ev" style="--in:10.8;--out:13"><b><svg><use href="#handset"/></svg></b><span><small>WhatsApp voice call</small>Ashan is calling…</span></div>
-    <div class="callpill live ev" style="--in:12.9;--out:30"><b><svg><use href="#handset"/></svg></b>Ashan · on call</div>
-    <p class="note ev" style="--in:11;--out:13.1">Then Ashan called, with ideas.</p>
+    <div class="callpill ringing ev" style="--in:19.8;--out:22"><b><svg><use href="#handset"/></svg></b><span><small>WhatsApp voice call</small>Ashan is calling…</span></div>
+    <div class="callpill live ev" style="--in:21.9;--out:39.8"><b><svg><use href="#handset"/></svg></b>Ashan · on call</div>
+    <p class="note ev" style="--in:20;--out:22.1">Ashan called to see how it was going.</p>
 
-    <p class="bubble ashan ev" style="--in:13.2;--out:16.6">Give them a monogram<br>of their own!</p>
-    <div class="term ev" style="--in:14;--out:16.9"><span class="ask" style="--n:34">Claude, draw an N &amp; D monogram</span><span class="does" style="--w:1.3"><svg><use href="#spark"/></svg>Claude is drawing the monogram…</span></div>
+    <!-- Ashan thinks aloud; Mark turns each thought over; Claude builds it. -->
+    <p class="bubble ashan ev" style="--in:22.2;--out:25.5">Hmm… they need a monogram<br>of their own.</p>
+    <p class="bubble think ev" style="--in:23.2;--out:25.7">N &amp; D, drawn in gold…<i></i><i></i></p>
+    <div class="term ev" style="--in:23.8;--out:25.8"><span class="ask" style="--n:34">Claude, draw an N &amp; D monogram</span><span class="does" style="--w:1.1"><svg><use href="#spark"/></svg>Claude is drawing the monogram…</span></div>
+    <p class="bubble ashan ev" style="--in:28.8;--out:32.1">And their portrait…<br>what if it draws itself?</p>
+    <p class="bubble think ev" style="--in:29.8;--out:32.3">Line by line,<br>like a pencil.<i></i><i></i></p>
+    <div class="term ev" style="--in:30.4;--out:32.4"><span class="ask" style="--n:44">Claude, sketch their portrait, line by line</span><span class="does" style="--w:1.2"><svg><use href="#spark"/></svg>Claude is sketching the portrait…</span></div>
+    <p class="bubble ashan ev" style="--in:32.4;--out:35.7">It has to speak<br>Sinhala too.</p>
+    <p class="bubble think ev" style="--in:33.4;--out:35.9">English and Sinhala,<br>side by side.<i></i><i></i></p>
+    <div class="term ev" style="--in:34;--out:36"><span class="ask" style="--n:38">Claude, write it in Sinhala as well</span><span class="does" style="--w:1.1"><svg><use href="#spark"/></svg>Claude is writing in English and Sinhala…</span></div>
 
-    <p class="bubble ashan ev" style="--in:16.8;--out:20.2">Their portrait should<br>draw itself.</p>
-    <div class="term ev" style="--in:17.6;--out:20.5"><span class="ask" style="--n:44">Claude, sketch their portrait, line by line</span><span class="does" style="--w:1.5"><svg><use href="#spark"/></svg>Claude is sketching the portrait…</span></div>
+    <!-- Is it done? Let's look together, and bring Naveen in. -->
+    <p class="bubble ashan ev" style="--in:36;--out:38.3">Is it done?</p>
+    <p class="bubble mark ev" style="--in:36.9;--out:39.6">Almost. Let’s look<br>at it together.</p>
+    <p class="bubble ashan ev" style="--in:38.4;--out:39.8">Wait, let’s show Naveen<br>as well!</p>
 
-    <p class="bubble ashan ev" style="--in:20.4;--out:23.8">It has to speak<br>Sinhala too.</p>
-    <div class="term ev" style="--in:21.2;--out:24.1"><span class="ask" style="--n:38">Claude, write it in Sinhala as well</span><span class="does" style="--w:1.4"><svg><use href="#spark"/></svg>Claude is writing in English and Sinhala…</span></div>
-
-    <p class="bubble ashan ev" style="--in:24;--out:27.4">And greet every guest<br>by name.</p>
-    <div class="term ev" style="--in:24.8;--out:27.7"><span class="ask" style="--n:36">Claude, greet each guest by name</span><span class="does" style="--w:1.4"><svg><use href="#spark"/></svg>Claude is adding every guest's name…</span></div>
-
-    <div class="term ev" style="--in:27.7;--out:30.2"><span class="ask" style="--n:30">Claude, is it ready?</span><span class="does ok" style="--w:1">✓ 61 days · 103 versions · ready to send</span></div>
-    <p class="bubble ashan ev" style="--in:28.3;--out:30.2">Let's see it!</p>
+    <div class="callpill ringing ev" style="--in:39.8;--out:41.2"><b><svg><use href="#handset"/></svg></b><span><small>WhatsApp group call</small>Adding Naveen…</span></div>
+    <div class="callpill live ev" style="--in:41.1;--out:51.9"><b><svg><use href="#handset"/></svg></b>Group call · Ashan, Naveen</div>
+    <p class="bubble naveen ev" style="--in:41.3;--out:43.2">That’s our<br>invitation?! Wow.</p>
+    <p class="bubble naveen ev" style="--in:43.3;--out:46.5">Can every guest see<br>their own name on it?</p>
+    <p class="bubble think ev" style="--in:44.3;--out:46.7">Dear guest,<br>each one by name…<i></i><i></i></p>
+    <div class="term ev" style="--in:44.8;--out:46.8"><span class="ask" style="--n:36">Claude, greet each guest by name</span><span class="does" style="--w:1.1"><svg><use href="#spark"/></svg>Claude is adding every guest’s name…</span></div>
+    <p class="bubble naveen ev" style="--in:46.8;--out:50.1">And we need to see<br>who is coming.</p>
+    <p class="bubble think ev" style="--in:47.8;--out:50.3">A guest list behind it,<br>every reply saved…<i></i><i></i></p>
+    <div class="term ev" style="--in:48.4;--out:50.4"><span class="ask" style="--n:42">Claude, build the guest list and replies</span><span class="does" style="--w:1.1"><svg><use href="#spark"/></svg>Claude is building the couple’s pages…</span></div>
+    <p class="bubble mark ev" style="--in:50.5;--out:52">It’s ready.<br>Go in, see.</p>
+    <p class="bubble naveen ev" style="--in:51.1;--out:52">Show us!</p>
   </div>
+
+  <!-- Cut away to Ashan's phone: he makes the couple's card for WhatsApp and sends it to Mark. -->
+  <section class="s cut" style="--in:25.6;--out:29.1">
+    <p class="eyebrow up" style="--d:.2;margin-bottom:12px">Meanwhile, Ashan had an idea of his own</p>
+    <p class="line pop" style="--d:.4;align-self:center;margin:0 0 12px;border-radius:18px"><b class="a">Ashan thinks</b>What will guests see on WhatsApp?</p>
+    <div class="handset sm pop" style="--d:.1">
+      <div class="chat">
+        <header><span class="face">M</span><b>Mark</b><small>online</small></header>
+        <div class="msgs">
+          <div class="msg out pop" style="--d:1.2;max-width:96%"><img class="card-pic" src="../assets/couple/naveen-dulanjani-invite.jpg" alt=""><p>I made their card for the link 😊</p><time>9:41 pm ✓✓</time></div>
+          <div class="msg in pop" style="--d:2.3"><p>That’s beautiful. It’s going in 👌</p><time>9:42 pm</time></div>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
 
-<!-- ───────── The closing: back out of the monitor (3.2 s), then the card ───────── -->
+<!-- ───────── The closing: back out of the monitor (5 s), Naveen's phone (4 s), then the card ───────── -->
 <div class="film closing">
-  <div class="desk ev" style="--in:0;--out:3.6">
+  <div class="desk ev" style="--in:0;--out:5.5">
     <canvas id="desk3d-close"></canvas>
-    <div class="callpill live ev" style="--in:.6;--out:3.4"><b><svg><use href="#handset"/></svg></b>Ashan · on call</div>
-    <p class="bubble ashan ev" style="--in:1.2;--out:3.4">It's beautiful.<br>Send it!</p>
-    <div class="term ev" style="--in:1.5;--out:3.4"><span class="ask" style="--n:30">Claude, send it to every guest</span><span class="does ok" style="--w:1">✓ Invitations sent · 11 November 2026</span></div>
+    <div class="callpill live ev" style="--in:.6;--out:5.3"><b><svg><use href="#handset"/></svg></b>Group call · Ashan, Naveen</div>
+    <p class="bubble naveen ev" style="--in:1.3;--out:5.1">I love it.<br>Dulanjani will too.</p>
+    <p class="bubble ashan hi ev" style="--in:2.7;--out:5.1">Send it!</p>
+    <div class="term ev" style="--in:3.0;--out:5.3"><span class="ask" style="--n:30">Claude, send it to every guest</span><span class="does ok" style="--w:0.9">✓ Invitations sent · 11 November 2026</span></div>
   </div>
-  <section class="s stay card" style="--in:3.2">
+  <!-- Cut away to Naveen's phone: the guest list, and the invitations going out. -->
+  <section class="s cut" style="--in:5;--out:9.6">
+    <p class="eyebrow up" style="--d:.2;margin-bottom:16px">Then, on Naveen’s phone</p>
+    <div class="handset pop" style="--d:.1">
+      <div class="admin">
+        <small>The couple’s page</small><h3>Guests</h3>
+        <ol>
+          <li style="--r:0"><i></i><b>Family</b><span><u>Send</u><u>Sent ✓</u><u>Coming ✓</u></span></li>
+          <li style="--r:1"><i></i><b>School friends</b><span><u>Send</u><u>Sent ✓</u><u>Coming ✓</u></span></li>
+          <li style="--r:2"><i></i><b>Colleagues</b><span><u>Send</u><u>Sent ✓</u><u>Opened</u></span></li>
+          <li style="--r:3"><i></i><b>Neighbours</b><span><u>Send</u><u>Sent ✓</u><u>Coming ✓</u></span></li>
+          <li style="--r:4"><i></i><b>Cousins</b><span><u>Send</u><u>Sent ✓</u><u>Opened</u></span></li>
+        </ol>
+      </div>
+    </div>
+    <p class="serif up" style="--d:.8;font-size:17px;line-height:1.4;margin-top:18px">One by one, every guest<br>received their own invitation.</p>
+  </section>
+  <section class="s stay card" style="--in:9.2">
     <img class="portrait up" style="--d:.2" src="../assets/couple/couple-drawing-62650de152.webp" alt="">
     <p class="script up" style="--d:.8">Naveen <span style="font-size:.6em">&amp;</span> Dulanjani</p>
     <div class="rule" style="--d:1.3;margin:12px auto"></div>
@@ -168,7 +330,7 @@ import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/
 const mode = document.body.dataset.scene;
 const canvas = document.getElementById(mode === 'closing' ? 'desk3d-close' : 'desk3d');
 if (canvas && (mode === 'making' || mode === 'closing')) {
-  const W = 360, H = 640, T0 = 3.6;
+  const W = 360, H = 640, T0 = 13.2;
   const picture = src => new Promise(ok => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => ok(null); i.src = src; });
   const [doors, monogram, couple] = await Promise.all(['../assets/magnolia-suite/doors.webp', '../assets/logo/nd-monogram-compact.svg', '../assets/couple/couple-drawing-62650de152.webp'].map(picture));
   await Promise.all(['40px Italiana', '40px Script', '40px Hand', '40px SinhalaSerif', '20px Manrope'].map(f => document.fonts.load(f, 'Aආ')));
@@ -262,8 +424,8 @@ if (canvas && (mode === 'making' || mode === 'closing')) {
   // ── what the three screens show ──
   const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x)), ease = x => { x = clamp(x); return x * x * (3 - 2 * x); };
   // The pieces arrive on the monitor at these moments (seconds into the desk scene).
-  const AT = { doors: 4.1, monogram: 11.3, portrait: 14.9, tongues: 18.5, dear: 22.1, done: 24.6 };
-  const LIST = [['Doors', AT.doors + 1.6], ['Monogram', AT.monogram + 1.6], ['Portrait', AT.portrait + 1.8], ['English + සිංහල', AT.tongues + 1.4], ['Guest names', AT.dear + 1.4]];
+  const AT = { doors: 2.8, monogram: 10.6, portrait: 17.2, tongues: 20.8, front: 24.4, dear: 31.8, admin: 35.4, done: 37.8 };
+  const LIST = [['Doors', AT.doors + 1.6], ['Monogram', AT.monogram + 1.6], ['Portrait', AT.portrait + 1.8], ['English + සිංහල', AT.tongues + 1.4], ['Guest names', AT.dear + 1.4], ['Guest list + replies', AT.admin + 1.6]];
   const PV = { x: 448, y: 22, w: 384, h: 676 };   // the preview: a phone-shaped page in the middle of the monitor
   function cover(pen, img, x, y, w, h, zoom = 1) { if (!img) return; const r = Math.max(w / img.width, h / img.height) * zoom, dw = img.width * r, dh = img.height * r; pen.drawImage(img, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh); }
   function drawMonitor(t, finale) {
@@ -271,7 +433,7 @@ if (canvas && (mode === 'making' || mode === 'closing')) {
     // left: what has been built so far
     p.textBaseline = 'middle'; p.fillStyle = '#ae8d55'; p.font = '600 17px Manrope'; p.fillText('B U I L D I N G', 60, 70);
     p.font = '30px Italiana'; p.fillStyle = '#5b4a30'; p.fillText('The Wedding of', 60, 118); p.font = '46px Script'; p.fillStyle = '#6d5228'; p.fillText('Naveen & Dulanjani', 56, 170);
-    LIST.forEach(([name, at], i) => { const on = finale || t > at, y = 262 + i * 62; p.globalAlpha = on ? 1 : .32;
+    LIST.forEach(([name, at], i) => { const on = finale || t > at, y = 250 + i * 58; p.globalAlpha = on ? 1 : .32;
       p.strokeStyle = '#ae8d55'; p.lineWidth = 2.5; p.beginPath(); p.arc(76, y, 16, 0, 7); p.stroke();
       if (on) { p.fillStyle = '#ae8d55'; p.beginPath(); p.arc(76, y, 16, 0, 7); p.fill(); p.strokeStyle = '#fffdf7'; p.lineWidth = 3.5; p.beginPath(); p.moveTo(68, y); p.lineTo(74, y + 6); p.lineTo(85, y - 6); p.stroke(); }
       p.fillStyle = '#5b4a30'; p.font = '27px Italiana, SinhalaSerif'; p.fillText(name, 110, y + 1); p.globalAlpha = 1; });
@@ -291,15 +453,29 @@ if (canvas && (mode === 'making' || mode === 'closing')) {
         p.globalAlpha *= ease((k - .3) * 2.5); if (monogram) p.drawImage(monogram, cx - 132, PV.y + 178, 264, 264); });
       layer(AT.portrait, AT.tongues, k => { if (!couple) return; const w = 330, h = w * couple.height / couple.width, x = cx - w / 2, y = PV.y + 100, e = ease(k * 1.15); p.save(); p.beginPath(); p.rect(x, y, w, h * e); p.clip(); p.drawImage(couple, x, y, w, h); p.restore();
         if (e < 1) { p.strokeStyle = '#ae8d55'; p.lineWidth = 2; p.beginPath(); p.moveTo(x, y + h * e); p.lineTo(x + w, y + h * e); p.stroke(); } });
-      layer(AT.tongues, AT.dear, k => { p.textAlign = 'center'; p.fillStyle = '#5b4a30'; p.font = '74px Italiana'; p.fillText('Welcome', cx, PV.y + 262); p.strokeStyle = '#ae8d55'; p.lineWidth = 2; p.beginPath(); p.moveTo(cx - 50, PV.y + 330); p.lineTo(cx + 50, PV.y + 330); p.stroke();
+      layer(AT.front, AT.dear, k => cover(p, doors, PV.x, PV.y, PV.w, PV.h));
+      layer(AT.tongues, AT.front, k => { p.textAlign = 'center'; p.fillStyle = '#5b4a30'; p.font = '74px Italiana'; p.fillText('Welcome', cx, PV.y + 262); p.strokeStyle = '#ae8d55'; p.lineWidth = 2; p.beginPath(); p.moveTo(cx - 50, PV.y + 330); p.lineTo(cx + 50, PV.y + 330); p.stroke();
         p.globalAlpha *= ease((k - .25) * 3); p.fillStyle = '#6d5228'; p.font = '66px SinhalaSerif'; p.fillText('ආයුබෝවන්', cx, PV.y + 408); p.textAlign = 'left'; });
-      layer(AT.dear, AT.done, k => { p.textAlign = 'center'; p.fillStyle = '#5b4a30'; p.font = '50px Italiana'; p.fillText('Dear', cx, PV.y + 280); const w = 250, e = ease(k * 1.6); p.save(); p.beginPath(); p.rect(cx - w / 2, PV.y + 300, w * e, 120); p.clip(); p.fillStyle = '#6d5228'; p.font = '84px Hand'; p.fillText('Guest,', cx, PV.y + 360); p.restore(); p.textAlign = 'left'; });
+      layer(AT.admin, AT.done, k => {   // the couple's own page: who was invited, who has opened it, who is coming
+        p.fillStyle = '#f4efe4'; p.fillRect(PV.x, PV.y, PV.w, PV.h); p.textAlign = 'left'; p.textBaseline = 'middle';
+        p.fillStyle = '#ae8d55'; p.font = '600 13px Manrope'; p.fillText('T H E   C O U P L E ’ S   P A G E', PV.x + 28, PV.y + 44);
+        p.fillStyle = '#5b4a30'; p.font = '44px Italiana'; p.fillText('Guests', PV.x + 26, PV.y + 92);
+        ['Invited', 'Sent', 'Opened', 'Replied'].forEach((name, i) => { const x = PV.x + 62 + i * 87, on = k * 5 > i + .4; p.strokeStyle = '#ae8d55'; p.lineWidth = 2.5; if (i) { p.globalAlpha *= .5; p.beginPath(); p.moveTo(x - 65, PV.y + 166); p.lineTo(x - 22, PV.y + 166); p.stroke(); p.globalAlpha *= 2; }
+          p.beginPath(); p.arc(x, PV.y + 166, 21, 0, 7); p.fillStyle = on ? '#ae8d55' : '#fbf7ee'; p.fill(); p.stroke(); p.fillStyle = '#8a7650'; p.font = '14px Manrope'; p.textAlign = 'center'; p.fillText(name, x, PV.y + 206); p.textAlign = 'left'; });
+        for (let i = 0; i < 6; i++) { const y = PV.y + 250 + i * 66, a = ease(k * 7 - i * .9); if (a <= 0) continue; p.save(); p.globalAlpha *= a;
+          p.fillStyle = '#fffdf7'; p.strokeStyle = '#e3d6ba'; p.lineWidth = 1.5; p.beginPath(); p.roundRect(PV.x + 22, y, PV.w - 44, 54, 12); p.fill(); p.stroke();
+          p.fillStyle = ['#d8bd86', '#c9a16d', '#b98f5c'][i % 3]; p.beginPath(); p.arc(PV.x + 54, y + 27, 15, 0, 7); p.fill();
+          p.fillStyle = '#cbbd9f'; p.beginPath(); p.roundRect(PV.x + 82, y + 15, 96 + (i * 37) % 70, 9, 4); p.fill(); p.fillStyle = '#e3d9c4'; p.beginPath(); p.roundRect(PV.x + 82, y + 33, 64, 7, 3); p.fill();
+          const coming = i % 3 !== 2, late = k * 7 - i * .9 > 1.6; p.fillStyle = coming && late ? '#dcefdc' : '#f3e7cc'; p.beginPath(); p.roundRect(PV.x + PV.w - 122, y + 15, 86, 24, 12); p.fill();
+          p.fillStyle = coming && late ? '#2f7d43' : '#8a6a36'; p.font = '13px Manrope'; p.textAlign = 'center'; p.fillText(coming && late ? 'Coming ✓' : 'Sent', PV.x + PV.w - 79, y + 28); p.restore(); }
+        p.textAlign = 'left'; });
+      layer(AT.dear, AT.admin, k => { p.textAlign = 'center'; p.fillStyle = '#5b4a30'; p.font = '50px Italiana'; p.fillText('Dear', cx, PV.y + 280); const w = 250, e = ease(k * 1.6); p.save(); p.beginPath(); p.rect(cx - w / 2, PV.y + 300, w * e, 120); p.clip(); p.fillStyle = '#6d5228'; p.font = '84px Hand'; p.fillText('Guest,', cx, PV.y + 360); p.restore(); p.textAlign = 'left'; });
       layer(AT.done, 99, k => cover(p, doors, PV.x, PV.y, PV.w, PV.h));
     }
     p.restore(); mon.t.needsUpdate = true;
   }
   // The laptop: Mark's asks and Claude's work, a line at a time.
-  const ASKS = [[2.6, 'build doors that open'], [10.4, 'draw an N & D monogram'], [14, 'sketch their portrait'], [17.6, 'write it in Sinhala too'], [21.2, 'greet each guest by name'], [24.1, 'is it ready?']];
+  const ASKS = [[2.4, 'build doors that open'], [10.6, 'draw an N & D monogram'], [17.2, 'sketch their portrait'], [20.8, 'write it in Sinhala too'], [31.6, 'greet each guest by name'], [35.2, 'build the guest list']];
   function drawLaptop(t, finale) {
     const p = lap.pen; p.fillStyle = '#231c14'; p.fillRect(0, 0, 640, 416); p.textBaseline = 'top'; p.textAlign = 'left';
     p.strokeStyle = '#d97757'; p.lineWidth = 4; p.lineCap = 'round'; for (let i = 0; i < 6; i++) { const a = i * Math.PI / 6 + t * .6; p.beginPath(); p.moveTo(40 - Math.cos(a) * 14, 36 - Math.sin(a) * 14); p.lineTo(40 + Math.cos(a) * 14, 36 + Math.sin(a) * 14); p.stroke(); }
@@ -311,14 +487,16 @@ if (canvas && (mode === 'making' || mode === 'closing')) {
   }
   // The phone: dark until it rings, then the call.
   function drawPhone(t, finale) {
-    const p = ph.pen, ringing = !finale && t > 7.2 && t < 9.3, live = finale || t >= 9.3;
+    const p = ph.pen, ringing = !finale && t > 6.6 && t < 8.7, live = finale || t >= 8.7, group = finale || t >= 26.6, joined = finale || t >= 27.9;
     p.fillStyle = '#0c0c0e'; p.fillRect(0, 0, 256, 556); if (!ringing && !live) { ph.t.needsUpdate = true; return; }
     const g = p.createLinearGradient(0, 0, 0, 556); g.addColorStop(0, '#13493f'); g.addColorStop(1, '#092823'); p.fillStyle = g; p.fillRect(0, 0, 256, 556);
     p.textAlign = 'center'; p.textBaseline = 'middle'; p.fillStyle = '#a9d6c8'; p.font = '15px Manrope'; p.fillText('WhatsApp voice call', 128, 52);
     if (ringing) for (let i = 0; i < 2; i++) { const k = ((t * .85 + i * .5) % 1); p.strokeStyle = `rgba(120,230,170,${.8 * (1 - k)})`; p.lineWidth = 3; p.beginPath(); p.arc(128, 190, 58 + k * 44, 0, 7); p.stroke(); }
-    const a = p.createLinearGradient(70, 130, 186, 250); a.addColorStop(0, '#d8bd86'); a.addColorStop(1, '#a5834a'); p.fillStyle = a; p.beginPath(); p.arc(128, 190, 58, 0, 7); p.fill();
-    p.fillStyle = '#fffaf0'; p.font = '64px Italiana'; p.fillText('A', 128, 194); p.fillStyle = '#fff'; p.font = '44px Italiana'; p.fillText('Ashan', 128, 300);
-    p.fillStyle = '#bfe3d6'; p.font = '17px Manrope'; const secs = Math.max(0, Math.floor((t - 9.3) * 6)); p.fillText(ringing ? 'Incoming call…' : finale ? '12:07' : `0${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`, 128, 340);
+    const face = (x, y, r, letter, c1, c2) => { const g2 = p.createLinearGradient(x - r, y - r, x + r, y + r); g2.addColorStop(0, c1); g2.addColorStop(1, c2); p.fillStyle = g2; p.beginPath(); p.arc(x, y, r, 0, 7); p.fill(); p.fillStyle = '#fffaf0'; p.font = Math.round(r * 1.1) + 'px Italiana'; p.fillText(letter, x, y + r * .07); };
+    if (group) { p.fillStyle = '#a9d6c8'; p.font = '15px Manrope'; face(80, 190, 46, 'A', '#d8bd86', '#a5834a'); p.globalAlpha = joined ? 1 : .45 + .25 * Math.sin(t * 8); face(176, 190, 46, 'N', '#c9895a', '#8a5230'); p.globalAlpha = 1;
+      p.fillStyle = '#fff'; p.font = '32px Italiana'; p.fillText('Ashan · Naveen', 128, 292); p.fillStyle = '#bfe3d6'; p.font = '17px Manrope'; p.fillText(joined ? 'Group call' : 'Adding Naveen…', 128, 334); }
+    else { face(128, 190, 58, 'A', '#d8bd86', '#a5834a'); p.fillStyle = '#fff'; p.font = '44px Italiana'; p.fillText('Ashan', 128, 300);
+      p.fillStyle = '#bfe3d6'; p.font = '17px Manrope'; const secs = Math.max(0, Math.floor((t - 8.7) * 6)); p.fillText(ringing ? 'Incoming call…' : `0${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}`, 128, 340); }
     if (ringing) { p.fillStyle = '#e5484d'; p.beginPath(); p.arc(72, 470, 34, 0, 7); p.fill(); p.fillStyle = '#25d366'; p.beginPath(); p.arc(184, 470, 34 + Math.sin(t * 9) * 3, 0, 7); p.fill(); }
     else { p.fillStyle = '#e5484d'; p.beginPath(); p.arc(128, 470, 34, 0, 7); p.fill(); }
     p.textAlign = 'left'; ph.t.needsUpdate = true;
@@ -333,20 +511,20 @@ if (canvas && (mode === 'making' || mode === 'closing')) {
 
   window.renderAt = seconds => {
     let t, zoom, finale = false;
-    if (mode === 'making') { t = seconds - T0; if (t < -.4) return; zoom = ease((t - 26.4) / 2.4); }
-    else { t = seconds; if (t > 4) return; zoom = 1 - ease((t - .1) / 2.5); finale = true; }
+    if (mode === 'making') { t = seconds - T0; if (t < -.4) return; zoom = ease((t - 38.4) / 2.4); }
+    else { t = seconds; if (t > 6) return; zoom = 1 - ease((t - .1) / 2.5); finale = true; }
     drawMonitor(t, finale); drawLaptop(t, finale); drawPhone(t, finale);
-    const drift = mode === 'making' ? ease(t / 26) : 1, wide = WIDE.pos.clone().add(v.set(-.3 * drift, -.12 * drift, -.25 * drift));
+    const drift = mode === 'making' ? ease(t / 38) : 1, wide = WIDE.pos.clone().add(v.set(-.3 * drift, -.12 * drift, -.25 * drift));
     camera.position.lerpVectors(wide, NEAR.pos, zoom); camera.position.y += Math.sin(Math.PI * zoom) * .16;
     camera.lookAt(v.lerpVectors(WIDE.look, NEAR.look, zoom));
     // he types; he looks up to think; he turns to the phone when Ashan speaks
     const typing = finale ? 0 : (Math.sin(t * 3.1) > -.5 ? 1 : 0);
     arms.forEach((arm, i) => { arm.rotation.x = Math.max(0, Math.sin(t * 21 + i * 2.1)) * .05 * typing; });
-    const beat = finale ? 1 : [9.6, 13.2, 16.8, 20.4, 24.7].reduce((m, at) => Math.max(m, t > at - .2 && t < at + 1.5 ? Math.sin((t - at + .2) / 1.7 * Math.PI) : 0), t > 7.2 && t < 9.4 ? Math.sin((t - 7.2) / 2.2 * Math.PI) : 0);
-    const think = !finale && t > 1.4 && t < 3.6 ? Math.sin((t - 1.4) / 2.2 * Math.PI) : 0;
+    const beat = finale ? 1 : [9, 15.6, 19.2, 22.8, 25.2, 28.1, 30.1, 33.7, 37.9].reduce((m, at) => Math.max(m, t > at - .2 && t < at + 1.5 ? Math.sin((t - at + .2) / 1.7 * Math.PI) : 0), t > 6.6 && t < 8.8 ? Math.sin((t - 6.6) / 2.2 * Math.PI) : 0);
+    const think = finale ? 0 : [1.2, 10.2, 16.8, 20.4, 31.3, 34.9].reduce((m, at) => Math.max(m, t > at && t < at + 2 ? Math.sin((t - at) / 2 * Math.PI) : 0), 0);
     head.rotation.set(Math.sin(t * 1.3) * .03 + think * .2 + .06, Math.sin(t * .7) * .04 - beat * .55, 0);
     body.rotation.x = Math.sin(t * .9) * .008;
-    stand.position.x = PH.x + (!finale && t > 7.2 && t < 9.3 ? Math.sin(t * 60) * .0025 : 0);
+    stand.position.x = PH.x + (!finale && t > 6.6 && t < 8.7 ? Math.sin(t * 60) * .0025 : 0);
     glow.intensity = .55 + Math.sin(t * 5) * .04;
     renderer.render(scene, camera);
     pin('h', 0, 1.5, .1); pin('p', PH.x, PH.y + .1, PH.z);
