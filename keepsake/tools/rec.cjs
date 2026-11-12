@@ -8,8 +8,13 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 fs.mkdirSync(out, { recursive: true });
 
 (async () => {
-  const b = await pw.webkit.launch();
-  const c = await b.newContext({ ...pw.devices['iPhone 13'], viewport: { width: W, height: H }, deviceScaleFactor: 3 });
+  // Real Chrome, started by hand with --remote-debugging-port (Playwright cannot launch it on this
+  // computer), set up as an Android phone. Without CDP set it falls back to the iPhone-style browser.
+  const chrome = !!process.env.CDP;
+  const b = chrome ? await pw.chromium.connectOverCDP(process.env.CDP) : await pw.webkit.launch();
+  const c = await b.newContext(chrome
+    ? { viewport: { width: W, height: H }, deviceScaleFactor: 3, isMobile: true, hasTouch: true, userAgent: 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/157.0.0.0 Mobile Safari/537.36' }
+    : { ...pw.devices['iPhone 13'], viewport: { width: W, height: H }, deviceScaleFactor: 3 });
   await c.addInitScript(() => {
     // A silent stand-in for the music player whose clock is the page's (frozen) clock, so everything
     // cut to the beat lands where it would with the real recording; the film adds the real music.
@@ -126,5 +131,5 @@ fs.mkdirSync(out, { recursive: true });
   marks.end = n / FPS; marks.music = await p.evaluate(() => window.__musicStart || null);
   fs.writeFileSync(`${out}/marks.json`, JSON.stringify(marks, null, 1));
   console.log('done', n, 'frames in', ((Date.now() - t0) / 1000).toFixed(0), 's', JSON.stringify(marks));
-  await b.close();
+  await c.close(); if (!chrome) await b.close(); process.exit(0);
 })();

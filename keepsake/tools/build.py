@@ -31,12 +31,12 @@ seal, sc, date, venue, agenda, closing = en['seal'], en['scroll'], en['date'], e
 pieces = [
     (seg('mk', 'mk', 0, count('mk') / FPS), 0),
     (seg('e1', 'en', seal - 1.0, seal + 5.2), .6),                 # the seal, the doors, walking in
-    (seg('e2', 'en', seal + 5.2, sc - .2, 2.4), 0),                # the monogram and their names, written
-    (seg('e3', 'en', sc + .6, sc + 11.5, 2.6), .4),                # the quotation and their portrait, drawn
+    (seg('e2', 'en', seal + 5.2, sc - .2, 2.0), 0),                # the monogram and their names, written
+    (seg('e3', 'en', sc + .6, sc + 11.5, 2.0), .4),                # the quotation and their portrait, drawn
     (seg('e4', 'en', sc + 11.9, sc + 15.3, 1.4), .4),              # the letter
     (seg('e5', 'en', sc + 17.3, sc + 22.4, 1.5), .4),              # the photographs
     (seg('e6', 'en', date + 2.3, date + 8.0, 1.5), .4),            # the gold foil, scratched
-    (seg('e7', 'en', venue + 1.6, venue + 8.6, 2.2), .4),          # the venue, drawn
+    (seg('e7', 'en', venue + 1.6, venue + 8.6, 1.8), .4),          # the venue, drawn
     (seg('e8', 'en', agenda + 2.6, agenda + 6.9, 1.4), .4),        # the programme
     (seg('e9', 'en', closing + .8, en['end'] - .1, 1.5), .4),      # the closing
     (seg('s1', 'si', si['seal'] + 8.6, si['scroll'] - .3, 2.5, tag=True), .5),   # Sinhala: the names

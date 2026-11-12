@@ -16,7 +16,7 @@ what Mark has asked for, and what is still not right.
 
 ## 1. The story the film tells
 
-About 1 minute 45 seconds in all. Mark's limit is 2 minutes.
+About 1 minute 47 seconds in all. Mark's limit is 2 minutes.
 
 | Part | About | What is on screen |
 |---|---|---|
@@ -85,40 +85,34 @@ One request was not understood and is not in the film: "cut scenes for the docto
 
 ## 3. What is still not right — read this first
 
-**Mark says the invitation in the film does not look like the final site: the real one is more
-beautiful and its animation is prettier.** Take that as true. What has been checked:
+**The invitation footage: fixed on 12 November 2026, but not yet confirmed by Mark.** He said, more
+than once, that the invitation in the film did not look like the real site. He was right. It had been
+filmed in Playwright's WebKit (an iPhone-style browser), which draws the door scene flat. It is now
+filmed in **real Chrome**, set up as an Android phone, from https://naveenwedsdulanjani.com/, and the
+doors swing open in depth as they do for guests. Ask Mark whether it now matches what he sees.
 
-- The files on naveenwedsdulanjani.com are byte-for-byte the same as this project's `main` branch
-  (index.html, invitation.js, the style sheets, i18n.js, couple-drawing.js were compared on
-  12 November 2026). So the film is not showing an old copy.
-- The filming does open the official address, not a local server.
-- The likely causes are in **how** it is filmed:
-  1. It is filmed in **Playwright's WebKit (an iPhone-style browser), not Chrome.** The site has
-     iPhone-only rules (`:root[data-ios]` in `devices.css`) and WebKit on Windows draws the 3D door
-     scene differently from Chrome. Mark looks at the site in Chrome.
-  2. The page's **clock is frozen and stepped by hand** so every frame is sharp. Effects that run on
-     the browser's own compositor may not look the same as when played live.
-  3. The 30-second showing is a **cut-down**: nine stretches of the walk-through, several played at
-     1.4 to 2.6 times speed, joined with dissolves. The real pacing is lost.
-- This has **not** been confirmed by looking at Chrome and the film side by side. Do that first.
+**How to film in Chrome on this computer.** Playwright cannot start Chrome itself here (it closes
+within a second, exit code 1260). Starting Chrome by hand and connecting to it works:
 
-**Why Chrome was not used:** on this computer Chrome, Edge and Playwright's own Chromium all close
-within a second when Playwright starts them (exit code 1260, "blocked by policy"). It was not worked
-around. Ways forward, best first:
+```bash
+"/c/Program Files/Google/Chrome/Application/chrome.exe" --remote-debugging-port=9333 --user-data-dir="<an empty folder>" --no-first-run about:blank &
+```
 
-1. Find out from Mark whether something on the computer blocks automated Chrome, and whether he is
-   happy for it to be allowed for this.
-2. Record Mark's real Chrome window while the invitation plays at its true speed (a screen recording
-   with ffmpeg, the page driven through the Claude in Chrome extension), then cut that into the film.
-   Check which layout he means: Chrome on a laptop shows the wide layout, a phone shows the tall one.
-3. Ask Mark to make a phone screen recording of the live site himself and drop it in this folder;
-   `tools/build.py` can cut from a video as easily as from frames.
+```bash
+CDP=http://127.0.0.1:9333 node rec.cjs en en
+```
+
+Chrome closes when a run ends, so start it again before the next run. A run takes about 8 minutes.
+Without `CDP` set, `rec.cjs` falls back to WebKit; do not use that for the invitation.
 
 Other known gaps:
 
+- The 30-odd second showing is still a cut-down: nine stretches of the walk-through, some played at
+  1.4 to 2 times speed, joined with dissolves. The cut list is `pieces` in `tools/build.py`.
+- The title, desk and ending scenes (`film.html`) are still filmed in WebKit. They look right there.
 - The reply form is not shown. The plain address has none, only a note; a guest's own link has it.
-- The couple's page on the monitor is a drawing with made-up rows. The real `/admin/` needs Naveen's
-  password and authenticator code, so it was never opened, and no real guest is shown.
+- The couple's page on the monitor and on Naveen's phone is a drawing with made-up rows. The real
+  `/admin/` needs Naveen's password and authenticator code, so it was never opened.
 - The headphones are plain black over-ear ones, not a detailed Sony XM6.
 - Nobody has yet watched the finished film through with sound.
 
@@ -132,14 +126,14 @@ Everything is made from web pages, filmed one frame at a time, and joined with f
 |---|---|
 | `film.html` | The drawn scenes. `?scene=making` is the title and the desk; `?scene=closing` is the ending and the card; `?scene=sinhala` is the small "Also in සිංහල" label. The desk is real 3D (three.js, loaded from cdnjs); the bubbles and the Claude bar are ordinary HTML over it. Every movement depends only on the time since the page loaded. |
 | `tools/scene.cjs` | Films a scene of `film.html`. `node scene.cjs making <folder> 54` writes one JPEG per frame, 30 a second, 1080 x 1920. It hands `film.html` to the browser as if it were on the official site, so pictures and fonts come from naveenwedsdulanjani.com. The two monogram drawings in `assets/logo/` are the exception: the site does not publish them. |
-| `tools/rec.cjs` | Films the real invitation from https://naveenwedsdulanjani.com/. `node rec.cjs en <folder>` or `si`. It presses the language, presses the seal, waits for the names, scrolls through every section and scratches the foil. Writes frames plus `marks.json` (when each section starts). About 20 to 35 minutes a language. |
+| `tools/rec.cjs` | Films the real invitation from https://naveenwedsdulanjani.com/. `node rec.cjs en <folder>` or `si`. It presses the language, presses the seal, waits for the names, scrolls through every section and scratches the foil. Writes frames plus `marks.json` (when each section starts). About 8 minutes a language in Chrome. |
 | `tools/tag.cjs` | Makes `tag.png`, the Sinhala label, with a see-through background. |
 | `tools/build.py` | Cuts the pieces and joins them: `python build.py <out.mp4> <path to assets/audio/invitation.mp3>`. It expects folders `mk`, `cl`, `en`, `si` and `tag.png` beside it. The cut list (which seconds of the walk-through are used, at what speed) is the `pieces` list near the bottom. |
 
 **Order of work**
 
 1. `node scene.cjs making mk 54` and `node scene.cjs closing cl 16.8`
-2. `node rec.cjs en en` and `node rec.cjs si si` (start them 20 seconds apart, or the browser crashes)
+2. Start Chrome as in section 3, then `CDP=http://127.0.0.1:9333 node rec.cjs en en`; start Chrome again, then the same with `si si`
 3. `node tag.cjs`
 4. `python build.py …` then make the WhatsApp copy:
    `ffmpeg -i full.mp4 -vf scale=720:1280 -c:v libx264 -crf 23 -c:a aac -b:a 128k small.mp4`
